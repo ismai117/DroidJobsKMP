@@ -46,6 +46,7 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import getPlatform
 import openUrl
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -116,7 +117,10 @@ class JobDetailScreen(
                     )
                 )
             },
-            containerColor = Color(0xFF1C1C23)
+            containerColor = Color(0xFF1C1C23),
+            modifier = modifier.padding(
+                top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
+            )
         ) { paddingValues ->
             Box(
                 modifier = modifier.padding(paddingValues)

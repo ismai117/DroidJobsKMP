@@ -1,5 +1,6 @@
 package jobs
 
+import androidx.compose.runtime.Immutable
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 

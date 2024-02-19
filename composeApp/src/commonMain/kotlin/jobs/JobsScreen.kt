@@ -37,6 +37,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -122,7 +123,7 @@ object JobsScreen : Screen {
                             key = { it.id }
                         ) { item ->
 
-                            Card(
+                            ElevatedCard(
                                 modifier = modifier
                                     .fillMaxWidth()
                                     .wrapContentHeight()
@@ -136,16 +137,16 @@ object JobsScreen : Screen {
                                     },
                                 shape = RoundedCornerShape(16.dp),
                                 colors = CardDefaults.cardColors(
-                                    containerColor = Color.Transparent
+                                    containerColor = Color(0xFF1C1C23)
                                 )
                             ) {
                                 Row(
                                     modifier = modifier
-                                        .padding(16.dp)
                                         .fillMaxSize()
                                 ) {
                                     Box(
                                         modifier = modifier
+                                            .padding(16.dp)
                                             .fillMaxWidth()
                                             .wrapContentHeight()
 //                                    .border(width = 1.dp, color = Color.White)

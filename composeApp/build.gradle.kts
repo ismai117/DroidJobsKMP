@@ -29,7 +29,7 @@ kotlin {
         }
     }
     
-    jvm("desktop")
+    jvm()
 
     js(IR) {
         browser()
@@ -53,8 +53,6 @@ kotlin {
     }
     
     sourceSets {
-        val desktopMain by getting
-        
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
@@ -73,7 +71,7 @@ kotlin {
             implementation(libs.voyagerScreenModel)
             implementation(libs.kottie)
         }
-        desktopMain.dependencies {
+        jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
         }
