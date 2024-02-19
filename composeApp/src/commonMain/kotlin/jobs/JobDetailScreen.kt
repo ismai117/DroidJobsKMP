@@ -24,11 +24,15 @@ import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -180,7 +184,7 @@ class JobDetailScreen(
                                 tint = Color.White
                             )
                             Text(
-                                text = "${state.job?.address}",
+                                text = "${if (state.job?.address?.isNotBlank() == true) state.job.address else state.job?.city}",
                                 color = Color.White,
                                 fontSize = 12.sp
                             )
@@ -216,12 +220,12 @@ class JobDetailScreen(
                             color = Color.White,
                             fontSize = 24.sp
                         )
-                        Divider(
+                        HorizontalDivider(
                             modifier = modifier
                                 .padding(top = 12.dp)
-                                .width(120.dp)
-                                .background(Color.White),
+                                .width(120.dp),
                             thickness = 3.dp,
+                            color = Color(0xFFD0BCFF)
                         )
                     }
 
@@ -535,7 +539,10 @@ class JobDetailScreen(
                                 .width(120.dp)
                                 .height(30.dp),
                             shape = RectangleShape,
-                            contentPadding = PaddingValues(0.dp)
+                            contentPadding = PaddingValues(0.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFFD0BCFF)
+                            )
                         ) {
                             Text(
                                 text = "APPLY"

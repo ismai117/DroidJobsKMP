@@ -1,4 +1,5 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -6,6 +7,18 @@ plugins {
 }
 
 kotlin {
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        moduleName = "webApp"
+        browser {
+            commonWebpackConfig {
+                outputFileName = "webApp.js"
+            }
+        }
+        binaries.executable()
+    }
+
     js(IR) {
         browser()
         binaries.executable()

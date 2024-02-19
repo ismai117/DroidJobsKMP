@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Workspaces
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -279,7 +280,10 @@ object JobsScreen : Screen {
                                                             .width(120.dp)
                                                             .height(30.dp),
                                                         shape = RectangleShape,
-                                                        contentPadding = PaddingValues(0.dp)
+                                                        contentPadding = PaddingValues(0.dp),
+                                                        colors = ButtonDefaults.buttonColors(
+                                                            containerColor = Color(0xFFD0BCFF)
+                                                        )
                                                     ) {
                                                         Text(
                                                             text = "APPLY"
