@@ -27,4 +27,12 @@ Kotlin Multiplatform job finder app, connecting you with the latest opportunitie
   <img src="readme_images/desktop/jobs.png">
   <img src="readme_images/desktop/jobs-detail.png">
 </p>
+<pre> 
+<h2 align="center">Web</h2>
+</pre>
+<p align="center">
+  <img src="readme_images/web/splash.png">
+  <img src="readme_images/web/jobs.png">
+  <img src="readme_images/web/jobs-detail.png">
+</p>
 
