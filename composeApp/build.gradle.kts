@@ -31,11 +31,6 @@ kotlin {
     
     jvm()
 
-    js(IR) {
-        browser()
-        binaries.executable()
-    }
-
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -75,9 +70,6 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
-        }
-        jsMain.dependencies {
-            implementation(compose.html.core)
         }
     }
 }
@@ -128,6 +120,3 @@ compose.desktop {
     }
 }
 
-compose.experimental {
-    web.application {}
-}
