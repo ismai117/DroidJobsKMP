@@ -1,7 +1,8 @@
 <h1>DroidJobsKMP</h1> <br>
 
-Kotlin Multiplatform job finder app, connecting you with the latest opportunities in the world of Android development </br>
-
+Kotlin Multiplatform job finder app, connecting you with the latest opportunities in the world of Android development
+##
+##
 <pre>
 <h2 align="center">Android</h2>
 </pre>
@@ -10,8 +11,6 @@ Kotlin Multiplatform job finder app, connecting you with the latest opportunitie
   <img src="readme_images/android/jobs.png" height=600>
   <img src="readme_images/android/jobs-detail.png" height=600>
 </p>
-## 
-## 
 <pre>  
 <h2 align="center">IOS</h2>
 </pre>
@@ -20,8 +19,6 @@ Kotlin Multiplatform job finder app, connecting you with the latest opportunitie
   <img src="readme_images/ios/jobs.png" height=600>
   <img src="readme_images/ios/jobs-detail.png" height=600>
 </p>
-## 
-##  
 <pre> 
 <h2 align="center">Desktop</h2>
 </pre>
