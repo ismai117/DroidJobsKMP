@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,6 +39,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,6 +67,8 @@ object JobsScreen : Screen {
     @Composable
     override fun Content() {
 
+        val modifier: Modifier = Modifier
+
         val navigator = LocalNavigator.currentOrThrow
 
         val jobScreenModel = rememberScreenModel {
@@ -77,224 +81,230 @@ object JobsScreen : Screen {
 
         // FF7966
 
-        val modifier: Modifier = Modifier
+        Scaffold(
+            contentWindowInsets = WindowInsets(0.dp)
+        ) { paddingValues ->
 
-        Box {
+            Box(
+                modifier = modifier.padding(paddingValues)
+            ){
 
-            Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .background(Color(0xFF1C1C23))
-            ) {
-
-                Text(
-                    text = "Jobs",
-                    color = Color.White,
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold,
+                Column(
                     modifier = modifier
-                        .padding(
-                            top = 40.dp,
-                            start = 16.dp
-                        )
-                )
-
-                LazyVerticalGrid(
-                    modifier = modifier
-//                    .border(width = 1.dp, color = Color.White)
-                        .padding(top = 24.dp),
-                    columns = GridCells.Adaptive(300.dp),
-                    contentPadding = PaddingValues(24.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp),
-                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                        .fillMaxSize()
+                        .background(Color(0xFF1C1C23))
                 ) {
 
-                    items(
-                        items = state.allJobs,
-                        key = { it.id }
-                    ) { item ->
-
-                        Card(
-                            modifier = modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight()
-                                .border(
-                                    width = 2.dp,
-                                    color = Color(0xFFCFCFFC).copy(0.15f),
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                                .clickable {
-                                    navigator.push(JobDetailScreen(item.id))
-                                },
-                            shape = RoundedCornerShape(16.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color.Transparent
+                    Text(
+                        text = "Jobs",
+                        color = Color.White,
+                        fontSize = 25.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = modifier
+                            .padding(
+                                top = 80.dp,
+                                start = 16.dp
                             )
-                        ) {
-                            Row(
+                    )
+
+                    LazyVerticalGrid(
+                        modifier = modifier
+//                    .border(width = 1.dp, color = Color.White)
+                            .padding(top = 24.dp),
+                        columns = GridCells.Adaptive(300.dp),
+                        contentPadding = PaddingValues(24.dp),
+                        verticalArrangement = Arrangement.spacedBy(24.dp),
+                        horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    ) {
+
+                        items(
+                            items = state.allJobs,
+                            key = { it.id }
+                        ) { item ->
+
+                            Card(
                                 modifier = modifier
-                                    .padding(16.dp)
-                                    .fillMaxSize()
+                                    .fillMaxWidth()
+                                    .wrapContentHeight()
+                                    .border(
+                                        width = 2.dp,
+                                        color = Color(0xFFCFCFFC).copy(0.15f),
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                                    .clickable {
+                                        navigator.push(JobDetailScreen(item.id))
+                                    },
+                                shape = RoundedCornerShape(16.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color.Transparent
+                                )
                             ) {
-                                Box(
+                                Row(
                                     modifier = modifier
-                                        .fillMaxWidth()
-                                        .wrapContentHeight()
-//                                    .border(width = 1.dp, color = Color.White)
+                                        .padding(16.dp)
+                                        .fillMaxSize()
                                 ) {
-                                    Column {
-                                        Row {
-                                            Image(
-                                                painter = painterResource(item.companyLogo),
-                                                contentDescription = "${item.company} icon",
-                                                modifier = modifier
-                                                    .size(50.dp)
-                                                    .clip(CircleShape)
-                                            )
-                                            Column(
-                                                modifier = modifier
-                                                    .padding(start = 12.dp),
-                                                verticalArrangement = Arrangement.spacedBy(4.dp)
-                                            ) {
-                                                Text(
-                                                    text = item.company,
-                                                    color = Color.White,
-                                                    fontSize = 12.sp
-                                                )
-                                                Text(
-                                                    text = item.title,
-                                                    color = Color.White,
-                                                    fontSize = 14.sp,
-                                                    fontWeight = FontWeight.Bold
-                                                )
-                                                Row(
-                                                    modifier = modifier.padding(top = 2.dp),
-                                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                                ) {
-                                                    Row(
-                                                        verticalAlignment = Alignment.CenterVertically,
-                                                        horizontalArrangement = Arrangement.spacedBy(2.dp)
-                                                    ) {
-                                                        Icon(
-                                                            imageVector = Icons.Outlined.LocationOn,
-                                                            contentDescription = "location",
-                                                            tint = Color.White
-                                                        )
-                                                        Text(
-                                                            text = "${item.city}, ${item.country}",
-                                                            color = Color.White,
-                                                            fontSize = 12.sp
-                                                        )
-                                                    }
-                                                    Text(
-                                                        text = "-",
-                                                        color = Color.White
-                                                    )
-                                                    Row(
-                                                        verticalAlignment = Alignment.CenterVertically,
-                                                        horizontalArrangement = Arrangement.spacedBy(2.dp)
-                                                    ) {
-                                                        Icon(
-                                                            imageVector = Icons.Outlined.Workspaces,
-                                                            contentDescription = "work environment",
-                                                            tint = Color.White
-                                                        )
-                                                        Text(
-                                                            text = item.workEnvironment,
-                                                            color = Color.White,
-                                                            fontSize = 12.sp
-                                                        )
-                                                    }
-                                                }
-                                                Text(
-                                                    text = item.experienceLevel,
-                                                    color = Color.White,
-                                                    fontSize = 12.sp
-                                                )
-                                            }
-                                        }
-                                        LazyRow(
-                                            modifier = modifier.padding(top = 12.dp)
-                                        ) {
-                                            items(
-                                                items = item.skills
-                                            ) { skill ->
-                                                SuggestionChip(
-                                                    onClick = {},
-                                                    label = {
-                                                        Text(
-                                                            text = skill,
-                                                            color = Color.White,
-                                                            fontSize = 12.sp
-                                                        )
-                                                    },
-                                                    modifier = modifier.padding(end = 12.dp)
-                                                )
-                                            }
-                                        }
-                                        Box(
-                                            modifier = modifier
-                                                .fillMaxWidth()
-//                                            .border(width = 1.dp, color = Color.White)
-                                        ) {
-
-                                            Text(
-                                                text = "Posted: " + item.postedDate,
-                                                color = Color.White,
-                                                fontSize = 12.sp,
-                                                modifier = modifier.align(Alignment.CenterStart)
-                                            )
-
-                                            Row(
-                                                modifier = modifier
-//                                                .border(width = 1.dp, color = Color.White)
-                                                    .align(Alignment.CenterEnd),
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-                                                IconButton(
-                                                    onClick = {
-
-                                                    }
-                                                ) {
-                                                    Icon(
-                                                        imageVector = Icons.Filled.Share,
-                                                        contentDescription = "share job",
-                                                        tint = Color.White
-                                                    )
-                                                }
-                                                Button(
-                                                    onClick = {
-                                                        openUrl(url = item.link)
-                                                    },
+                                    Box(
+                                        modifier = modifier
+                                            .fillMaxWidth()
+                                            .wrapContentHeight()
+//                                    .border(width = 1.dp, color = Color.White)
+                                    ) {
+                                        Column {
+                                            Row {
+                                                Image(
+                                                    painter = painterResource(item.companyLogo),
+                                                    contentDescription = "${item.company} icon",
                                                     modifier = modifier
-                                                        .width(120.dp)
-                                                        .height(30.dp),
-                                                    shape = RectangleShape
+                                                        .size(50.dp)
+                                                        .clip(CircleShape)
+                                                )
+                                                Column(
+                                                    modifier = modifier
+                                                        .padding(start = 12.dp),
+                                                    verticalArrangement = Arrangement.spacedBy(4.dp)
                                                 ) {
                                                     Text(
-                                                        text = "APPLY"
+                                                        text = item.company,
+                                                        color = Color.White,
+                                                        fontSize = 12.sp
                                                     )
+                                                    Text(
+                                                        text = item.title,
+                                                        color = Color.White,
+                                                        fontSize = 14.sp,
+                                                        fontWeight = FontWeight.Bold
+                                                    )
+                                                    Row(
+                                                        modifier = modifier.padding(top = 2.dp),
+                                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                                    ) {
+                                                        Row(
+                                                            verticalAlignment = Alignment.CenterVertically,
+                                                            horizontalArrangement = Arrangement.spacedBy(2.dp)
+                                                        ) {
+                                                            Icon(
+                                                                imageVector = Icons.Outlined.LocationOn,
+                                                                contentDescription = "location",
+                                                                tint = Color.White
+                                                            )
+                                                            Text(
+                                                                text = "${item.city}, ${item.country}",
+                                                                color = Color.White,
+                                                                fontSize = 12.sp
+                                                            )
+                                                        }
+                                                        Text(
+                                                            text = "-",
+                                                            color = Color.White
+                                                        )
+                                                        Row(
+                                                            verticalAlignment = Alignment.CenterVertically,
+                                                            horizontalArrangement = Arrangement.spacedBy(2.dp)
+                                                        ) {
+                                                            Icon(
+                                                                imageVector = Icons.Outlined.Workspaces,
+                                                                contentDescription = "work environment",
+                                                                tint = Color.White
+                                                            )
+                                                            Text(
+                                                                text = item.workEnvironment,
+                                                                color = Color.White,
+                                                                fontSize = 12.sp
+                                                            )
+                                                        }
+                                                    }
+                                                    Text(
+                                                        text = item.experienceLevel,
+                                                        color = Color.White,
+                                                        fontSize = 12.sp
+                                                    )
+                                                }
+                                            }
+                                            LazyRow(
+                                                modifier = modifier.padding(top = 12.dp)
+                                            ) {
+                                                items(
+                                                    items = item.skills
+                                                ) { skill ->
+                                                    SuggestionChip(
+                                                        onClick = {},
+                                                        label = {
+                                                            Text(
+                                                                text = skill,
+                                                                color = Color.White,
+                                                                fontSize = 12.sp
+                                                            )
+                                                        },
+                                                        modifier = modifier.padding(end = 12.dp)
+                                                    )
+                                                }
+                                            }
+                                            Box(
+                                                modifier = modifier
+                                                    .fillMaxWidth()
+//                                            .border(width = 1.dp, color = Color.White)
+                                            ) {
+
+                                                Text(
+                                                    text = "Posted: " + item.postedDate,
+                                                    color = Color.White,
+                                                    fontSize = 12.sp,
+                                                    modifier = modifier.align(Alignment.CenterStart)
+                                                )
+
+                                                Row(
+                                                    modifier = modifier
+//                                                .border(width = 1.dp, color = Color.White)
+                                                        .align(Alignment.CenterEnd),
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    IconButton(
+                                                        onClick = {
+
+                                                        }
+                                                    ) {
+                                                        Icon(
+                                                            imageVector = Icons.Filled.Share,
+                                                            contentDescription = "share job",
+                                                            tint = Color.White
+                                                        )
+                                                    }
+                                                    Button(
+                                                        onClick = {
+                                                            openUrl(url = item.link)
+                                                        },
+                                                        modifier = modifier
+                                                            .width(120.dp)
+                                                            .height(30.dp),
+                                                        shape = RectangleShape
+                                                    ) {
+                                                        Text(
+                                                            text = "APPLY"
+                                                        )
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
+
                         }
 
                     }
 
                 }
 
-            }
-
-            if (state.isLoading) {
-                Box(
-                    modifier = modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
+                if (state.isLoading) {
+                    Box(
+                        modifier = modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
+
             }
 
         }

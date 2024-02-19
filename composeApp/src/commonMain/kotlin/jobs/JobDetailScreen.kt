@@ -55,7 +55,9 @@ class JobDetailScreen(
     private val id: String
 ) : Screen {
 
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class,
+    @OptIn(
+        ExperimentalMaterial3Api::class,
+        ExperimentalResourceApi::class,
         ExperimentalLayoutApi::class
     )
     @Composable
