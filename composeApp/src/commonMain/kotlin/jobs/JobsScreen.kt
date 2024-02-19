@@ -278,7 +278,8 @@ object JobsScreen : Screen {
                                                         modifier = modifier
                                                             .width(120.dp)
                                                             .height(30.dp),
-                                                        shape = RectangleShape
+                                                        shape = RectangleShape,
+                                                        contentPadding = PaddingValues(0.dp)
                                                     ) {
                                                         Text(
                                                             text = "APPLY"

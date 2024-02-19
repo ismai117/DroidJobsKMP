@@ -37,6 +37,7 @@ kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-
 kottie = { module = "io.github.ismai117:kottie", version.ref = "kottie" }
 voyagerNavigation = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyagerScreenModel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
+voyagerTransitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -533,7 +534,8 @@ class JobDetailScreen(
                             modifier = modifier
                                 .width(120.dp)
                                 .height(30.dp),
-                            shape = RectangleShape
+                            shape = RectangleShape,
+                            contentPadding = PaddingValues(0.dp)
                         ) {
                             Text(
                                 text = "APPLY"

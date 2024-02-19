@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideTransition
 import splash.SplashScreen
 import theme.DroidJobsKMPTheme
 
@@ -18,17 +19,17 @@ import theme.DroidJobsKMPTheme
 @Composable
 fun App() =  DroidJobsKMPTheme {
     Scaffold(
-        contentWindowInsets = WindowInsets(0.dp)
+        contentWindowInsets = WindowInsets(0.dp),
+        containerColor = Color(0xFF1C1C23)
     ){ paddingValues ->
         Box(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .background(Color(0xFF1C1C23))
         ) {
-            Navigator(
-                SplashScreen
-            )
+            Navigator(screen = SplashScreen) { navigator ->
+                SlideTransition(navigator)
+            }
         }
     }
 }

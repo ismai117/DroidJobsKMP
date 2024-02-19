@@ -69,6 +69,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.voyagerNavigation)
             implementation(libs.voyagerScreenModel)
+            implementation(libs.voyagerTransitions)
             implementation(libs.kottie)
         }
         jvmMain.dependencies {
