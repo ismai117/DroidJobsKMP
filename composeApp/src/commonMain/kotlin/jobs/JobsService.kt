@@ -3,6 +3,7 @@ package jobs
 
 import droidjobskmp.composeapp.generated.resources.Res
 import droidjobskmp.composeapp.generated.resources.chip
+import droidjobskmp.composeapp.generated.resources.expedia_group
 import droidjobskmp.composeapp.generated.resources.ocado
 import droidjobskmp.composeapp.generated.resources.sky
 import droidjobskmp.composeapp.generated.resources.starling
@@ -355,6 +356,79 @@ class JobsService {
                 you can provide and receive constructive feedback.
             """.trimIndent(),
             link = "https://apply.workable.com/winnow/j/6B401380BE/?utm_source=cord"
+        ),
+        Jobs(
+            id = "68fb5e32-9d5e-4a3c-aa19-d4484465e155",
+            title = "Senior Mobile Engineer, Android",
+            role = "Mobile Developer",
+            companyLogo = Res.drawable.expedia_group,
+            company = "Expedia Group",
+            companyMotto = "Powering global travel for everyone, everywhere.",
+            aboutUs = "Expedia Group (NASDAQ: EXPE) powers travel for everyone, everywhere through our global platform. Driven by the core belief that travel is a force for good, we help people experience the world in new ways and build lasting connections. We provide industry-leading technology solutions to fuel partner growth and success, while facilitating memorable experiences for travelers. Expedia Group's family of brands includes: Brand Expedia®, Hotels.com®, Expedia® Partner Solutions, Vrbo®, trivago®, Orbitz®, Travelocity®, Hotwire®, Wotif®, ebookers®, CheapTickets®, Expedia Group™ Media Solutions, Expedia Local Expert®, CarRentals.com™, and Expedia Cruises™.\n",
+            city = "London",
+            country = "UK",
+            address = "",
+            industry = "Software Development",
+            description = """
+                Senior Mobile Engineer, Android
+                
+                Expedia Group’s Loyalty Experience team is focused on building the next-generation experiences, for both new and existing travellers, of our industry-leading One Key rewards program. Bringing together our Expedia, Hotels.com and Vrbo brands and providing travellers with greater flexibility in how they travel.
+                
+                As a Senior Android Engineer, your contributions will help shape the One Key experience across the Expedia, Hotels.com, and Vrbo Android applications. You'll also participate in future architecture discussions, influencing the path of our mobile development initiatives. Additionally, you'll have the opportunity to assist in establishing a lively Android engineering community in London, fostering collaboration and knowledge-sharing.
+                
+                We're a diverse team that combines the talents of Android, iOS, and Full-stack engineers. Our team is primarily based in London, but we also have members in other European locations. We collaborate with design and product teams in London, and we work closely with teams and stakeholders in the US and India.
+                
+                If you're eager to join a team that brings joy to millions of travellers, keen to take on intriguing challenges, and want to see the impact of your contributions across the globe, we'd be delighted to have a conversation with you!
+            """.trimIndent(),
+            experienceLevel = "Senior",
+            skills = listOf(
+                "Android",
+                "Kotlin",
+                "IOS",
+                "React"
+            ),
+            salary = "Undisclosed",
+            companyBenefits = """
+                Medical, dental, and vision.
+                Parental & family caregiving leave.
+                Workplace accommodations.
+                Flexible spending accounts — health care FSA and/or dependent care FSA.
+                International airlines travel agent network (IATAN) membership.
+                Employee assistance program.
+                Nudge membership providing customized financial education.
+                Adoption and surrogacy assistance.
+                Pet support benefits.
+                Talkspace, a 24/7 online therapy service.
+                Competitive paid time off programs for vacation, holidays and illness.
+                Wellness & travel reimbursement.
+            """.trimIndent(),
+            employmentType = "Permanent",
+            workEnvironment = "On-site, Hybrid, Remote",
+            visaSponsorship = "Not available",
+            postedDate = "4 days ago",
+            requirements = """
+               What you’ll do:
+               
+               Lead a community of practice and bring people together for shared learning. Acts as a spokesperson for software design best practices.
+               Possess knowledge of features and facilities for integration, and communication among applications and technology platforms to bring together different components and form a fully functional solution to a business problem.
+               Promote best in class mobile practices within the organization. (ui/ux, operation excellence, backwards compatibility, native platform centric features).
+               Research and recommend frameworks and architectural/code design patterns.
+               Advocate for operational excellence (such as unit testing, establishing SLAs, programming for resiliency and scalability).
+               Facilitate collaboration with different stakeholders with varied perspectives to develop effective solutions to issues.
+               Takes a mobile centric approach to analyse issues and implements holistic solutions by ensuring that linkages between structure, people, process and technology are made.
+               Report on status of difficult or high-level projects to local tech leadership via written or oral means. Ensure documentation is complete.
+               
+               Who you are:
+               
+               8+ years of Software Development work experience (Android / Kotlin experience essential, ability to understand and maintain code for iOS and React a bonus)
+               Establishes mobile product thinking and provide technical leadership and mentoring within the team.
+               Proven experience working in multi-quarter projects as a part of a decentralised team and project. Driving technical design end to end.
+               Understands highly complex systems and design moderately complex mobile systems.
+               Strong communication skills. You articulate your ideas to peers and leaders, providing detail and understanding of your approach. You keep solid documentation, and you enjoy and take pride in the work of the team.
+               Able to justify technology choices to technical and non-technical observers making well defined technology choices.
+               Able to identify and advocate for project quality via testing, monitoring, and alerting at the project level. Establishing operational excellence metrics at a team level.
+            """.trimIndent(),
+            link = "https://careers.expediagroup.com/jobs/job/?Senior+Mobile+Engineer%2C+Android-London-London-j-R-84062"
         )
     )
 
