@@ -11,8 +11,8 @@ Kotlin Multiplatform job finder app, connecting you with the latest opportunitie
   <img src="readme_images/android/jobs.png" height=600>
   <img src="readme_images/android/jobs-detail.png" height=600>
 </p>
-<pre>
-##   
+## 
+<pre>  
 <h2 align="center">IOS</h2>
 </pre>
 <p align="center">
