@@ -1,6 +1,7 @@
-package jobs
+package jobs.domain.repository
 
 
+import jobs.domain.model.Jobs
 import kotlinx.coroutines.flow.Flow
 import utils.ResultState
 

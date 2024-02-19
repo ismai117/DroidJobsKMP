@@ -1,6 +1,9 @@
-package jobs
+package jobs.data.repository
 
 
+import jobs.data.service.JobsService
+import jobs.domain.model.Jobs
+import jobs.domain.repository.JobsRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

@@ -1,4 +1,4 @@
-package jobs
+package jobs.domain.model
 
 import androidx.compose.runtime.Immutable
 import org.jetbrains.compose.resources.DrawableResource

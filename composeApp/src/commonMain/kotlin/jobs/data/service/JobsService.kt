@@ -1,4 +1,4 @@
-package jobs
+package jobs.data.service
 
 
 import droidjobskmp.composeapp.generated.resources.Res
@@ -8,6 +8,7 @@ import droidjobskmp.composeapp.generated.resources.ocado
 import droidjobskmp.composeapp.generated.resources.sky
 import droidjobskmp.composeapp.generated.resources.starling
 import droidjobskmp.composeapp.generated.resources.winnow
+import jobs.domain.model.Jobs
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 

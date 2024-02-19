@@ -1,4 +1,6 @@
-package jobs
+package jobs.presentation
+
+import jobs.domain.model.Jobs
 
 
 data class JobsState(
