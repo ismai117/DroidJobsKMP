@@ -19,7 +19,7 @@ import animateKottieCompositionAsState
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import jobs.presentation.JobsScreen
+import jobs.JobsScreen
 import rememberKottieComposition
 
 

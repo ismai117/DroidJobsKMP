@@ -1,6 +1,6 @@
-import jobs.data.repository.JobsRepositoryImpl
-import jobs.data.service.JobsService
-import jobs.domain.repository.JobsRepository
+import data.repository.JobsRepositoryImpl
+import data.service.JobsService
+import domain.repository.JobsRepository
 
 
 object DroidJobsKMP {

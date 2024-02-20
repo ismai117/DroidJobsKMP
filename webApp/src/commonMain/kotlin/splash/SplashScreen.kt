@@ -19,12 +19,12 @@ import animateKottieCompositionAsState
 import rememberKottieComposition
 
 
-private typealias  navigateToSplashScreen = () -> Unit
+private typealias  navigateToJobsScreen = () -> Unit
 
 @Composable
 fun SplashScreen(
     modifier: Modifier = Modifier,
-    navigateToSplashScreen: navigateToSplashScreen
+    navigateToJobsScreen: navigateToJobsScreen
 ){
 
     val composition = rememberKottieComposition(
@@ -38,7 +38,7 @@ fun SplashScreen(
 
     LaunchedEffect(animationState.isPlaying){
         if (animationState.isCompleted){
-            navigateToSplashScreen()
+            navigateToJobsScreen()
         }
     }
 

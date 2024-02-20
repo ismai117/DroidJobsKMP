@@ -56,6 +56,8 @@ kotlin {
             implementation(libs.voyagerScreenModel)
             implementation(libs.voyagerTransitions)
             implementation(libs.kottie)
+            implementation(project(":commonUi"))
+            implementation(project(":commonData"))
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)

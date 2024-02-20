@@ -2,21 +2,20 @@ import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
 }
 
-
 kotlin {
+
+    androidTarget()
+
+    jvm()
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        moduleName = "webApp"
-        browser {
-            commonWebpackConfig {
-                outputFileName = "webApp.js"
-            }
-        }
+        browser()
         binaries.executable()
     }
 
@@ -24,7 +23,17 @@ kotlin {
         browser()
         binaries.executable()
     }
+
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+
     sourceSets {
+        androidMain.dependencies {
+            implementation(libs.compose.ui.tooling.preview)
+            implementation(libs.androidx.activity.compose)
+        }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -33,21 +42,29 @@ kotlin {
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
-            implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.precomposeNavigation)
-            implementation(libs.precomposeViewmodel)
-            implementation(libs.kottie)
-            implementation(project(":commonUi"))
             implementation(project(":commonData"))
         }
-        val jsMain by getting {
-            dependencies {
-                implementation(compose.html.core)
-            }
+        jvmMain.dependencies {
+            implementation(compose.desktop.currentOs)
+        }
+        jsMain.dependencies {
+            implementation(compose.html.core)
         }
     }
 }
 
-compose.experimental {
-    web.application {}
+
+android {
+    namespace = "org.ncgroup.droidjobskmp"
+    compileSdk = 34
+    defaultConfig {
+        minSdk = 24
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlin {
+        jvmToolchain(17)
+    }
 }
