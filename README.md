@@ -1,6 +1,6 @@
-<H1>DroidJobsKMP</H1><br>
+<H1>DroidJobsKMP</H1>
 
-Kotlin Multiplatform job finder app, connecting you with the latest opportunities in the world of Android development.
+Kotlin Multiplatform job finder app, connecting you with the latest opportunities in the world of Android development.<br>
 </br>
 <pre>
 <h2 align="center">Android</h2>
