@@ -1,5 +1,3 @@
-<h1>DroidJobsKMP</h1> <br>
-
 Kotlin Multiplatform job finder app, connecting you with the latest opportunities in the world of Android development.
 ##
 ##
