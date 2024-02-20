@@ -1,5 +1,5 @@
-Kotlin Multiplatform job finder app, connecting you with the latest opportunities in the world of Android development.<br>
-</br>
+Kotlin Multiplatform job finder app, connecting you with the latest opportunities in the world of Android development.<br><br>
+
 <pre>
 <h2 align="center">Android</h2>
 </pre>
