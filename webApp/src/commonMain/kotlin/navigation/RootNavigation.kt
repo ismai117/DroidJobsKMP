@@ -3,6 +3,8 @@ package navigation
 import DroidJobsKMP
 import JobsViewModel
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import splash.SplashScreen
 import jobs.JobDetailScreen
@@ -52,8 +54,15 @@ fun RootNavigation(
             navTransition = NavTransition()
         ) {
             val jobsState = jobsViewModel.state
+            val query by jobsViewModel.query.collectAsState()
+            val jobs by jobsViewModel.jobs.collectAsState()
+            val searching by jobsViewModel.searching.collectAsState()
             JobsScreen(
                 state = jobsState,
+                query = query,
+                onQueryChange = jobsViewModel::onQueryChange,
+                jobs = jobs,
+                searching = searching,
                 navigateToJobDetailScreen = {
                     jobsViewModel.setJobID(it)
                     navigator.navigate(JOBS_DETAIL)

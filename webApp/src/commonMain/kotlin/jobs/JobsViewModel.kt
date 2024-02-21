@@ -3,9 +3,19 @@
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import domain.model.Jobs
 import domain.repository.JobsRepository
 import jobs.JobsState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moe.tlaster.precompose.viewmodel.ViewModel
@@ -13,6 +23,7 @@ import moe.tlaster.precompose.viewmodel.viewModelScope
 import utils.ResultState
 
 
+@OptIn(FlowPreview::class)
 class JobsViewModel(
     private val jobsRepository: JobsRepository,
 ): ViewModel(){
@@ -20,6 +31,40 @@ class JobsViewModel(
     var state by mutableStateOf(JobsState())
 
     private val _jobId = mutableStateOf("")
+
+    private val _query = MutableStateFlow("")
+    val query = _query.asStateFlow()
+
+    private val _searching = MutableStateFlow(false)
+    val searching = _searching.asStateFlow()
+
+    private val allJobs = mutableListOf<Jobs>()
+
+    private val _jobs = MutableStateFlow(allJobs)
+    val jobs = query
+        .debounce(500L)
+        .onEach { _searching.update { true } }
+        .combine(_jobs) { text, jobs ->
+            if (text.isBlank()){
+                jobs.forEach { job ->
+                    println("items from if: $job")
+                }
+                jobs
+            }else {
+                jobs.forEach { job ->
+                    println("items from else: $job")
+                }
+                jobs.filter {
+                    it.doesMatchSearchQuery(text)
+                }
+            }
+        }
+        .onEach { _searching.update { false } }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = _jobs.value
+        )
 
     fun setJobID(jobID: String) {
         _jobId.value = jobID
@@ -41,10 +86,10 @@ class JobsViewModel(
                         }
 
                         is ResultState.Success -> {
-                            state = state.copy(
-                                isLoading = false,
-                                allJobs = result.data.orEmpty()
-                            )
+                            state = state.copy(isLoading = false)
+                            result.data.orEmpty().forEach {
+                                allJobs.add(it)
+                            }
                         }
 
                         is ResultState.Error -> {
@@ -87,6 +132,10 @@ class JobsViewModel(
                 }
             }
         }
+    }
+
+    fun onQueryChange(query: String){
+        _query.value = query
     }
 
 }

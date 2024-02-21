@@ -131,427 +131,429 @@ class JobDetailScreen(
                 modifier = modifier.padding(paddingValues)
             ) {
 
-                Column(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .verticalScroll(scrollState)
-                        .background(
-                            Color(0xFF1C1C23)
-                        ),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-
-                    if (!state.job?.companyLogo.isNullOrBlank()){
-                        Image(
-                            painter = painterResource(DrawableResource("drawable/"+state.job?.companyLogo)),
-                            contentDescription = "${state.job?.company} icon",
-                            modifier = modifier
-                                .padding(top = 40.dp)
-                                .size(90.dp)
-                                .clip(CircleShape)
-                        )
-                    }
-
+                if (!state.isLoading) {
                     Column(
                         modifier = modifier
-                            .padding(top = 24.dp)
-                            .fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                            .fillMaxSize()
+                            .verticalScroll(scrollState)
+                            .background(
+                                Color(0xFF1C1C23)
+                            ),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        Text(
-                            text = state.job?.company.orEmpty(),
-                            color = Color.White,
-                            fontSize = 12.sp
-                        )
-
-                        Text(
-                            text = state.job?.title.orEmpty(),
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White,
-                            fontSize = 14.sp
-                        )
-
-                        Row(
-                            modifier = modifier.padding(top = 12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.LocationOn,
-                                contentDescription = "location",
-                                tint = Color.White
+                        if (!state.job?.companyLogo.isNullOrBlank()){
+                            Image(
+                                painter = painterResource(DrawableResource("drawable/"+state.job?.companyLogo)),
+                                contentDescription = "${state.job?.company} icon",
+                                modifier = modifier
+                                    .padding(top = 40.dp)
+                                    .size(90.dp)
+                                    .clip(CircleShape)
                             )
+                        }
+
+                        Column(
+                            modifier = modifier
+                                .padding(top = 24.dp)
+                                .fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+
                             Text(
-                                text = "${if (state.job?.address?.isNotBlank() == true) state.job.address else state.job?.city}",
+                                text = state.job?.company.orEmpty(),
                                 color = Color.White,
                                 fontSize = 12.sp
                             )
-                        }
 
-                        Text(
-                            text = state.job?.industry.orEmpty(),
-                            color = Color.White,
-                            modifier = modifier.padding(top = 20.dp),
-                            fontSize = 12.sp
-                        )
-
-                        Text(
-                            text = state.job?.companyMotto.orEmpty(),
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = modifier
-                                .padding(top = 20.dp, start = 24.dp, end = 24.dp)
-                        )
-
-                    }
-
-                    Column(
-                        modifier = modifier
-                            .padding(top = 40.dp, start = 24.dp, end = 24.dp)
-                            .fillMaxWidth(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Overview",
-                            color = Color.White,
-                            fontSize = 24.sp
-                        )
-                        HorizontalDivider(
-                            modifier = modifier
-                                .padding(top = 12.dp)
-                                .width(120.dp),
-                            thickness = 3.dp,
-                            color = Color(0xFFD0BCFF)
-                        )
-                    }
-
-                    Column(
-                        modifier = modifier
-                            .padding(top = 40.dp, start = 24.dp, end = 24.dp)
-                            .fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-
-                        Text(
-                            text = "Skills & Experience",
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Column(
-                            modifier = modifier.padding(top = 12.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
                             Text(
-                                text = "Job roles:",
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = "Mobile Developer",
+                                text = state.job?.title.orEmpty(),
+                                fontWeight = FontWeight.Bold,
                                 color = Color.White,
                                 fontSize = 14.sp
                             )
-                        }
 
-                        Column(
-                            modifier = modifier.padding(top = 8.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            Text(
-                                text = "Tech stack/tooling used:",
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                            FlowRow {
-                                state.job?.skills.orEmpty().forEach {
-                                    Text(
-                                        text = it,
-                                        color = Color.White,
-                                        fontSize = 14.sp,
-                                        modifier = modifier.padding(end = 8.dp)
-                                    )
-                                }
+                            Row(
+                                modifier = modifier.padding(top = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.LocationOn,
+                                    contentDescription = "location",
+                                    tint = Color.White
+                                )
+                                Text(
+                                    text = "${if (state.job?.address?.isNotBlank() == true) state.job.address else state.job?.city}",
+                                    color = Color.White,
+                                    fontSize = 12.sp
+                                )
                             }
+
+                            Text(
+                                text = state.job?.industry.orEmpty(),
+                                color = Color.White,
+                                modifier = modifier.padding(top = 20.dp),
+                                fontSize = 12.sp
+                            )
+
+                            Text(
+                                text = state.job?.companyMotto.orEmpty(),
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = modifier
+                                    .padding(top = 20.dp, start = 24.dp, end = 24.dp)
+                            )
+
                         }
 
                         Column(
-                            modifier = modifier.padding(top = 8.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                            modifier = modifier
+                                .padding(top = 40.dp, start = 24.dp, end = 24.dp)
+                                .fillMaxWidth(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "Core skills we consider:",
+                                text = "Overview",
+                                color = Color.White,
+                                fontSize = 24.sp
+                            )
+                            HorizontalDivider(
+                                modifier = modifier
+                                    .padding(top = 12.dp)
+                                    .width(120.dp),
+                                thickness = 3.dp,
+                                color = Color(0xFFD0BCFF)
+                            )
+                        }
+
+                        Column(
+                            modifier = modifier
+                                .padding(top = 40.dp, start = 24.dp, end = 24.dp)
+                                .fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+
+                            Text(
+                                text = "Skills & Experience",
                                 color = Color.White,
                                 fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium
+                                fontWeight = FontWeight.Bold
                             )
-                            FlowRow {
-                                state.job?.skills.orEmpty().forEach {
-                                    Text(
-                                        text = it,
-                                        color = Color.White,
-                                        fontSize = 14.sp,
-                                        modifier = modifier.padding(end = 8.dp)
-                                    )
-                                }
+
+                            Column(
+                                modifier = modifier.padding(top = 12.dp),
+                                verticalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Text(
+                                    text = "Job roles:",
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                Text(
+                                    text = "Mobile Developer",
+                                    color = Color.White,
+                                    fontSize = 14.sp
+                                )
                             }
-                        }
 
-                    }
-
-                    Column(
-                        modifier = modifier
-                            .padding(top = 40.dp, start = 24.dp, end = 24.dp)
-                            .fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-
-                        Text(
-                            text = "Logistics",
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Column(
-                            modifier = modifier.padding(top = 12.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            Text(
-                                text = "Base Salary:",
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = state.job?.salary.orEmpty(),
-                                color = Color.White,
-                                fontSize = 14.sp
-                            )
-                        }
-
-                        Column(
-                            modifier = modifier.padding(top = 8.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            Text(
-                                text = "Employment type:",
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = state.job?.employmentType.orEmpty(),
-                                color = Color.White,
-                                fontSize = 14.sp
-                            )
-                        }
-
-                        Column(
-                            modifier = modifier.padding(top = 8.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            Text(
-                                text = "Remote working:",
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = state.job?.workEnvironment.orEmpty(),
-                                color = Color.White,
-                                fontSize = 14.sp
-                            )
-                        }
-
-                        Column(
-                            modifier = modifier.padding(top = 8.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            Text(
-                                text = "Visa sponsorship:",
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = state.job?.visaSponsorship.orEmpty(),
-                                color = Color.White,
-                                fontSize = 14.sp
-                            )
-                        }
-
-                    }
-
-                    Column(
-                        modifier = modifier
-                            .padding(top = 40.dp, start = 24.dp, end = 24.dp)
-                            .fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-
-                        Text(
-                            text = "Job Description",
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Column(
-                            modifier = modifier.padding(top = 12.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            Text(
-                                text = state.job?.description.orEmpty(),
-                                color = Color.White,
-                                fontSize = 14.sp
-                            )
-                        }
-
-                    }
-
-                    Column(
-                        modifier = modifier
-                            .padding(top = 40.dp, start = 24.dp, end = 24.dp)
-                            .fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-
-                        Text(
-                            text = "Requirements",
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Column(
-                            modifier = modifier.padding(top = 12.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            state.job?.requirements.orEmpty().lines()
-                                .forEachIndexed { _, requirement ->
-                                    Row(
-                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                                    ) {
-                                        if (!requirement.endsWith(":") && requirement.isNotBlank()) {
-                                            Text(
-                                                text = bulletPoint,
-                                                color = Color.White
-                                            )
-                                        }
+                            Column(
+                                modifier = modifier.padding(top = 8.dp),
+                                verticalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Text(
+                                    text = "Tech stack/tooling used:",
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                FlowRow {
+                                    state.job?.skills.orEmpty().forEach {
                                         Text(
-                                            text = requirement,
+                                            text = it,
                                             color = Color.White,
-                                            fontSize = 14.sp
+                                            fontSize = 14.sp,
+                                            modifier = modifier.padding(end = 8.dp)
                                         )
                                     }
                                 }
-                        }
+                            }
 
-                    }
-
-                    Column(
-                        modifier = modifier
-                            .padding(top = 40.dp, start = 24.dp, end = 24.dp)
-                            .fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-
-                        Text(
-                            text = "About Us",
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Column(
-                            modifier = modifier.padding(top = 12.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            Text(
-                                text = state.job?.aboutUs.orEmpty(),
-                                color = Color.White,
-                                fontSize = 14.sp
-                            )
-                        }
-
-                    }
-
-                    Column(
-                        modifier = modifier
-                            .padding(top = 40.dp, start = 24.dp, end = 24.dp)
-                            .fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-
-                        Text(
-                            text = "Company Benefits",
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Column(
-                            modifier = modifier.padding(top = 12.dp),
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            state.job?.companyBenefits.orEmpty().lines()
-                                .forEachIndexed { _, benefit ->
-                                    Row(
-                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                                    ) {
-                                        if (!benefit.endsWith(":") && benefit.isNotBlank()) {
-                                            Text(
-                                                text = bulletPoint,
-                                                color = Color.White
-                                            )
-                                        }
+                            Column(
+                                modifier = modifier.padding(top = 8.dp),
+                                verticalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Text(
+                                    text = "Core skills we consider:",
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                FlowRow {
+                                    state.job?.skills.orEmpty().forEach {
                                         Text(
-                                            text = benefit,
+                                            text = it,
                                             color = Color.White,
-                                            fontSize = 14.sp
+                                            fontSize = 14.sp,
+                                            modifier = modifier.padding(end = 8.dp)
                                         )
                                     }
                                 }
+                            }
+
                         }
 
-                    }
-
-                    Box(
-                        modifier = modifier
-                            .padding(top = 40.dp, bottom = 40.dp)
-                            .fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-
-                        Button(
-                            onClick = {
-                                openUrl(url = state.job?.link)
-                            },
+                        Column(
                             modifier = modifier
-                                .width(120.dp)
-                                .height(30.dp),
-                            shape = RectangleShape,
-                            contentPadding = PaddingValues(0.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF8f8fa6),
-                                contentColor = Color(0xFF1C1C23)
-                            )
+                                .padding(top = 40.dp, start = 24.dp, end = 24.dp)
+                                .fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
+
                             Text(
-                                text = "APPLY"
+                                text = "Logistics",
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
                             )
+
+                            Column(
+                                modifier = modifier.padding(top = 12.dp),
+                                verticalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Text(
+                                    text = "Base Salary:",
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                Text(
+                                    text = state.job?.salary.orEmpty(),
+                                    color = Color.White,
+                                    fontSize = 14.sp
+                                )
+                            }
+
+                            Column(
+                                modifier = modifier.padding(top = 8.dp),
+                                verticalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Text(
+                                    text = "Employment type:",
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                Text(
+                                    text = state.job?.employmentType.orEmpty(),
+                                    color = Color.White,
+                                    fontSize = 14.sp
+                                )
+                            }
+
+                            Column(
+                                modifier = modifier.padding(top = 8.dp),
+                                verticalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Text(
+                                    text = "Remote working:",
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                Text(
+                                    text = state.job?.workEnvironment.orEmpty(),
+                                    color = Color.White,
+                                    fontSize = 14.sp
+                                )
+                            }
+
+                            Column(
+                                modifier = modifier.padding(top = 8.dp),
+                                verticalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Text(
+                                    text = "Visa sponsorship:",
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                Text(
+                                    text = state.job?.visaSponsorship.orEmpty(),
+                                    color = Color.White,
+                                    fontSize = 14.sp
+                                )
+                            }
+
+                        }
+
+                        Column(
+                            modifier = modifier
+                                .padding(top = 40.dp, start = 24.dp, end = 24.dp)
+                                .fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+
+                            Text(
+                                text = "Job Description",
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Column(
+                                modifier = modifier.padding(top = 12.dp),
+                                verticalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Text(
+                                    text = state.job?.description.orEmpty(),
+                                    color = Color.White,
+                                    fontSize = 14.sp
+                                )
+                            }
+
+                        }
+
+                        Column(
+                            modifier = modifier
+                                .padding(top = 40.dp, start = 24.dp, end = 24.dp)
+                                .fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+
+                            Text(
+                                text = "Requirements",
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Column(
+                                modifier = modifier.padding(top = 12.dp),
+                                verticalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                state.job?.requirements.orEmpty().lines()
+                                    .forEachIndexed { _, requirement ->
+                                        Row(
+                                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                        ) {
+                                            if (!requirement.endsWith(":") && requirement.isNotBlank()) {
+                                                Text(
+                                                    text = bulletPoint,
+                                                    color = Color.White
+                                                )
+                                            }
+                                            Text(
+                                                text = requirement,
+                                                color = Color.White,
+                                                fontSize = 14.sp
+                                            )
+                                        }
+                                    }
+                            }
+
+                        }
+
+                        Column(
+                            modifier = modifier
+                                .padding(top = 40.dp, start = 24.dp, end = 24.dp)
+                                .fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+
+                            Text(
+                                text = "About Us",
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Column(
+                                modifier = modifier.padding(top = 12.dp),
+                                verticalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Text(
+                                    text = state.job?.aboutUs.orEmpty(),
+                                    color = Color.White,
+                                    fontSize = 14.sp
+                                )
+                            }
+
+                        }
+
+                        Column(
+                            modifier = modifier
+                                .padding(top = 40.dp, start = 24.dp, end = 24.dp)
+                                .fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+
+                            Text(
+                                text = "Company Benefits",
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Column(
+                                modifier = modifier.padding(top = 12.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                state.job?.companyBenefits.orEmpty().lines()
+                                    .forEachIndexed { _, benefit ->
+                                        Row(
+                                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                        ) {
+                                            if (!benefit.endsWith(":") && benefit.isNotBlank()) {
+                                                Text(
+                                                    text = bulletPoint,
+                                                    color = Color.White
+                                                )
+                                            }
+                                            Text(
+                                                text = benefit,
+                                                color = Color.White,
+                                                fontSize = 14.sp
+                                            )
+                                        }
+                                    }
+                            }
+
+                        }
+
+                        Box(
+                            modifier = modifier
+                                .padding(top = 40.dp, bottom = 40.dp)
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+
+                            Button(
+                                onClick = {
+                                    openUrl(url = state.job?.link)
+                                },
+                                modifier = modifier
+                                    .width(120.dp)
+                                    .height(30.dp),
+                                shape = RectangleShape,
+                                contentPadding = PaddingValues(0.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFF8f8fa6),
+                                    contentColor = Color(0xFF1C1C23)
+                                )
+                            ) {
+                                Text(
+                                    text = "APPLY"
+                                )
+                            }
+
                         }
 
                     }
-
                 }
 
                 if (state.isLoading) {
@@ -559,7 +561,7 @@ class JobDetailScreen(
                         modifier = modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator(color = Color.White)
+                        CircularProgressIndicator()
                     }
                 }
 

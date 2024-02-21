@@ -24,4 +24,14 @@ data class Jobs(
     val salary: String,
     val postedDate: String,
     val link: String
-)
+) {
+    fun doesMatchSearchQuery(query: String): Boolean {
+        val matchingCombinations = listOf(
+            experienceLevel,
+            industry
+        ) + skills
+        return matchingCombinations.any {
+            it.contains(query, ignoreCase = true)
+        }
+    }
+}

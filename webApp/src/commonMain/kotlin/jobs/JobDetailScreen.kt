@@ -522,8 +522,8 @@ fun JobDetailScreen(
                         shape = RectangleShape,
                         contentPadding = PaddingValues(0.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFD0BCFF),
-                            contentColor = Color(0xFF6650a4)
+                            containerColor = Color(0xFF8f8fa6),
+                            contentColor = Color(0xFF1C1C23)
                         )
                     ) {
                         Text(

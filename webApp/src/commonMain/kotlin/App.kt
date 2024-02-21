@@ -1,9 +1,12 @@
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import moe.tlaster.precompose.PreComposeApp
 import moe.tlaster.precompose.navigation.rememberNavigator
 import navigation.RootNavigation
@@ -20,11 +23,14 @@ fun App(
         val navigator = rememberNavigator()
 
         Scaffold(
+            contentWindowInsets = WindowInsets(0.dp),
             containerColor = Color(0xFF1C1C23)
         ) { paddingValues ->
             Box(
-                modifier = modifier.padding(paddingValues)
-            ){
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+            ) {
                 RootNavigation(navigator = navigator)
             }
         }

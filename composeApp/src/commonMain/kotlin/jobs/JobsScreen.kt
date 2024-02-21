@@ -9,10 +9,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,6 +45,10 @@ object JobsScreen : Screen {
 
         val state = jobScreenModel.state
 
+        val query by jobScreenModel.query.collectAsState()
+        val jobs by jobScreenModel.jobs.collectAsState()
+        val searching by jobScreenModel.searching.collectAsState()
+
         // FF7966
 
         Scaffold(
@@ -58,17 +65,44 @@ object JobsScreen : Screen {
                         .background(Color(0xFF1C1C23))
                 ) {
 
-                    JobsScreenTitle()
+                    JobsScreenTitle(
+                        modifier = modifier.padding(
+                            top = 80.dp,
+                            start = 24.dp
+                        )
+                    )
 
                     SearchBarView(
                         modifier = modifier,
-                        query = state.query,
+                        query = query,
                         onQueryChange = jobScreenModel::onQueryChange
                     )
 
+                    if (state.isLoading) {
+                        Box(
+                            modifier = modifier
+                                .padding(top = 24.dp)
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.TopCenter
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+
+                    if (searching) {
+                        Box(
+                            modifier = modifier
+                                .padding(top = 24.dp)
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.TopCenter
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+
                     FlexLayout(
                         modifier = modifier,
-                        jobs = state.allJobs,
+                        jobs = jobs,
                         navigateToDetailScreen = {
                             navigator.push(JobDetailScreen(it))
                         },
@@ -79,14 +113,6 @@ object JobsScreen : Screen {
 
                 }
 
-                if (state.isLoading) {
-                    Box(
-                        modifier = modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
 
             }
 

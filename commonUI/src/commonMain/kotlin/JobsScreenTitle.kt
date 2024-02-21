@@ -9,16 +9,14 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun JobsScreenTitle(){
+fun JobsScreenTitle(
+    modifier: Modifier = Modifier
+){
     Text(
         text = "Jobs",
         color = Color.White,
         fontSize = 25.sp,
         fontWeight = FontWeight.Bold,
-        modifier = Modifier
-            .padding(
-                top = 80.dp,
-                start = 24.dp
-            )
+        modifier = modifier
     )
 }

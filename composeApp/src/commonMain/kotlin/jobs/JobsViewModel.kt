@@ -5,20 +5,64 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import domain.model.Jobs
 import domain.repository.JobsRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import utils.ResultState
 
-
+@OptIn(FlowPreview::class)
 class JobsScreenModeL(
     private val jobsRepository: JobsRepository
 ) : ScreenModel {
 
-
     var state by mutableStateOf(JobsState())
+
+    private val _query = MutableStateFlow("")
+    val query = _query.asStateFlow()
+
+    private val _searching = MutableStateFlow(false)
+    val searching = _searching.asStateFlow()
+
+    private val allJobs = mutableListOf<Jobs>()
+
+    private val _jobs = MutableStateFlow(allJobs)
+    val jobs = query
+        .debounce(500L)
+        .onEach { _searching.update { true } }
+        .combine(_jobs) { text, jobs ->
+            if (text.isBlank()){
+                jobs.forEach { job ->
+                    println("items from if: $job")
+                }
+                jobs
+            }else {
+                jobs.forEach { job ->
+                    println("items from else: $job")
+                }
+                jobs.filter {
+                    it.doesMatchSearchQuery(text)
+                }
+            }
+        }
+        .onEach { _searching.update { false } }
+        .stateIn(
+            scope = screenModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = _jobs.value
+        )
 
     init {
         getAllJobs()
@@ -30,15 +74,13 @@ class JobsScreenModeL(
                 withContext(Dispatchers.Main){
                     when(result) {
                         is ResultState.Loading -> {
-                            state = state.copy(
-                                isLoading = true
-                            )
+                            state = state.copy(isLoading = true)
                         }
                         is ResultState.Success -> {
-                            state = state.copy(
-                                isLoading = false,
-                                allJobs = result.data.orEmpty()
-                            )
+                            state = state.copy(isLoading = false)
+                            result.data.orEmpty().forEach {
+                                allJobs.add(it)
+                            }
                         }
                         is ResultState.Error -> {
                             state = state.copy(
@@ -81,7 +123,7 @@ class JobsScreenModeL(
     }
 
     fun onQueryChange(query: String){
-        state = state.copy(query = query)
+       _query.value = query
     }
 
 }
