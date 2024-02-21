@@ -42,6 +42,12 @@ import utils.openUrl
 
 private typealias navigateToJobDetailScreen = (String) -> Unit
 
+
+expect fun onMic()
+expect fun onFocused()
+expect fun onSort()
+
+
 @Composable
 fun JobsScreen(
     modifier: Modifier = Modifier,
@@ -77,11 +83,18 @@ fun JobsScreen(
 
                 SearchBarView(
                     modifier = modifier,
-                    isWeb = true,
+                    onFocused = {
+                        onFocused()
+                    },
                     query = query,
-                    onQueryChange = onQueryChange
+                    onQueryChange = onQueryChange,
+                    onMic = {
+                        onMic()
+                    },
+                    onSort = {
+                        onSort()
+                    }
                 )
-
 
                 if (state.isLoading) {
                     Box(

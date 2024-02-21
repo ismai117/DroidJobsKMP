@@ -43,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -58,28 +59,17 @@ import androidx.compose.ui.unit.sp
 import domain.model.Jobs
 
 
-
 @Composable
 fun ColumnScope.SearchBarView(
     modifier: Modifier = Modifier,
-    isWeb: Boolean,
+    onFocused: () -> Unit,
     query: String,
-    onQueryChange: (String) -> Unit
+    onQueryChange: (String) -> Unit,
+    onMic: () -> Unit,
+    onSort: () -> Unit
 ) {
 
-    val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
-
-    var textFieldClicked by remember { mutableStateOf(false) }
-
-    LaunchedEffect(textFieldClicked){
-        if (isWeb) {
-            focusRequester.requestFocus()
-            println("keyboard opened")
-        }else{
-            textFieldClicked = false
-        }
-    }
 
     Row(
         modifier = modifier
@@ -101,17 +91,15 @@ fun ColumnScope.SearchBarView(
                     shape = RoundedCornerShape(16.dp)
                 )
                 .focusRequester(focusRequester)
-                .clickable {
-                   textFieldClicked = true
+                .onFocusChanged {
+                    if (it.isFocused) {
+                        onFocused()
+                    }
                 },
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done,
                 keyboardType = KeyboardType.Text
             ),
-            keyboardActions = KeyboardActions(onDone = {
-                textFieldClicked = false
-                focusManager.clearFocus()
-            }),
             decorationBox = { innerField ->
                 Row(
                     modifier = modifier.fillMaxSize(),
@@ -136,20 +124,20 @@ fun ColumnScope.SearchBarView(
                             .weight(1f),
                         contentAlignment = Alignment.CenterStart
                     ) {
-                        if (query.isBlank()){
-                                Text(
-                                    text = "Search by seniority, industry or skill",
-                                    color = Color(0xFF1C1C23),
-                                    fontSize = 12.sp,
-                                    lineHeight = 1.em
-                                )
-                        }else{
+                        if (query.isBlank()) {
+                            Text(
+                                text = "Search by seniority, industry or skill",
+                                color = Color(0xFF1C1C23),
+                                fontSize = 12.sp,
+                                lineHeight = 1.em
+                            )
+                        } else {
                             innerField.invoke()
                         }
                     }
                     IconButton(
                         onClick = {
-
+                            onMic()
                         }
                     ) {
                         Icon(
@@ -160,9 +148,9 @@ fun ColumnScope.SearchBarView(
                     }
                     IconButton(
                         onClick = {
-
+                            onSort()
                         }
-                    ){
+                    ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Outlined.Sort,
                             contentDescription = "sort jobs",

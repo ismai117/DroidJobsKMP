@@ -21,7 +21,12 @@ kotlin {
     }
 
     js(IR) {
-        browser()
+        moduleName = "webApp"
+        browser {
+            commonWebpackConfig {
+                outputFileName = "webApp.js"
+            }
+        }
         binaries.executable()
     }
     sourceSets {

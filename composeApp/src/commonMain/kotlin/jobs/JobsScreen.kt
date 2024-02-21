@@ -74,9 +74,17 @@ object JobsScreen : Screen {
 
                     SearchBarView(
                         modifier = modifier,
-                        isWeb = false,
+                        onFocused = {
+
+                        },
                         query = query,
-                        onQueryChange = jobScreenModel::onQueryChange
+                        onQueryChange = jobScreenModel::onQueryChange,
+                        onMic = {
+
+                        },
+                        onSort = {
+
+                        }
                     )
 
                     if (state.isLoading) {
