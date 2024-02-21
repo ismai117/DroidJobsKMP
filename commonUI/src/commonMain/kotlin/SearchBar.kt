@@ -1,5 +1,6 @@
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Sort
@@ -31,9 +33,19 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
@@ -50,9 +62,25 @@ import domain.model.Jobs
 @Composable
 fun ColumnScope.SearchBarView(
     modifier: Modifier = Modifier,
+    isWeb: Boolean,
     query: String,
     onQueryChange: (String) -> Unit
 ) {
+
+    val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
+
+    var textFieldClicked by remember { mutableStateOf(false) }
+
+    LaunchedEffect(textFieldClicked){
+        if (isWeb) {
+            focusRequester.requestFocus()
+            println("keyboard opened")
+        }else{
+            textFieldClicked = false
+        }
+    }
+
     Row(
         modifier = modifier
             .padding(top = 24.dp, start = 24.dp, end = 24.dp)
@@ -71,11 +99,19 @@ fun ColumnScope.SearchBarView(
                 .background(
                     color = Color(0xFF8f8fa6),
                     shape = RoundedCornerShape(16.dp)
-                ),
+                )
+                .focusRequester(focusRequester)
+                .clickable {
+                   textFieldClicked = true
+                },
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done,
                 keyboardType = KeyboardType.Text
             ),
+            keyboardActions = KeyboardActions(onDone = {
+                textFieldClicked = false
+                focusManager.clearFocus()
+            }),
             decorationBox = { innerField ->
                 Row(
                     modifier = modifier.fillMaxSize(),

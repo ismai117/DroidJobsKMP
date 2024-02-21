@@ -77,6 +77,7 @@ fun JobsScreen(
 
                 SearchBarView(
                     modifier = modifier,
+                    isWeb = true,
                     query = query,
                     onQueryChange = onQueryChange
                 )

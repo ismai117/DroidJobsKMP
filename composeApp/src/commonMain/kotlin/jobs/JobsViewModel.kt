@@ -44,14 +44,8 @@ class JobsScreenModeL(
         .onEach { _searching.update { true } }
         .combine(_jobs) { text, jobs ->
             if (text.isBlank()){
-                jobs.forEach { job ->
-                    println("items from if: $job")
-                }
                 jobs
             }else {
-                jobs.forEach { job ->
-                    println("items from else: $job")
-                }
                 jobs.filter {
                     it.doesMatchSearchQuery(text)
                 }

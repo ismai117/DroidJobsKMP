@@ -74,6 +74,7 @@ object JobsScreen : Screen {
 
                     SearchBarView(
                         modifier = modifier,
+                        isWeb = false,
                         query = query,
                         onQueryChange = jobScreenModel::onQueryChange
                     )
