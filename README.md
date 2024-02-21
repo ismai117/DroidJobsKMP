@@ -2,6 +2,16 @@
 
 Kotlin Multiplatform job finder app, connecting you with the latest opportunities in the world of Android development.<br>
 </br>
+
+Supported Platforms
+- Android
+- IOS
+- WEB
+- Desktop
+
+Web App - Live
+[View](https://ismai117.github.io/DroidJobsKMP/)<br>
+</br>
 <pre>
 <h2 align="center">Android</h2>
 </pre>
