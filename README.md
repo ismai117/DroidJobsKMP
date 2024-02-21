@@ -6,7 +6,7 @@ Kotlin Multiplatform job finder app, connecting you with the latest opportunitie
 Supported Platforms
 - Android
 - IOS
-- WEB
+- Web
 - Desktop
 
 Web App - Live
