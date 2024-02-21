@@ -10,7 +10,7 @@ Supported Platforms
 - Desktop
 
 Web App - Live
-[View]("https://ismai117.github.io/DroidJobsKMP/")<br>
+[View](https://ismai117.github.io/DroidJobsKMP/)<br>
 </br>
 <pre>
 <h2 align="center">Android</h2>
