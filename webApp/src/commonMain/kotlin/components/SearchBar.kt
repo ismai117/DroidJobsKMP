@@ -53,6 +53,13 @@ fun ColumnScope.SearchBarView(
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
 
+    LaunchedEffect(query){
+        if (window.navigator.maxTouchPoints > 0) {
+            if (query.isNotBlank()) {
+                focusManager.clearFocus()
+            }
+        }
+    }
 
     Row(
         modifier = modifier
@@ -77,9 +84,8 @@ fun ColumnScope.SearchBarView(
                 .onFocusChanged {
                     if (it.isFocused) {
                         if (window.navigator.maxTouchPoints > 0) {
-//                            val value = window.prompt("Search by seniority, industry or skill")
-//                            onQueryChange(value.orEmpty())
-                            window.onfocus?.invoke(FocusEvent(type = "input"))
+                            val value = window.prompt("Search by seniority, industry or skill")
+                            onQueryChange(value.orEmpty())
                         }
                     }
                 },
