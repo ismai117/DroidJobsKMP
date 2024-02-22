@@ -54,7 +54,6 @@ import openUrl
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import presentation.JobsScreenModeL
 
 
 class JobDetailScreen(
