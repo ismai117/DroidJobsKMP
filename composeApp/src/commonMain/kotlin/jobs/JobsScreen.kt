@@ -1,9 +1,9 @@
 package jobs
 
 import DroidJobsKMP
-import FlexLayout
-import JobsScreenTitle
-import SearchBarView
+import components.FlexLayout
+import components.JobsScreenTitle
+import components.SearchBarView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

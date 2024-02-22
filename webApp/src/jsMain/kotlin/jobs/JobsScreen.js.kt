@@ -1,6 +1,9 @@
 package jobs
 
+import kotlinx.browser.document
 import kotlinx.browser.window
+import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.events.InputEvent
 
 
 actual fun onMic() {
@@ -8,7 +11,7 @@ actual fun onMic() {
 }
 
 actual fun onFocused() {
-    window.focus()
+    window.prompt()
 }
 
 actual fun onSort() {

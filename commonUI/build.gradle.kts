@@ -13,12 +13,6 @@ kotlin {
 
     jvm()
 
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        browser()
-        binaries.executable()
-    }
-
     js(IR) {
         browser()
         binaries.executable()
@@ -42,6 +36,7 @@ kotlin {
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+            implementation(libs.voyagerScreenModel)
             implementation(project(":commonData"))
         }
         jvmMain.dependencies {
