@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Sort
@@ -22,6 +23,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,11 +33,14 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import kotlinx.browser.window
+import org.w3c.dom.events.FocusEvent
 
 
 @Composable
@@ -42,9 +48,12 @@ fun ColumnScope.SearchBarView(
     modifier: Modifier = Modifier,
     query: String,
     onQueryChange: (String) -> Unit,
-    onMic: () -> Unit,
-    onSort: () -> Unit
 ) {
+
+    val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
+
+
     Row(
         modifier = modifier
             .padding(top = 24.dp, start = 24.dp, end = 24.dp)
@@ -63,11 +72,24 @@ fun ColumnScope.SearchBarView(
                 .background(
                     color = Color(0xFF8f8fa6),
                     shape = RoundedCornerShape(16.dp)
-                ),
+                )
+                .focusRequester(focusRequester)
+                .onFocusChanged {
+                    if (it.isFocused) {
+                        if (window.navigator.maxTouchPoints > 0) {
+//                            val value = window.prompt("Search by seniority, industry or skill")
+//                            onQueryChange(value.orEmpty())
+                            window.onfocus?.invoke(FocusEvent(type = "input"))
+                        }
+                    }
+                },
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done,
                 keyboardType = KeyboardType.Text
             ),
+            keyboardActions = KeyboardActions(onDone = {
+                focusManager.clearFocus()
+            }),
             decorationBox = { innerField ->
                 Row(
                     modifier = modifier.fillMaxSize(),
@@ -105,7 +127,7 @@ fun ColumnScope.SearchBarView(
                     }
                     IconButton(
                         onClick = {
-                            onMic()
+                            window.alert("Sorry, voice-to-text functionality is currently unavailable.")
                         }
                     ) {
                         Icon(
@@ -116,7 +138,7 @@ fun ColumnScope.SearchBarView(
                     }
                     IconButton(
                         onClick = {
-                            onSort()
+                            window.alert("Sorting feature is currently being developed.")
                         }
                     ) {
                         Icon(
@@ -130,3 +152,4 @@ fun ColumnScope.SearchBarView(
         )
     }
 }
+
