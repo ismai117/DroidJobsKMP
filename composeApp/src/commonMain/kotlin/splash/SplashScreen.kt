@@ -15,12 +15,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import animateKottieCompositionAsState
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import jobs.JobsScreen
-import rememberKottieComposition
+import kottieComposition.KottieCompositionSpec
+import kottieComposition.animateKottieCompositionAsState
+import kottieComposition.rememberKottieComposition
 
 
 
@@ -75,9 +76,9 @@ object SplashScreen : Screen {
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold
                 )
+
             }
         }
-
     }
 
 }

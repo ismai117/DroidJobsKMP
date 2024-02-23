@@ -41,6 +41,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.service.bulletPoint
@@ -165,7 +166,7 @@ fun JobDetailScreen(
                             tint = Color.White
                         )
                         Text(
-                            text = "${state.job?.address}",
+                            text = "${if (state.job?.address?.isNotBlank() == true) state.job.address else state.job?.city}",
                             color = Color.White,
                             fontSize = 12.sp
                         )
@@ -180,6 +181,7 @@ fun JobDetailScreen(
 
                     Text(
                         text = state.job?.companyMotto.orEmpty(),
+                        textAlign = TextAlign.Center,
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,

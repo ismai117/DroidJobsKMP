@@ -15,8 +15,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import animateKottieCompositionAsState
-import rememberKottieComposition
+import kottieComposition.KottieCompositionSpec
+import kottieComposition.animateKottieCompositionAsState
+import kottieComposition.rememberKottieComposition
+
 
 
 private typealias  navigateToJobsScreen = () -> Unit
@@ -69,6 +71,7 @@ fun SplashScreen(
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold
             )
+
         }
     }
 

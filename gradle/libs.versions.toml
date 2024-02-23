@@ -15,7 +15,7 @@ compose-plugin = "1.6.0-rc02"
 junit = "4.13.2"
 kotlin = "1.9.22"
 kotlinx-coroutines = "1.8.0"
-kottie = "1.5.3-alpha02"
+kottie = "1.5.3"
 voyager = "1.0.0"
 precompose = "1.6.0-beta02"
 

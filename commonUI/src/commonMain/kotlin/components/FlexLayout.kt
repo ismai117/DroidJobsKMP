@@ -127,16 +127,15 @@ fun FlexLayout(
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold
                                     )
-                                    Row(
-                                        modifier = modifier.padding(top = 2.dp),
-                                        horizontalArrangement = Arrangement.spacedBy(
-                                            8.dp
-                                        )
+
+                                    Column(
+                                        modifier = modifier.padding(top = 12.dp),
+                                        verticalArrangement = Arrangement.spacedBy(6.dp)
                                     ) {
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.spacedBy(
-                                                2.dp
+                                                6.dp
                                             )
                                         ) {
                                             Icon(
@@ -150,14 +149,10 @@ fun FlexLayout(
                                                 fontSize = 12.sp
                                             )
                                         }
-                                        Text(
-                                            text = "-",
-                                            color = Color.White
-                                        )
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.spacedBy(
-                                                2.dp
+                                                6.dp
                                             )
                                         ) {
                                             Icon(
@@ -171,12 +166,13 @@ fun FlexLayout(
                                                 fontSize = 12.sp
                                             )
                                         }
+                                        Text(
+                                            text = item.experienceLevel,
+                                            color = Color.White,
+                                            fontSize = 12.sp
+                                        )
                                     }
-                                    Text(
-                                        text = item.experienceLevel,
-                                        color = Color.White,
-                                        fontSize = 12.sp
-                                    )
+
                                 }
                             }
                             LazyRow(
