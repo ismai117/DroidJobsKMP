@@ -20,6 +20,4 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
-include(":webApp")
 include(":commonData")
-include(":commonUi")

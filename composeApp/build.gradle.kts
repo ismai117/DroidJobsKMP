@@ -18,6 +18,11 @@ kotlin {
             }
         }
     }
+
+    js(IR) {
+        browser()
+        binaries.executable()
+    }
     
     jvm()
 
@@ -56,12 +61,14 @@ kotlin {
             implementation(libs.voyagerScreenModel)
             implementation(libs.voyagerTransitions)
             implementation(libs.kottie)
-            implementation(project(":commonUi"))
             implementation(project(":commonData"))
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+        }
+        jsMain.dependencies {
+            implementation(compose.html.core)
         }
     }
 }
@@ -112,3 +119,6 @@ compose.desktop {
     }
 }
 
+compose.experimental {
+    web.application { }
+}

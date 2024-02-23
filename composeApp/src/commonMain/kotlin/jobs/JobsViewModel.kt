@@ -9,7 +9,6 @@ import domain.model.Jobs
 import domain.repository.JobsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -62,7 +61,7 @@ class JobsScreenModeL(
     }
 
     private fun getAllJobs() {
-        screenModelScope.launch(Dispatchers.IO) {
+        screenModelScope.launch {
             jobsRepository.getAllJobs().collect { result ->
                 withContext(Dispatchers.Main){
                     when(result) {
@@ -88,7 +87,7 @@ class JobsScreenModeL(
     }
 
     fun getJob(id: String) {
-        screenModelScope.launch(Dispatchers.IO) {
+        screenModelScope.launch {
             jobsRepository.getJob(
                 jobID = id
             ).collect { result ->

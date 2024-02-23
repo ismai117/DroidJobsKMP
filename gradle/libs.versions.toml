@@ -11,13 +11,12 @@ androidx-espresso-core = "3.5.1"
 androidx-material = "1.11.0"
 androidx-test-junit = "1.1.5"
 compose = "1.6.1"
-compose-plugin = "1.6.0-rc02"
+compose-plugin = "1.6.0-rc03"
 junit = "4.13.2"
 kotlin = "1.9.22"
 kotlinx-coroutines = "1.8.0"
 kottie = "1.5.3"
-voyager = "1.0.0"
-precompose = "1.6.0-beta02"
+voyager = "1.1.0-alpha03"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -39,8 +38,6 @@ kottie = { module = "io.github.ismai117:kottie", version.ref = "kottie" }
 voyagerNavigation = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyagerScreenModel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
 voyagerTransitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
-precomposeNavigation = { module = "moe.tlaster:precompose", version.ref = "precompose" }
-precomposeViewmodel = { module = "moe.tlaster:precompose-viewmodel", version.ref = "precompose" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
