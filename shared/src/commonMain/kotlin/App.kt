@@ -19,18 +19,8 @@ import splash.SplashScreen
 import theme.DroidJobsKMPTheme
 
 
-fun navigationModule(){
-    ScreenRegistry{
-        register<Screens.JobsScreen> { JobsScreen }
-        register<Screens.JobDetailScreen> { provider -> JobDetailScreen(id = provider.id) }
-        register<Screens.LoginScreen> { LoginScreen }
-        register<Screens.RegisterScreen> { RegisterScreen }
-        register<Screens.ForgetPasswordScreen> { ForgetPasswordScreen }
-    }
-}
-
 @Composable
-fun App() = DroidJobsKMPTheme {
+fun App(appModule: AppModule = AppModule()) = DroidJobsKMPTheme {
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
         containerColor = Color(0xFF1C1C23)
@@ -40,7 +30,6 @@ fun App() = DroidJobsKMPTheme {
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            navigationModule()
             Navigator(SplashScreen){ navigator ->
                 SlideTransition(navigator)
             }
