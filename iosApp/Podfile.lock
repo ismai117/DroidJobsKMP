@@ -1,23 +1,23 @@
 PODS:
-  - composeApp (1.0):
-    - lottie-ios (= 4.4.0)
   - lottie-ios (4.4.0)
+  - shared (1.0):
+    - lottie-ios (= 4.4.0)
 
 DEPENDENCIES:
-  - composeApp (from `../composeApp`)
+  - shared (from `../shared`)
 
 SPEC REPOS:
   trunk:
     - lottie-ios
 
 EXTERNAL SOURCES:
-  composeApp:
-    :path: "../composeApp"
+  shared:
+    :path: "../shared"
 
 SPEC CHECKSUMS:
-  composeApp: 6718a2535fc6b1a9fa3f6c0ba771b3be5079309a
   lottie-ios: ef1be1f90d54255f08e09d767950e43714661178
+  shared: aec9ae7fe578bee3f090fd4a4c9ffe17cd6a73f9
 
-PODFILE CHECKSUM: 4f3bc01cc6614503cb4a62772e83f3d17b9f273a
+PODFILE CHECKSUM: 3486502206b7f508f9742d3710f2b23a143e7d82
 
 COCOAPODS: 1.15.2

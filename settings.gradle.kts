@@ -19,5 +19,9 @@ dependencyResolutionManagement {
     }
 }
 
-include(":composeApp")
+include(":shared")
 include(":commonData")
+include(":androidApp")
+include(":desktopApp")
+include(":webApp")
+include(":webApp-wasm")
