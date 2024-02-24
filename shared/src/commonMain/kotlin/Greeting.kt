@@ -1,3 +1,5 @@
+import platform.getPlatform
+
 class Greeting {
     private val platform = getPlatform()
 

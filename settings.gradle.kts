@@ -19,9 +19,12 @@ dependencyResolutionManagement {
     }
 }
 
+include(":jobs")
+include(":auth")
+include(":navigation")
 include(":shared")
-include(":commonData")
 include(":androidApp")
 include(":desktopApp")
 include(":webApp")
 include(":webApp-wasm")
+

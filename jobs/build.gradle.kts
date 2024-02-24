@@ -1,51 +1,36 @@
 @file:Suppress("OPT_IN_USAGE")
 
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.kotlinCocoapods)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
 }
 
 kotlin {
-    
+
     androidTarget()
+
+    jvm()
 
     js(IR) {
         browser()
         binaries.executable()
     }
 
-    wasmJs{
+    wasmJs() {
         browser()
         binaries.executable()
     }
-    
-    jvm()
 
     iosX64()
     iosArm64()
     iosSimulatorArm64()
 
-    cocoapods {
-        summary = "Some description for the Shared Module"
-        homepage = "Link to the Shared Module homepage"
-        version = "1.0"
-        ios.deploymentTarget = "14.1"
-        podfile = project.file("../iosApp/Podfile")
-        pod("lottie-ios") {
-            version = "4.4.0"
-            linkOnly = true
-        }
-    }
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.kotlinx.coroutines.android)
-            api("androidx.activity:activity-compose:1.8.2")
-            api("androidx.appcompat:appcompat:1.6.1")
-            api("androidx.core:core-ktx:1.12.0")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -59,11 +44,12 @@ kotlin {
             implementation(libs.voyagerNavigation)
             implementation(libs.voyagerScreenModel)
             implementation(libs.voyagerTransitions)
-            implementation(libs.kottie)
             implementation(project(":navigation"))
-            implementation(project(":auth"))
-            implementation(project(":jobs"))
         }
+        androidMain.dependencies {
+            implementation(libs.kotlinx.coroutines.android)
+        }
+
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
@@ -74,12 +60,12 @@ kotlin {
     }
 }
 
+
 android {
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
     namespace = "org.ncgroup.droidjobskmp"
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    compileSdk = 34
     defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
+        minSdk = 24
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

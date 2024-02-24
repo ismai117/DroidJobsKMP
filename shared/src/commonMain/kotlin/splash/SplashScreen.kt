@@ -9,20 +9,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import jobs.JobsScreen
 import kottieComposition.KottieCompositionSpec
 import kottieComposition.animateKottieCompositionAsState
 import kottieComposition.rememberKottieComposition
-
+import login.presentation.LoginScreen
+import presentation.JobsScreen
 
 
 object SplashScreen : Screen {
@@ -33,6 +36,10 @@ object SplashScreen : Screen {
         val modifier: Modifier = Modifier
 
         val navigator = LocalNavigator.currentOrThrow
+        val jobsScreen = rememberScreen(Screens.JobsScreen)
+        val loginScreen = rememberScreen(Screens.LoginScreen)
+
+        val isUserLoggedIn by remember { mutableStateOf(false) }
 
         val composition = rememberKottieComposition(
             spec = KottieCompositionSpec.Url("https://lottie.host/0094976a-6a83-4795-b0ce-6da075ca5b6b/HSbPWOOaJV.json")
@@ -45,7 +52,11 @@ object SplashScreen : Screen {
 
         LaunchedEffect(animationState.isPlaying){
             if (animationState.isCompleted){
-                navigator.push(JobsScreen)
+                if (isUserLoggedIn){
+                    navigator.push(jobsScreen)
+                }else{
+                    navigator.push(loginScreen)
+                }
             }
         }
 

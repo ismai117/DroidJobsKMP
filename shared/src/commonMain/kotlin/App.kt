@@ -1,4 +1,3 @@
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,27 +7,41 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
+import forgetPassword.ForgetPasswordScreen
+import login.presentation.LoginScreen
+import presentation.JobDetailScreen
+import presentation.JobsScreen
+import register.presentation.RegisterScreen
 import splash.SplashScreen
 import theme.DroidJobsKMPTheme
 
 
-// 8f8fa6
+fun navigationModule(){
+    ScreenRegistry{
+        register<Screens.JobsScreen> { JobsScreen }
+        register<Screens.JobDetailScreen> { provider -> JobDetailScreen(id = provider.id) }
+        register<Screens.LoginScreen> { LoginScreen }
+        register<Screens.RegisterScreen> { RegisterScreen }
+        register<Screens.ForgetPasswordScreen> { ForgetPasswordScreen }
+    }
+}
 
 @Composable
-fun App() =  DroidJobsKMPTheme {
+fun App() = DroidJobsKMPTheme {
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
         containerColor = Color(0xFF1C1C23)
-    ){ paddingValues ->
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            Navigator(screen = SplashScreen) { navigator ->
+            navigationModule()
+            Navigator(SplashScreen){ navigator ->
                 SlideTransition(navigator)
             }
         }
@@ -36,4 +49,3 @@ fun App() =  DroidJobsKMPTheme {
 }
 
 
-expect fun openUrl(url: String?)
