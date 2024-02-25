@@ -24,6 +24,7 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 implementation(project(":shared"))
+                implementation(project(":commonUI"))
                 implementation(compose.html.core)
                 implementation(compose.ui)
             }

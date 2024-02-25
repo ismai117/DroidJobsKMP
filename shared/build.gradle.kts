@@ -33,6 +33,10 @@ kotlin {
         version = "1.0"
         ios.deploymentTarget = "14.1"
         podfile = project.file("../iosApp/Podfile")
+        framework {
+            baseName = "shared"
+            isStatic = true
+        }
         pod("lottie-ios") {
             version = "4.4.0"
             linkOnly = true
@@ -61,8 +65,9 @@ kotlin {
             implementation(libs.voyagerTransitions)
             implementation(libs.kottie)
             implementation(project(":navigation"))
-            implementation(project(":auth"))
-            implementation(project(":jobs"))
+            implementation(project(":feature-jobs"))
+            implementation(project(":feature-auth"))
+            implementation(project(":feature-settings"))
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -70,6 +75,8 @@ kotlin {
         }
         jsMain.dependencies {
             implementation(compose.html.core)
+        }
+        iosMain.dependencies {
         }
     }
 }

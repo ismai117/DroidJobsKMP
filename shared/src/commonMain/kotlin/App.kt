@@ -1,7 +1,14 @@
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,8 +29,7 @@ import theme.DroidJobsKMPTheme
 @Composable
 fun App(appModule: AppModule = AppModule()) = DroidJobsKMPTheme {
     Scaffold(
-        contentWindowInsets = WindowInsets(0.dp),
-        containerColor = Color(0xFF1C1C23)
+        contentWindowInsets = WindowInsets(0.dp)
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -36,5 +42,4 @@ fun App(appModule: AppModule = AppModule()) = DroidJobsKMPTheme {
         }
     }
 }
-
 

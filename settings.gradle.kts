@@ -19,10 +19,12 @@ dependencyResolutionManagement {
     }
 }
 
-include(":jobs")
-include(":auth")
+include(":feature-jobs")
+include(":feature-auth")
+include(":feature-settings")
 include(":navigation")
 include(":shared")
+include(":commonUI")
 include(":androidApp")
 include(":desktopApp")
 include(":webApp")

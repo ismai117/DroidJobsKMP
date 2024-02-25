@@ -32,6 +32,7 @@ kotlin {
         val wasmJsMain by getting {
             dependencies {
                 implementation(project(":shared"))
+                implementation(project(":commonUI"))
                 implementation(compose.ui)
             }
         }
