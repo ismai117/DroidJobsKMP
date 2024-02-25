@@ -3,18 +3,6 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
 }
 
-val copyJsResources = tasks.create("copyJsResourcesWorkaround", Copy::class.java) {
-    from(project(":shared").file("src/commonMain/composeResources"))
-    into("build/processedResources/js/main")
-}
-
-afterEvaluate {
-    project.tasks.getByName("jsProcessResources").finalizedBy(copyJsResources)
-    project.tasks.getByName("jsBrowserProductionExecutableDistributeResources").mustRunAfter(copyJsResources)
-    project.tasks.getByName("jsDevelopmentExecutableCompileSync").mustRunAfter(copyJsResources)
-    project.tasks.getByName("jsProductionExecutableCompileSync").mustRunAfter(copyJsResources)
-}
-
 kotlin {
     js {
         browser()
@@ -24,7 +12,6 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 implementation(project(":shared"))
-                implementation(project(":commonUI"))
                 implementation(compose.html.core)
                 implementation(compose.ui)
             }

@@ -36,6 +36,14 @@ kotlin {
             implementation(compose.ui)
             implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
         }
+        jvmMain.dependencies {
+            implementation(compose.desktop.currentOs)
+        }
+        jsMain.dependencies {
+            implementation(compose.html.core)
+        }
+        iosMain.dependencies {
+        }
     }
 }
 

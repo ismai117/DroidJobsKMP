@@ -37,6 +37,14 @@ kotlin {
             implementation(libs.voyagerScreenModel)
             implementation(libs.voyagerTransitions)
         }
+        jvmMain.dependencies {
+            implementation(compose.desktop.currentOs)
+        }
+        jsMain.dependencies {
+            implementation(compose.html.core)
+        }
+        iosMain.dependencies {
+        }
     }
 }
 

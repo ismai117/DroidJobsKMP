@@ -34,6 +34,14 @@ kotlin {
             implementation(compose.ui)
             implementation("media.kamel:kamel-image:0.9.3-wasm")
         }
+        jvmMain.dependencies {
+            implementation(compose.desktop.currentOs)
+        }
+        jsMain.dependencies {
+            implementation(compose.html.core)
+        }
+        iosMain.dependencies {
+        }
     }
 }
 

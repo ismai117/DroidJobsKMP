@@ -5,17 +5,6 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
 }
 
-val copyWasmResources = tasks.create("copyWasmResourcesWorkaround", Copy::class.java) {
-    from(project(":shared").file("src/commonMain/composeResources"))
-    into("build/processedResources/wasmJs/main")
-}
-
-afterEvaluate {
-    project.tasks.getByName("wasmJsProcessResources").finalizedBy(copyWasmResources)
-    project.tasks.getByName("wasmJsDevelopmentExecutableCompileSync").mustRunAfter(copyWasmResources)
-    project.tasks.getByName("wasmJsProductionExecutableCompileSync").mustRunAfter(copyWasmResources)
-}
-
 kotlin {
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
@@ -32,7 +21,6 @@ kotlin {
         val wasmJsMain by getting {
             dependencies {
                 implementation(project(":shared"))
-                implementation(project(":commonUI"))
                 implementation(compose.ui)
             }
         }
