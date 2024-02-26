@@ -13,6 +13,7 @@ class AppModule {
                 register<Screens.JobsScreen> { JobsScreen }
                 register<Screens.JobDetailScreen> { provider -> JobDetailScreen(id = provider.id) }
                 register<Screens.LoginScreen> { LoginScreen }
+                register<Screens.SettingsScreen> { SettingsScreen }
                 register<Screens.RegisterScreen> { RegisterScreen }
                 register<Screens.ForgetPasswordScreen> { ForgetPasswordScreen }
             }

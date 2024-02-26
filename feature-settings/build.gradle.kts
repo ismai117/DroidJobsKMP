@@ -34,6 +34,10 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
             implementation(compose.ui)
+            implementation(libs.voyagerNavigation)
+            implementation(libs.voyagerScreenModel)
+            implementation(libs.voyagerTransitions)
+            implementation(project(":navigation"))
             implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
         }
         jvmMain.dependencies {

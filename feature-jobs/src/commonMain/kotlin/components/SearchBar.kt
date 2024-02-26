@@ -48,7 +48,7 @@ fun ColumnScope.SearchBarView(
 ) {
     Row(
         modifier = modifier
-            .padding(top = 24.dp, start = 24.dp, end = 24.dp)
+            .padding(top = 40.dp, start = 24.dp, end = 24.dp)
             .widthIn(max = 1000.dp)
             .height(45.dp)
             .align(Alignment.CenterHorizontally),
