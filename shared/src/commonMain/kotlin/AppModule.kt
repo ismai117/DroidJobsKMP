@@ -1,5 +1,5 @@
 import cafe.adriel.voyager.core.registry.ScreenRegistry
-import forgetPassword.ForgetPasswordScreen
+import forgetPassword.presentation.ForgetPasswordScreen
 import login.presentation.LoginScreen
 import presentation.JobDetailScreen
 import presentation.JobsScreen

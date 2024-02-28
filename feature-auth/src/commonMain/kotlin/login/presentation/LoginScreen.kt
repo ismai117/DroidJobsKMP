@@ -2,7 +2,6 @@ package login.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -46,8 +45,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import components.ProgressBar
 import components.SnackBarMessage
 import di.AuthModule
-import forgetPassword.ForgetPasswordScreen
+import forgetPassword.presentation.ForgetPasswordScreen
 import kotlinx.coroutines.launch
+import platform.getPlatform
 import register.presentation.RegisterScreen
 
 
@@ -65,13 +65,13 @@ object LoginScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
         val jobsScreen = rememberScreen(Screens.JobsScreen)
 
-        val loginViewModel = rememberScreenModel {
-            LoginViewModel(
+        val loginScreenModel = rememberScreenModel {
+            LoginScreenModel(
                 loginRepository = AuthModule.loginModule.loginRepository
             )
         }
 
-        val loginState = loginViewModel.state
+        val loginState = loginScreenModel.state
 
         LaunchedEffect(loginState.status){
             if(loginState.status){
@@ -87,7 +87,7 @@ object LoginScreen : Screen {
                         message = loginState.error
                     )
                 }
-                loginViewModel.onEvent(
+                loginScreenModel.onEvent(
                     LoginEvent.RESET_MESSAGE
                 )
             }
@@ -99,21 +99,26 @@ object LoginScreen : Screen {
                     snackBarHostState = snackbarHostState,
                     onDismiss = {}
                 )
-            }
+            },
+            modifier = modifier.padding(
+                top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
+            )
         ) { paddingValues ->
 
             Column (
                 modifier = modifier
                     .padding(paddingValues)
                     .fillMaxSize(),
+//                    .border(width = 1.dp, color = Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
             ) {
-
 
                 Text(
                     text = "Sign in",
-                    fontSize = 32.sp
+                    fontSize = 32.sp,
+                    modifier = modifier
+                        .padding(top = 100.dp)
+//                        .border(width = 1.dp, color = Color.White)
                 )
 
                 Column(
@@ -128,7 +133,7 @@ object LoginScreen : Screen {
                         OutlinedTextField(
                             value = loginState.email,
                             onValueChange = {
-                                loginViewModel.onEvent(
+                                loginScreenModel.onEvent(
                                     LoginEvent.EMAIL(it)
                                 )
                             },
@@ -166,7 +171,7 @@ object LoginScreen : Screen {
                         OutlinedTextField(
                             value = loginState.password,
                             onValueChange = {
-                                loginViewModel.onEvent(
+                                loginScreenModel.onEvent(
                                     LoginEvent.PASSWORD(it)
                                 )
                             },
@@ -186,11 +191,11 @@ object LoginScreen : Screen {
                                 IconButton(
                                     onClick = {
                                         if (!loginState.passwordVisible){
-                                            loginViewModel.onEvent(
+                                            loginScreenModel.onEvent(
                                                 LoginEvent.SHOW_PASSWORD(visible = true)
                                             )
                                         }else{
-                                            loginViewModel.onEvent(
+                                            loginScreenModel.onEvent(
                                                 LoginEvent.SHOW_PASSWORD(visible = false)
                                             )
                                         }
@@ -232,7 +237,7 @@ object LoginScreen : Screen {
 
                     Button(
                         onClick = {
-                            loginViewModel.onEvent(
+                            loginScreenModel.onEvent(
                                 LoginEvent.SUBMIT
                             )
                         },
@@ -266,7 +271,7 @@ object LoginScreen : Screen {
 
         DisposableEffect(Unit){
             onDispose {
-                loginViewModel.onEvent(
+                loginScreenModel.onEvent(
                     LoginEvent.CLEAR
                 )
             }

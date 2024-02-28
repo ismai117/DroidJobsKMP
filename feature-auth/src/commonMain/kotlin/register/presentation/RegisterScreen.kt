@@ -1,7 +1,6 @@
 package register.presentation
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,7 +34,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import auth.register.presentation.RegisterEvent
 import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.registry.rememberScreen
@@ -47,6 +45,7 @@ import components.SnackBarMessage
 import di.AuthModule
 import kotlinx.coroutines.launch
 import login.presentation.LoginScreen
+import platform.getPlatform
 
 
 object RegisterScreen : Screen {
@@ -65,13 +64,13 @@ object RegisterScreen : Screen {
         val jobsScreen = rememberScreen(Screens.JobsScreen)
 
 
-        val registerViewModel = rememberScreenModel {
-            RegisterViewModel(
+        val registerScreenModel = rememberScreenModel {
+            RegisterScreenModel(
                 registerRepository = AuthModule.registerModule.registerRepository
             )
         }
 
-        val registerState = registerViewModel.state
+        val registerState = registerScreenModel.state
 
         LaunchedEffect(registerState.status){
             if (registerState.status){
@@ -114,21 +113,26 @@ object RegisterScreen : Screen {
                     snackBarHostState = snackbarHostState,
                     onDismiss = {}
                 )
-            }
+            },
+            modifier = modifier.padding(
+                top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
+            )
         ) { paddingValues ->
 
             Column (
                 modifier = modifier
                     .padding(paddingValues)
                     .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+//                    .border(width = 1.dp, color = Color.White),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
 
                 Text(
                     text = "Sign up",
-                    fontSize = 32.sp
+                    fontSize = 32.sp,
+                    modifier = modifier
+                        .padding(top = 80.dp)
+//                        .border(width = 1.dp, color = Color.White)
                 )
 
                 Column(
@@ -144,7 +148,7 @@ object RegisterScreen : Screen {
                         OutlinedTextField(
                             value = registerState.email,
                             onValueChange = {
-                                registerViewModel.onEvent(
+                                registerScreenModel.onEvent(
                                     RegisterEvent.EMAIL(it)
                                 )
                             },
@@ -175,7 +179,7 @@ object RegisterScreen : Screen {
                         OutlinedTextField(
                             value = registerState.password,
                             onValueChange = {
-                                registerViewModel.onEvent(
+                                registerScreenModel.onEvent(
                                     RegisterEvent.PASSWORD(it)
                                 )
                             },
@@ -208,7 +212,7 @@ object RegisterScreen : Screen {
                         OutlinedTextField(
                             value = registerState.confirmPassword,
                             onValueChange = {
-                                registerViewModel.onEvent(
+                                registerScreenModel.onEvent(
                                     RegisterEvent.CONFIRM_PASSWORD(it)
                                 )
                             },
@@ -238,7 +242,7 @@ object RegisterScreen : Screen {
 
                     Button(
                         onClick = {
-                            registerViewModel.onEvent(
+                            registerScreenModel.onEvent(
                                 RegisterEvent.SUBMIT
                             )
                         },
@@ -273,7 +277,7 @@ object RegisterScreen : Screen {
 
         DisposableEffect(Unit){
             onDispose {
-                registerViewModel.onEvent(
+                registerScreenModel.onEvent(
                     RegisterEvent.CLEAR
                 )
             }

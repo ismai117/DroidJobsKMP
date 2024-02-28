@@ -9,7 +9,7 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         title = "DroidJobs"
     ) {
-        window.minimumSize = Dimension(800, 600)
+        window.minimumSize = Dimension(900, 700)
         window.rootPane.putClientProperty("apple.awt.fullWindowContent", true)
         window.rootPane.putClientProperty("apple.awt.transparentTitleBar", true)
         window.rootPane.putClientProperty("apple.awt.windowTitleVisible", false)

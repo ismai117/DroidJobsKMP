@@ -1,9 +1,14 @@
 @file:Suppress("OPT_IN_USAGE")
 
+import java.util.Properties
+
+
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.buildConfig)
 }
 
 kotlin {
@@ -31,6 +36,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.kotlinx.coroutines.android)
+            implementation(libs.ktor.client.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -42,19 +48,29 @@ kotlin {
             implementation(libs.voyagerNavigation)
             implementation(libs.voyagerScreenModel)
             implementation(libs.voyagerTransitions)
+            implementation(libs.bundles.ktor.common)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.napier)
+            implementation(libs.settings)
+            implementation(project(":commonUI"))
             implementation(project(":navigation"))
-            implementation(project(":feature-settings"))
         }
-        androidMain.dependencies {
-            implementation(libs.kotlinx.coroutines.android)
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(kotlin("test-annotations-common"))
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
         }
-
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.ktor.client.java)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
         jsMain.dependencies {
             implementation(compose.html.core)
+            implementation(libs.ktor.client.js)
         }
     }
 }
@@ -73,4 +89,16 @@ android {
     kotlin {
         jvmToolchain(17)
     }
+}
+
+val properties = Properties().apply {
+    load(project.rootProject.file("local.properties").inputStream())
+}
+
+buildConfig {
+    buildConfigField(
+        type = "String",
+        name = "appId",
+        value = "\"${properties.getProperty("appId")}\""
+    )
 }

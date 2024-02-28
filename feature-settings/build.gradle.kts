@@ -37,8 +37,10 @@ kotlin {
             implementation(libs.voyagerNavigation)
             implementation(libs.voyagerScreenModel)
             implementation(libs.voyagerTransitions)
+            implementation(libs.settings)
+            implementation(project(":commonUI"))
             implementation(project(":navigation"))
-            implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
+            implementation(project(":feature-auth"))
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)

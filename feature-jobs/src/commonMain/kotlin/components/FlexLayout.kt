@@ -65,7 +65,7 @@ fun FlexLayout(
     ) {
 
         items(
-            items = jobs,
+            items = jobs.toSet().toList(),
             key = { it.id }
         ) { item ->
 

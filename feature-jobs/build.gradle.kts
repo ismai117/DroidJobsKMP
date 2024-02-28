@@ -28,10 +28,12 @@ kotlin {
 
 
     sourceSets {
+
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.kotlinx.coroutines.android)
         }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -46,14 +48,18 @@ kotlin {
             implementation(project(":navigation"))
             implementation(project(":feature-settings"))
         }
-        androidMain.dependencies {
-            implementation(libs.kotlinx.coroutines.android)
+
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(kotlin("test-annotations-common"))
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
         }
 
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
         }
+
         jsMain.dependencies {
             implementation(compose.html.core)
         }
