@@ -32,6 +32,7 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.ui)
+            implementation(compose.material3)
             implementation("media.kamel:kamel-image:0.9.3-wasm")
         }
         jvmMain.dependencies {

@@ -1,21 +1,22 @@
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -29,6 +30,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import di.AuthModule
 import login.presentation.LoginScreenModel
 import platform.getPlatform
+import theme.LocalThemeIsDark
 
 
 object SettingsScreen : Screen {
@@ -39,8 +41,10 @@ object SettingsScreen : Screen {
 
         val modifier: Modifier = Modifier
 
+        var isDark by LocalThemeIsDark.current
+
         val navigator = LocalNavigator.currentOrThrow
-        val loginScreen = rememberScreen(Screens.LoginScreen)
+        val starterScreen = rememberScreen(Screens.StarterScreen)
         val loginScreenModel = rememberScreenModel {
             LoginScreenModel(
                 loginRepository = AuthModule.loginModule.loginRepository
@@ -95,7 +99,7 @@ object SettingsScreen : Screen {
                            .fillMaxWidth()
                            .height(55.dp)
                            .clickable {
-
+                               isDark = !isDark
                            },
 //                           .border(width = 1.dp, color = Color.White),
                        verticalArrangement = Arrangement.Center
@@ -114,7 +118,7 @@ object SettingsScreen : Screen {
                        )
                    }
 
-                   Divider()
+                   HorizontalDivider()
 
                    Column(
                        modifier = modifier
@@ -123,7 +127,7 @@ object SettingsScreen : Screen {
                            .clickable {
                                loginScreenModel.logout()
                                navigator.popUntilRoot()
-                               navigator.push(loginScreen)
+                               navigator.push(starterScreen)
                            },
 //                           .border(width = 1.dp, color = Color.White),
                       verticalArrangement = Arrangement.Center

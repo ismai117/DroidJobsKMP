@@ -3,6 +3,8 @@ package register.presentation
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -107,6 +109,8 @@ class RegisterScreenModelTest {
         assertEquals( true, screenModel.state.confirmPasswordError?.isBlank(),screenModel.state.confirmPasswordError)
         screenModel.onEvent(RegisterEvent.SUBMIT)
         assertEquals(true, screenModel.state.isLoading, "isLoading should be true")
+        advanceUntilIdle()
+        assertEquals(true, screenModel.state.status, "status should be false")
     }
 
 }

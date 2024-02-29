@@ -64,6 +64,7 @@ kotlin {
             implementation(libs.voyagerScreenModel)
             implementation(libs.voyagerTransitions)
             implementation(libs.kottie)
+            implementation(project(":commonUI"))
             implementation(project(":navigation"))
             implementation(project(":feature-jobs"))
             implementation(project(":feature-auth"))

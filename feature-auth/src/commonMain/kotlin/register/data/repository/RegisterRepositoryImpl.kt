@@ -1,11 +1,10 @@
 package register.data.repository
 
-import io.ktor.client.call.body
+
 import register.domain.repository.RegisterRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import login.data.service.LoginResponse
 import login.data.service.LoginService
 import register.data.service.RegisterService
 import user.UserModule
@@ -24,18 +23,17 @@ class RegisterRepositoryImpl(
         runCatching {
             trySend(UIState.Loading())
             registerService.register(email, password)
-        }.onSuccess {
-            when(it.status.value){
+        }.onSuccess { registerResponse ->
+            when(registerResponse.status){
                 201 -> {
                     val loginResponse = loginService.login(email, password)
-                    if (loginResponse.status.value == 200) {
+                    if (registerResponse.status == 200) {
                         UserModule.userState.setLoggedIn(true)
-                        val body = loginResponse.body<LoginResponse>()
                         UserModule.userDetail.setUserDetail(
-                            accessToken = body.access_token,
-                            refreshToken = body.refresh_token,
-                            userId = body.user_id,
-                            deviceId = body.device_id
+                            accessToken = loginResponse.body.access_token,
+                            refreshToken = loginResponse.body.refresh_token,
+                            userId = loginResponse.body.user_id,
+                            deviceId = loginResponse.body.device_id
                         )
                         trySend(UIState.Success(null))
                     }
@@ -44,7 +42,7 @@ class RegisterRepositoryImpl(
                     trySend(UIState.Error("User already exists"))
                 }
                 else -> {
-                    trySend(UIState.Error("Unexpected response code: ${it.status.value}"))
+                    trySend(UIState.Error("Unexpected response code: ${registerResponse.status}"))
                 }
             }
         }.onFailure { e ->

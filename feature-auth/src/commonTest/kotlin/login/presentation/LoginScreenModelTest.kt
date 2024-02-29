@@ -1,30 +1,40 @@
 package login.presentation
 
-import di.AuthModule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.withContext
 import login.data.fake.FakeLoginRepositoryImpl
+import login.data.fake.FakeLoginServiceImpl
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoginScreenModelTest {
 
     private lateinit var screenModel: LoginScreenModel
 
+    private val testDispatcher = AppDispatchers(
+        IO = StandardTestDispatcher()
+    )
+
     @BeforeTest
     fun setUp(){
         Dispatchers.setMain(Dispatchers.Unconfined)
         screenModel = LoginScreenModel(
-            loginRepository = FakeLoginRepositoryImpl()
+            loginRepository = FakeLoginRepositoryImpl(
+                fakeLoginServiceImpl = FakeLoginServiceImpl()
+            )
         )
     }
 
@@ -83,8 +93,14 @@ class LoginScreenModelTest {
         screenModel.onEvent(LoginEvent.PASSWORD("testing123"))
         assertEquals(true, screenModel.state.emailError?.isBlank(), screenModel.state.emailError)
         assertEquals(true, screenModel.state.passwordError?.isBlank(), screenModel.state.passwordError)
+        assertEquals(false, screenModel.state.isLoading, "isLoading should be false")
         screenModel.onEvent(LoginEvent.SUBMIT)
         assertEquals(true, screenModel.state.isLoading, "isLoading should be true")
+    }
+
+    @Test
+    fun checkLoginIsSuccess(){
+
     }
 
 }

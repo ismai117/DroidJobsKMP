@@ -6,12 +6,18 @@ import androidx.compose.runtime.setValue
 import login.domain.repository.LoginRepository
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import utils.utils.UIState
 import validations.email.ValidateEmail
 import validations.email.ValidateLoginPassword
+
+
+data class AppDispatchers(
+    val IO: CoroutineDispatcher = Dispatchers.Default
+)
 
 class LoginScreenModel(
     private val loginRepository: LoginRepository
@@ -70,29 +76,27 @@ class LoginScreenModel(
                 email = state.email,
                 password = state.password
             ).collect { result ->
-                withContext(Dispatchers.Main) {
-                    when (result) {
-                        is UIState.Loading -> {
-                            state = state.copy(
-                                isLoading = true,
-                                status = false
-                            )
-                        }
+                when (result) {
+                    is UIState.Loading -> {
+                        state = state.copy(
+                            isLoading = true,
+                            status = false
+                        )
+                    }
 
-                        is  UIState.Success -> {
-                            state = state.copy(
-                                isLoading = false,
-                                status = true,
-                            )
-                        }
+                    is  UIState.Success -> {
+                        state = state.copy(
+                            isLoading = false,
+                            status = true,
+                        )
+                    }
 
-                        is  UIState.Error -> {
-                            state = state.copy(
-                                isLoading = false,
-                                status = false,
-                                error = result.message
-                            )
-                        }
+                    is  UIState.Error -> {
+                        state = state.copy(
+                            isLoading = false,
+                            status = false,
+                            error = result.message
+                        )
                     }
                 }
             }

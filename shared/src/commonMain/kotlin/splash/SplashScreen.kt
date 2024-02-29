@@ -40,7 +40,7 @@ object SplashScreen : Screen {
 
         val navigator = LocalNavigator.currentOrThrow
         val jobsScreen = rememberScreen(Screens.JobsScreen)
-        val loginScreen = rememberScreen(Screens.LoginScreen)
+        val starterScreen = rememberScreen(Screens.StarterScreen)
 
         val isUserLoggedIn by UserModule.userState.isUserLoggedIn.collectAsState()
 
@@ -58,7 +58,7 @@ object SplashScreen : Screen {
                 if (isUserLoggedIn){
                     navigator.push(jobsScreen)
                 }else{
-                    navigator.push(loginScreen)
+                    navigator.push(starterScreen)
                 }
             }
         }

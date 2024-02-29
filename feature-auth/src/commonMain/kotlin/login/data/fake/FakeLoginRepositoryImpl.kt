@@ -1,7 +1,6 @@
 package login.data.fake
 
 
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import login.domain.repository.LoginRepository
@@ -10,21 +9,36 @@ import kotlinx.coroutines.flow.callbackFlow
 import utils.utils.UIState
 
 
-class FakeLoginRepositoryImpl : LoginRepository {
+class FakeLoginRepositoryImpl(
+    private val fakeLoginServiceImpl: FakeLoginServiceImpl
+) : LoginRepository {
 
     override suspend fun login(
         email: String,
         password: String
     ): Flow<UIState<Unit>> = callbackFlow {
-        try {
+        runCatching {
             trySend(UIState.Loading())
-            delay(2000)
-            trySend(UIState.Success(null))
-        } catch (e: Exception) {
-            trySend(UIState.Error(e.message.toString()))
+            delay(200)
+            fakeLoginServiceImpl.login(email, password)
+        }.onSuccess { response ->
+            when(response.status){
+                200 -> {
+                    trySend(UIState.Success(null))
+                }
+                401 -> {
+                    trySend(UIState.Error("Invalid email/password"))
+                }
+                else -> {
+                    trySend(UIState.Error("Unexpected response code: ${response.status}"))
+                }
+            }
+        }.onFailure { e ->
+            trySend(UIState.Error("Unexpected Error!"))
+            e.printStackTrace()
         }
         awaitClose {
-            cancel()
+            close()
         }
     }
 
