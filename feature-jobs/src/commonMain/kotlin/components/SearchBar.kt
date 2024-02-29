@@ -1,7 +1,6 @@
 package components
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
@@ -25,25 +24,21 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import theme.LocalThemeIsDark
 
 
 /**
@@ -62,6 +57,7 @@ fun ColumnScope.SearchBarView(
     onMic: () -> Unit,
     onSort: () -> Unit
 ) {
+    val isDark by LocalThemeIsDark.current
     Surface(
         modifier = modifier
             .padding(top = 24.dp, start = 24.dp, end = 24.dp)
@@ -81,6 +77,11 @@ fun ColumnScope.SearchBarView(
                 modifier = modifier
                     .weight(1f)
                     .fillMaxHeight(),
+                textStyle = TextStyle(
+                    color = if (isDark) Color.White else Color.Black,
+                    fontSize = 12.sp,
+                    lineHeight = 1.em
+                ),
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Done,
                     keyboardType = KeyboardType.Text
@@ -143,3 +144,6 @@ fun ColumnScope.SearchBarView(
         }
     }
 }
+
+
+

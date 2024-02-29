@@ -8,8 +8,11 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -28,10 +31,14 @@ import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.SignalCellularAlt
 import androidx.compose.material.icons.outlined.Workspaces
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
@@ -81,6 +88,8 @@ object StarterScreen : Screen {
         val starterJobsService = StarterJobsService()
         val jobs = starterJobsService.getAllJobs()
 
+        var openDrawer by remember { mutableStateOf(false) }
+
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -94,7 +103,7 @@ object StarterScreen : Screen {
                         if (boxWidth < 768.dp) {
                             IconButton(
                                 onClick = {
-
+                                    openDrawer = true
                                 }
                             ) {
                                 Icon(
@@ -139,7 +148,8 @@ object StarterScreen : Screen {
             },
             modifier = modifier.padding(
                 top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
-            )
+            ),
+            contentWindowInsets = WindowInsets(0.dp)
         ) { paddingValues ->
             BoxWithConstraints(
                 modifier = modifier
@@ -156,7 +166,98 @@ object StarterScreen : Screen {
                 )
 
             }
+
+            if (openDrawer && boxWidth < 768.dp){
+                ModalBottomSheet(
+                    onDismissRequest = {
+                        openDrawer = false
+                    },
+                    modifier = modifier.fillMaxWidth()
+                ){
+                    Column(
+                        modifier = modifier.fillMaxSize()
+                    ) {
+                        Card(
+                            modifier = modifier
+                                .fillMaxWidth()
+                                .height(55.dp)
+                                .clickable {
+                                    openDrawer = false
+                                    navigator.push(LoginScreen)
+                                },
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.Transparent
+                            )
+                        ) {
+                            Box(
+                                modifier = modifier
+                                    .fillMaxSize(),
+                                contentAlignment = Alignment.CenterStart
+                            ){
+                                Text(
+                                    text = "Sign in",
+                                    modifier = modifier.padding(start = 16.dp),
+                                    lineHeight = 1.em
+                                )
+                            }
+                        }
+                        HorizontalDivider()
+                        Card(
+                            modifier = modifier
+                                .fillMaxWidth()
+                                .height(55.dp)
+                                .clickable {
+                                    openDrawer = false
+                                    navigator.push(RegisterScreen)
+                                },
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.Transparent
+                            )
+                        ) {
+                            Box(
+                                modifier = modifier
+                                    .fillMaxSize(),
+                                contentAlignment = Alignment.CenterStart
+                            ){
+                                Text(
+                                    text = "Sign up",
+                                    modifier = modifier.padding(start = 16.dp),
+                                    lineHeight = 1.em
+                                )
+                            }
+                        }
+                        HorizontalDivider()
+                        Card(
+                            modifier = modifier
+                                .fillMaxWidth()
+                                .height(55.dp)
+                                .clickable {
+                                    isDark = !isDark
+                                },
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.Transparent
+                            )
+                        ) {
+                            Box(
+                                modifier = modifier
+                                    .fillMaxSize(),
+                                contentAlignment = Alignment.CenterStart
+                            ){
+                                Text(
+                                    text = "Theme",
+                                    modifier = modifier.padding(start = 16.dp),
+                                    lineHeight = 1.em
+                                )
+                            }
+                        }
+                    }
+                }
+            } else {
+                openDrawer = false
+            }
+
         }
+
 
     }
 
@@ -223,19 +324,26 @@ fun FlexLayout(
                                         .padding(start = 12.dp)
 //                                        .border(width = 1.dp, color = Color.White)
                                 ) {
-                                    Text(
-                                        text = item.company,
-                                        fontSize = 12.sp,
-                                        modifier = modifier,
-//                                            .border(width = 1.dp, color = Color.White),
-                                        lineHeight = 1.em
-                                    )
-                                    Text(
-                                        text = item.title,
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Bold
+
+                                    Column(
+                                        verticalArrangement = Arrangement.spacedBy(3.dp)
+                                    ) {
+                                        Text(
+                                            text = item.company,
+                                            fontSize = 12.sp,
+                                            lineHeight = 1.em,
+                                            modifier = modifier,
+//                                            .border(width = 1.dp, color = Color.White)
+                                        )
+
+                                        Text(
+                                            text = item.title,
+                                            fontSize = 14.sp,
+                                            lineHeight = 1.em,
+                                            fontWeight = FontWeight.Bold
 //                                        modifier = modifier.border(width = 1.dp, color = Color.White)
-                                    )
+                                        )
+                                    }
 
                                     Column(
                                         modifier = modifier.padding(top = 12.dp),
@@ -258,7 +366,8 @@ fun FlexLayout(
                                                     item.city.isNotBlank() && item.country.isNotBlank() -> "${item.city}, ${item.country}"
                                                     else -> ""
                                                 },
-                                                fontSize = 12.sp
+                                                fontSize = 12.sp,
+                                                lineHeight = 1.em
                                             )
                                         }
                                         Row(
@@ -273,7 +382,8 @@ fun FlexLayout(
                                             )
                                             Text(
                                                 text = item.workEnvironment,
-                                                fontSize = 12.sp
+                                                fontSize = 12.sp,
+                                                lineHeight = 1.em
                                             )
                                         }
                                         Row(
@@ -289,7 +399,8 @@ fun FlexLayout(
 
                                             Text(
                                                 text = item.experienceLevel,
-                                                fontSize = 12.sp
+                                                fontSize = 12.sp,
+                                                lineHeight = 1.em
                                             )
                                         }
                                     }
@@ -307,7 +418,8 @@ fun FlexLayout(
                                         label = {
                                             Text(
                                                 text = skill,
-                                                fontSize = 12.sp
+                                                fontSize = 12.sp,
+                                                lineHeight = 1.em
                                             )
                                         },
                                         modifier = modifier.padding(end = 12.dp),
@@ -327,6 +439,7 @@ fun FlexLayout(
                                 Text(
                                     text = "Posted: " + item.postedDate,
                                     fontSize = 12.sp,
+                                    lineHeight = 1.em,
                                     modifier = modifier.align(Alignment.CenterStart)
                                 )
 
