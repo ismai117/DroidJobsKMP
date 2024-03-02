@@ -17,9 +17,8 @@ kotlin {
         binaries.executable()
     }
 
-    wasmJs() {
+    wasmJs {
         browser()
-        binaries.executable()
     }
 
     iosX64()
@@ -41,14 +40,12 @@ kotlin {
         jsMain.dependencies {
             implementation(compose.html.core)
         }
-        iosMain.dependencies {
-        }
     }
 }
 
 
 android {
-    namespace = "org.ncgroup.droidjobskmp"
+    namespace = "org.ncgroup.droidjobskmp.commonUI"
     compileSdk = 34
     defaultConfig {
         minSdk = 24

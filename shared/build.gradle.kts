@@ -1,5 +1,9 @@
 @file:Suppress("OPT_IN_USAGE")
 
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
+
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinCocoapods)
@@ -8,8 +12,18 @@ plugins {
 }
 
 kotlin {
-    
-    androidTarget()
+
+    androidTarget {
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        instrumentedTestVariant {
+            sourceSetTree.set(KotlinSourceSetTree.test)
+
+            dependencies {
+                implementation("androidx.compose.ui:ui-test-junit4-android:1.6.2")
+                debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.2")
+            }
+        }
+    }
 
     js(IR) {
         browser()
@@ -18,7 +32,6 @@ kotlin {
 
     wasmJs{
         browser()
-        binaries.executable()
     }
     
     jvm()
@@ -70,6 +83,13 @@ kotlin {
             implementation(project(":feature-auth"))
             implementation(project(":feature-settings"))
         }
+        commonTest.dependencies {
+            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+            implementation(compose.uiTest)
+            implementation(kotlin("test"))
+            implementation(kotlin("test-annotations-common"))
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
+        }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
@@ -88,6 +108,7 @@ android {
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

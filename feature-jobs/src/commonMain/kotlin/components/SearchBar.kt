@@ -2,6 +2,7 @@ package components
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
@@ -112,17 +113,17 @@ fun ColumnScope.SearchBarView(
                                 innerField.invoke()
                             }
                         }
-                        IconButton(
-                            onClick = {
-                                onMic()
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Mic,
-                                contentDescription = "voice to text",
-                                tint = if (isDark) MaterialTheme.colorScheme.onPrimary else Color.Black
-                            )
-                        }
+//                        IconButton(
+//                            onClick = {
+//                                onMic()
+//                            }
+//                        ) {
+//                            Icon(
+//                                imageVector = Icons.Default.Mic,
+//                                contentDescription = "voice to text",
+//                                tint = if (isDark) MaterialTheme.colorScheme.onPrimary else Color.Black
+//                            )
+//                        }
                         IconButton(
                             onClick = {
                                 onSort()

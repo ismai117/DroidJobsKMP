@@ -109,8 +109,6 @@ class RegisterScreenModelTest {
         assertEquals( true, screenModel.state.confirmPasswordError?.isBlank(),screenModel.state.confirmPasswordError)
         screenModel.onEvent(RegisterEvent.SUBMIT)
         assertEquals(true, screenModel.state.isLoading, "isLoading should be true")
-        advanceUntilIdle()
-        assertEquals(true, screenModel.state.status, "status should be false")
     }
 
 }

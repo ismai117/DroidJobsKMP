@@ -4,7 +4,7 @@ import login.presentation.LoginScreen
 import presentation.JobDetailScreen
 import presentation.JobsScreen
 import register.presentation.RegisterScreen
-import starter.StarterScreen
+import starter.presentation.StarterScreen
 
 
 class AppModule {

@@ -19,7 +19,6 @@ kotlin {
 
     wasmJs() {
         browser()
-        binaries.executable()
     }
 
     iosX64()
@@ -68,7 +67,7 @@ kotlin {
 
 
 android {
-    namespace = "org.ncgroup.droidjobskmp"
+    namespace = "org.ncgroup.droidjobskmp.featureJobs"
     compileSdk = 34
     defaultConfig {
         minSdk = 24
