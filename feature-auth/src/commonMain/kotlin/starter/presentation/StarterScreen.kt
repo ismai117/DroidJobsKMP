@@ -32,10 +32,13 @@ import androidx.compose.material.icons.outlined.SignalCellularAlt
 import androidx.compose.material.icons.outlined.Workspaces
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
@@ -45,6 +48,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,11 +59,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import components.CompanyLogo
 import login.presentation.LoginScreen
@@ -69,209 +76,330 @@ import starter.jobs.Jobs
 import starter.jobs.StarterJobsService
 import theme.LocalThemeIsDark
 
+private typealias navigateToLoginScreen = () -> Unit
+private typealias navigateToRegisterScreen = () -> Unit
 
 object StarterScreen : Screen {
-
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-
-        val modifier: Modifier = Modifier
-
         val navigator = LocalNavigator.currentOrThrow
-
-        var boxWidth by remember { mutableStateOf(768.dp) }
-
-        var isDark by LocalThemeIsDark.current
-
-        val starterJobsService = StarterJobsService()
-        val jobs = starterJobsService.getAllJobs()
-
-        var openDrawer by remember { mutableStateOf(false) }
-
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "DroidJobs",
-                            lineHeight = 1.em,
-                            modifier = modifier
-                                .testTag("starter_topAppBar_title")
-                        )
-                    },
-                    actions = {
-                        if (boxWidth < 768.dp) {
-                            IconButton(
-                                onClick = {
-                                    openDrawer = true
-                                },
-                                modifier = modifier
-                                    .testTag("starter_topAppBar_menu_icon")
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Menu,
-                                    contentDescription = ""
-                                )
-                            }
-                        } else {
-                            TextButton(
-                                onClick = {
-                                    navigator.pop()
-                                    navigator.push(LoginScreen)
-                                },
-                                modifier = modifier
-                                    .testTag("starter_topAppBar_signIn_textBtn")
-                            ) {
-                                Text(
-                                    text = "Sign in",
-                                    lineHeight = 1.em
-                                )
-                            }
-                            TextButton(
-                                onClick = {
-                                    navigator.pop()
-                                    navigator.push(RegisterScreen)
-                                },
-                                modifier = modifier
-                                    .testTag("starter_topAppBar_signUp_textBtn")
-                            ) {
-                                Text(
-                                    text = "Sign up",
-                                    lineHeight = 1.em
-                                )
-                            }
-                            IconButton(
-                                onClick = { isDark = !isDark },
-                                modifier = modifier
-                                    .testTag("starter_topAppBar_theme_icon")
-                            ) {
-                                Icon(
-                                    imageVector = if (isDark) Icons.Outlined.LightMode else Icons.Outlined.DarkMode,
-                                    contentDescription = null
-                                )
-                            }
-                        }
-                    }
-                )
+        var containerWidth by remember { mutableStateOf(768.dp) }
+        StarterScreenContent(
+            navigateToLoginScreen = {
+                navigator.pop()
+                navigator.push(LoginScreen)
             },
-            modifier = modifier.padding(
-                top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
-            ).testTag("starter_topAppBar"),
-            contentWindowInsets = WindowInsets(0.dp)
-        ) { paddingValues ->
-            BoxWithConstraints(
-                modifier = modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
-            ) {
-                boxWidth = maxWidth.value.dp
+            navigateToRegisterScreen = {
+                navigator.pop()
+                navigator.push(RegisterScreen)
+            },
+            containerWidth = containerWidth,
+            containerWidthOnChange = { containerWidth = it }
+        )
+    }
+}
 
-                FlexLayout(
-                    jobs = jobs,
-                    navigateToLoginScreen = {
-                        navigator.push(LoginScreen)
-                    }
-                )
 
-            }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StarterScreenContent(
+    modifier: Modifier = Modifier,
+    navigateToLoginScreen: navigateToLoginScreen,
+    navigateToRegisterScreen: navigateToRegisterScreen,
+    containerWidth: Dp = 768.dp,
+    containerWidthOnChange: (Dp) -> Unit
+){
 
-            if (openDrawer && boxWidth < 768.dp){
-                ModalBottomSheet(
-                    onDismissRequest = {
-                        openDrawer = false
-                    },
-                    modifier = modifier.fillMaxWidth()
-                ){
-                    Column(
-                        modifier = modifier.fillMaxSize()
-                    ) {
-                        Card(
+    var theme by LocalThemeIsDark.current
+
+    var isLight by remember { mutableStateOf(false) }
+    var isDark by remember { mutableStateOf(false) }
+    var isFollowingSystemTheme by remember { mutableStateOf(false) }
+
+    val starterJobsService = StarterJobsService()
+    val jobs = starterJobsService.getAllJobs()
+
+    var openDrawer by remember { mutableStateOf(false) }
+
+    var themeDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(
+        key1 = theme
+    ){
+        if (theme){
+            isLight = false
+            isDark = true
+        }else {
+            isLight = true
+            isDark = false
+        }
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "DroidJobs",
+                        lineHeight = 1.em,
+                        modifier = modifier
+                            .testTag("starter_topAppBar_title")
+                    )
+                },
+                actions = {
+                    if (containerWidth < 768.dp) {
+                        IconButton(
+                            onClick = {
+                                openDrawer = true
+                            },
                             modifier = modifier
-                                .fillMaxWidth()
-                                .height(55.dp)
-                                .clickable {
-                                    openDrawer = false
-                                    navigator.push(LoginScreen)
-                                },
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color.Transparent
-                            )
+                                .testTag("starter_topAppBar_menu_icon")
                         ) {
-                            Box(
-                                modifier = modifier
-                                    .fillMaxSize(),
-                                contentAlignment = Alignment.CenterStart
-                            ){
-                                Text(
-                                    text = "Sign in",
-                                    modifier = modifier.padding(start = 16.dp),
-                                    lineHeight = 1.em
-                                )
-                            }
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = ""
+                            )
                         }
-                        HorizontalDivider()
-                        Card(
+                    } else {
+                        TextButton(
+                            onClick = {
+                                navigateToLoginScreen()
+                            },
                             modifier = modifier
-                                .fillMaxWidth()
-                                .height(55.dp)
-                                .clickable {
-                                    openDrawer = false
-                                    navigator.push(RegisterScreen)
-                                },
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color.Transparent
-                            )
+                                .testTag("starter_topAppBar_signIn_textBtn")
                         ) {
-                            Box(
-                                modifier = modifier
-                                    .fillMaxSize(),
-                                contentAlignment = Alignment.CenterStart
-                            ){
-                                Text(
-                                    text = "Sign up",
-                                    modifier = modifier.padding(start = 16.dp),
-                                    lineHeight = 1.em
-                                )
-                            }
+                            Text(
+                                text = "Sign in",
+                                lineHeight = 1.em
+                            )
                         }
-                        HorizontalDivider()
-                        Card(
+                        TextButton(
+                            onClick = {
+                               navigateToRegisterScreen()
+                            },
                             modifier = modifier
-                                .fillMaxWidth()
-                                .height(55.dp)
-                                .clickable {
-                                    isDark = !isDark
-                                },
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color.Transparent
-                            )
+                                .testTag("starter_topAppBar_signUp_textBtn")
                         ) {
-                            Box(
-                                modifier = modifier
-                                    .fillMaxSize(),
-                                contentAlignment = Alignment.CenterStart
-                            ){
-                                Text(
-                                    text = "Theme",
-                                    modifier = modifier.padding(start = 16.dp),
-                                    lineHeight = 1.em
-                                )
-                            }
+                            Text(
+                                text = "Sign up",
+                                lineHeight = 1.em
+                            )
+                        }
+                        IconButton(
+                            onClick = { theme = !theme },
+                            modifier = modifier
+                                .testTag("starter_topAppBar_theme_icon")
+                        ) {
+                            Icon(
+                                imageVector = if (isDark) Icons.Outlined.LightMode else Icons.Outlined.DarkMode,
+                                contentDescription = null
+                            )
                         }
                     }
                 }
-            } else {
-                openDrawer = false
-            }
+            )
+        },
+        modifier = modifier.padding(
+            top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
+        ).testTag("starter_topAppBar"),
+        contentWindowInsets = WindowInsets(0.dp)
+    ) { paddingValues ->
+        BoxWithConstraints(
+            modifier = modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+        ) {
+            containerWidthOnChange(maxWidth.value.dp)
+
+            FlexLayout(
+                jobs = jobs,
+                navigateToLoginScreen = {
+                   navigateToLoginScreen()
+                }
+            )
 
         }
 
+        if (openDrawer && containerWidth < 768.dp){
+            ModalBottomSheet(
+                onDismissRequest = {
+                    openDrawer = false
+                },
+                modifier = modifier.fillMaxWidth()
+            ){
+                Column(
+                    modifier = modifier.fillMaxSize()
+                ) {
+                    Card(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .height(55.dp)
+                            .clickable {
+                                openDrawer = false
+                                navigateToLoginScreen()
+                            },
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.Transparent
+                        )
+                    ) {
+                        Box(
+                            modifier = modifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.CenterStart
+                        ){
+                            Text(
+                                text = "Sign in",
+                                modifier = modifier.padding(start = 16.dp),
+                                lineHeight = 1.em
+                            )
+                        }
+                    }
+                    HorizontalDivider()
+                    Card(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .height(55.dp)
+                            .clickable {
+                                openDrawer = false
+                                navigateToRegisterScreen()
+                            },
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.Transparent
+                        )
+                    ) {
+                        Box(
+                            modifier = modifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.CenterStart
+                        ){
+                            Text(
+                                text = "Sign up",
+                                modifier = modifier.padding(start = 16.dp),
+                                lineHeight = 1.em
+                            )
+                        }
+                    }
+                    HorizontalDivider()
+                    Card(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .height(55.dp)
+                            .clickable {
+                               themeDialog = true
+                            },
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.Transparent
+                        )
+                    ) {
+                        Box(
+                            modifier = modifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.CenterStart
+                        ){
+                            Text(
+                                text = "Theme",
+                                modifier = modifier.padding(start = 16.dp),
+                                lineHeight = 1.em
+                            )
+                        }
+                    }
+                }
+            }
+        } else {
+            openDrawer = false
+        }
 
     }
 
-}
+    if (themeDialog) {
+        Dialog(
+            onDismissRequest = {
+                themeDialog = false
+            }
+        ) {
+            ElevatedCard(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
+                shape = RoundedCornerShape(24.dp)
+            ) {
+                Column(
+                    modifier = modifier
+                        .padding(24.dp)
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = "Theme",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = isLight,
+                            onCheckedChange = {
+                                if (!isLight){
+                                    isLight = it
+                                    isDark = false
+                                    theme = false
+                                }
+                            }
+                        )
+                        Text(
+                            text = "Light",
+                            fontSize = 12.sp,
+                            lineHeight = 1.em
+                        )
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = isDark,
+                            onCheckedChange = {
+                                if (!isDark){
+                                    isDark = it
+                                    isLight = false
+                                    theme = true
+                                }
+                            }
+                        )
+                        Text(
+                            text = "Dark",
+                            fontSize = 12.sp,
+                            lineHeight = 1.em
+                        )
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = isFollowingSystemTheme,
+                            onCheckedChange = {
+                                if (!isFollowingSystemTheme){
+                                    isFollowingSystemTheme = true
+                                    isLight = false
+                                    isDark = false
+                                }
+                            }
+                        )
+                        Text(
+                            text = "Follow system",
+                            fontSize = 12.sp,
+                            lineHeight = 1.em
+                        )
+                    }
+                }
+            }
+        }
+    }
 
+}
 
 @Composable
 fun FlexLayout(
