@@ -31,12 +31,10 @@ kotlin {
 
     js(IR) {
         browser()
-        binaries.executable()
     }
 
-    wasmJs() {
+    wasmJs {
         browser()
-        binaries.executable()
     }
 
     iosX64()
