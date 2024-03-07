@@ -81,11 +81,9 @@ object StarterScreen : Screen {
         var containerWidth by remember { mutableStateOf(768.dp) }
         StarterScreenContent(
             navigateToLoginScreen = {
-                navigator.pop()
                 navigator.push(LoginScreen)
             },
             navigateToRegisterScreen = {
-                navigator.pop()
                 navigator.push(RegisterScreen)
             },
             containerWidth = containerWidth,

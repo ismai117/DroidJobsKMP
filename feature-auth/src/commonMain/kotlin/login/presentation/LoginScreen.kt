@@ -10,12 +10,15 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Password
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -52,6 +55,7 @@ import forgetPassword.presentation.ForgetPasswordScreen
 import kotlinx.coroutines.launch
 import platform.getPlatform
 import register.presentation.RegisterScreen
+import starter.presentation.StarterScreen
 
 @OptIn(InternalVoyagerApi::class)
 object LoginScreen : Screen {
@@ -84,6 +88,9 @@ object LoginScreen : Screen {
             },
             navigateToForgetPasswordScreen = {
                 navigator.push(ForgetPasswordScreen)
+            },
+            navigateBack = {
+                navigator.pop()
             }
         )
 
@@ -91,6 +98,7 @@ object LoginScreen : Screen {
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreenContent(
     modifier: Modifier = Modifier,
@@ -99,6 +107,7 @@ fun LoginScreenContent(
     navigateToJobsScreen: () -> Unit,
     navigateToRegisterScreen: () -> Unit,
     navigateToForgetPasswordScreen: () -> Unit,
+    navigateBack: () -> Unit
 ){
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -124,6 +133,24 @@ fun LoginScreenContent(
     }
 
     Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {},
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            navigateBack()
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowLeft,
+                            contentDescription = "",
+                        )
+                    }
+                },
+                modifier = modifier.fillMaxWidth()
+            )
+        },
         snackbarHost = {
             SnackBarMessage(
                 snackBarHostState = snackbarHostState,
