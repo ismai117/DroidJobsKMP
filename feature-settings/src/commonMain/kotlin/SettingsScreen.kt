@@ -35,126 +35,144 @@ import platform.getPlatform
 
 object SettingsScreen : Screen {
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-
-        val modifier: Modifier = Modifier
 
         val navigator = LocalNavigator.currentOrThrow
 
         val starterScreen = rememberScreen(Screens.StarterScreen)
+
         val loginScreenModel = rememberScreenModel {
             LoginScreenModel(
                 loginRepository = AuthModule.loginModule.loginRepository
             )
         }
 
-        var themeDialog by remember { mutableStateOf(false) }
-
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {},
-                    navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                navigator.pop()
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                                contentDescription = "navigate back"
-                            )
-                        }
-                    }
-                )
+        SettingsScreenContent(
+            logout = {
+                loginScreenModel.logout()
+                navigator.popUntilRoot()
+                navigator.push(starterScreen)
             },
-            modifier = modifier.padding(
-                top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
+            navigateBack = {
+                navigator.pop()
+            }
+        )
+
+    }
+
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SettingsScreenContent(
+    modifier: Modifier = Modifier,
+    logout: () -> Unit,
+    navigateBack: () -> Unit
+) {
+
+    var themeDialog by remember { mutableStateOf(false) }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                           navigateBack()
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                            contentDescription = "navigate back"
+                        )
+                    }
+                }
             )
-        ) { paddingValues ->
+        },
+        modifier = modifier.padding(
+            top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
+        )
+    ) { paddingValues ->
+
+        Column(
+            modifier = modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+        ) {
 
             Column(
                 modifier = modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
+                    .padding(top = 24.dp)
+                    .fillMaxWidth()
             ) {
+
+                Text(
+                    text = "General",
+                    fontSize = 18.sp,
+                    modifier = modifier.padding(start = 24.dp)
+                )
 
                 Column(
                     modifier = modifier
                         .padding(top = 24.dp)
                         .fillMaxWidth()
+                        .height(55.dp)
+                        .clickable {
+                            themeDialog = true
+                        },
+//                           .border(width = 1.dp, color = Color.White),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
-
                     Text(
-                        text = "General",
-                        fontSize = 18.sp,
+                        text = "Theme",
+                        fontSize = 14.sp,
+                        lineHeight = 1.em,
                         modifier = modifier.padding(start = 24.dp)
                     )
-
-                    Column(
-                        modifier = modifier
-                            .padding(top = 24.dp)
-                            .fillMaxWidth()
-                            .height(55.dp)
-                            .clickable {
-                                themeDialog = true
-                            },
-//                           .border(width = 1.dp, color = Color.White),
-                        verticalArrangement = Arrangement.spacedBy(2.dp)
-                    ) {
-                        Text(
-                            text = "Theme",
-                            fontSize = 14.sp,
-                            lineHeight = 1.em,
-                            modifier = modifier.padding(start = 24.dp)
-                        )
-                        Text(
-                            text = "Follow system",
-                            fontSize = 14.sp,
-                            lineHeight = 1.em,
-                            modifier = modifier.padding(start = 24.dp)
-                        )
-                    }
-
-                    HorizontalDivider()
-
-                    Column(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .height(55.dp)
-                            .clickable {
-                                loginScreenModel.logout()
-                                navigator.popUntilRoot()
-                                navigator.push(starterScreen)
-                            },
-//                           .border(width = 1.dp, color = Color.White),
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "Logout",
-                            fontSize = 14.sp,
-                            lineHeight = 1.em,
-                            modifier = modifier.padding(start = 24.dp)
-                        )
-                    }
-
+                    Text(
+                        text = "Follow system",
+                        fontSize = 14.sp,
+                        lineHeight = 1.em,
+                        modifier = modifier.padding(start = 24.dp)
+                    )
                 }
 
+                HorizontalDivider()
+
+                Column(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(55.dp)
+                        .clickable {
+                            logout()
+                        },
+//                           .border(width = 1.dp, color = Color.White),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Logout",
+                        fontSize = 14.sp,
+                        lineHeight = 1.em,
+                        modifier = modifier.padding(start = 24.dp)
+                    )
+                }
 
             }
+
 
         }
 
-        ThemeDialog(
-            themeDialog = themeDialog,
-            themeDialogOnChange = {
-                themeDialog = it
-            }
-        )
-
     }
+
+    ThemeDialog(
+        themeDialog = themeDialog,
+        themeDialogOnChange = {
+            themeDialog = it
+        }
+    )
 
 }
 

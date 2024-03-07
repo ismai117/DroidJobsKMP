@@ -2,11 +2,9 @@ package presentation
 
 
 import components.FlexLayout
-import components.JobsScreenTitle
 import components.SearchBarView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,17 +32,15 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import di.JobsModule
+import domain.model.Jobs
 import platform.getPlatform
+
 
 
 object JobsScreen : Screen {
 
-
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-
-        val modifier: Modifier = Modifier
 
         val navigator = LocalNavigator.currentOrThrow
         val settingsScreen = rememberScreen(Screens.SettingsScreen)
@@ -55,108 +51,137 @@ object JobsScreen : Screen {
             )
         }
 
-        val state = jobScreenModel.state
+        val jobsState = jobScreenModel.state
 
         val query by jobScreenModel.query.collectAsState()
         val jobs by jobScreenModel.jobs.collectAsState()
         val searching by jobScreenModel.searching.collectAsState()
 
-        // FF7966
-
         LaunchedEffect(Unit){
             jobScreenModel.getAllJobs()
         }
 
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "Jobs",
-                            fontSize = 25.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    },
-                    actions = {
-                        IconButton(
-                            onClick = {
-                                navigator.push(settingsScreen)
-                            }
-                        ){
-                            Icon(
-                                imageVector = Icons.Default.Settings,
-                                contentDescription = "Settings"
-                            )
-                        }
-                    }
-                )
+        JobsScreenContent(
+            jobsState = jobsState,
+            jobs = jobs,
+            query = query,
+            onQueryChange = jobScreenModel::onQueryChange,
+            searching = searching,
+            navigateToDetailScreen = {
+                navigator.push(JobDetailScreen(it))
             },
-            modifier = modifier.padding(
-                top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
-            )
-        ) { paddingValues ->
+            navigateToSettingsScreen = {
+                navigator.push(settingsScreen)
+            }
+        )
 
-            Box(
-                modifier = modifier.padding(paddingValues)
+    }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun JobsScreenContent(
+    modifier: Modifier = Modifier,
+    jobsState: JobsState,
+    jobs: List<Jobs>,
+    query: String,
+    onQueryChange: (String) -> Unit,
+    searching: Boolean,
+    navigateToDetailScreen: (String) -> Unit,
+    navigateToSettingsScreen: () -> Unit
+){
+
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Jobs",
+                        fontSize = 25.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            navigateToSettingsScreen()
+                        }
+                    ){
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings"
+                        )
+                    }
+                }
+            )
+        },
+        modifier = modifier.padding(
+            top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
+        )
+    ) { paddingValues ->
+
+        Box(
+            modifier = modifier.padding(paddingValues)
+        ) {
+
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
             ) {
 
-                Column(
-                    modifier = modifier
-                        .fillMaxSize()
-                ) {
+                SearchBarView(
+                    query = query,
+                    onQueryChange = onQueryChange,
+                    onMic = {
 
-                    SearchBarView(
-                        query = query,
-                        onQueryChange = jobScreenModel::onQueryChange,
-                        onMic = {
+                    },
+                    onSort = {
 
-                        },
-                        onSort = {
-
-                        }
-                    )
-
-                    if (state.isLoading) {
-                        Box(
-                            modifier = modifier
-                                .padding(top = 24.dp)
-                                .fillMaxWidth(),
-                            contentAlignment = Alignment.TopCenter
-                        ) {
-                            CircularProgressIndicator()
-                        }
                     }
+                )
 
-                    if (searching) {
-                        Box(
-                            modifier = modifier
-                                .padding(top = 24.dp)
-                                .fillMaxWidth(),
-                            contentAlignment = Alignment.TopCenter
-                        ) {
-                            CircularProgressIndicator()
-                        }
+                if (jobsState.isLoading) {
+                    Box(
+                        modifier = modifier
+                            .padding(top = 24.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.TopCenter
+                    ) {
+                        CircularProgressIndicator()
                     }
-
-                    FlexLayout(
-                        modifier = modifier,
-                        jobs = jobs,
-                        navigateToDetailScreen = {
-                            navigator.push(JobDetailScreen(it))
-                        },
-                        openUrl = {
-                            openUrl(it)
-                        }
-                    )
-
                 }
 
+                if (searching) {
+                    Box(
+                        modifier = modifier
+                            .padding(top = 24.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.TopCenter
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                FlexLayout(
+                    modifier = modifier,
+                    jobs = jobs,
+                    navigateToDetailScreen = {
+                        navigateToDetailScreen(it)
+                    },
+                    openUrl = {
+                        openUrl(it)
+                    }
+                )
 
             }
+
 
         }
 
     }
+
 
 }
 

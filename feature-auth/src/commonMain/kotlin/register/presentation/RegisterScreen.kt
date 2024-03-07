@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,25 +42,22 @@ import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import components.LoadingButton
 import components.ProgressBar
 import components.SnackBarMessage
 import di.AuthModule
 import kotlinx.coroutines.launch
+import login.presentation.LoginEvent
 import login.presentation.LoginScreen
 import platform.getPlatform
 
 
+@OptIn(InternalVoyagerApi::class)
 object RegisterScreen : Screen {
 
-    @OptIn(ExperimentalMaterial3Api::class, InternalVoyagerApi::class)
+
     @Composable
     override fun Content() {
-
-
-        val scope = rememberCoroutineScope()
-        val snackbarHostState = remember { SnackbarHostState() }
-
-        val modifier: Modifier = Modifier
 
         val navigator = LocalNavigator.currentOrThrow
         val jobsScreen = rememberScreen(Screens.JobsScreen)
@@ -72,10 +71,48 @@ object RegisterScreen : Screen {
 
         val registerState = registerScreenModel.state
 
-        LaunchedEffect(registerState.status){
-            if (registerState.status){
+        RegisterScreenContent(
+            registerState = registerState,
+            onEvent = {
+                registerScreenModel.onEvent(it)
+            },
+            navigateToJobsScreen = {
                 navigator.dispose(RegisterScreen)
                 navigator.push(jobsScreen)
+            },
+            navigateToLoginScreen = {
+                navigator.push(LoginScreen)
+            },
+            navigateBack = {
+                navigator.pop()
+            }
+        )
+
+    }
+
+
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RegisterScreenContent(
+    modifier: Modifier = Modifier,
+    registerState: RegisterState,
+    onEvent: (RegisterEvent) -> Unit,
+    navigateToJobsScreen: () -> Unit,
+    navigateToLoginScreen: () -> Unit,
+    navigateBack: () -> Unit
+){
+
+
+        val scope = rememberCoroutineScope()
+        val snackbarHostState = remember { SnackbarHostState() }
+
+
+        LaunchedEffect(registerState.status){
+            if (registerState.status){
+                navigateToJobsScreen()
             }
         }
 
@@ -96,7 +133,7 @@ object RegisterScreen : Screen {
                     navigationIcon = {
                         IconButton(
                             onClick = {
-                                navigator.pop()
+                               navigateBack()
                             }
                         ) {
                             Icon(
@@ -148,7 +185,7 @@ object RegisterScreen : Screen {
                         OutlinedTextField(
                             value = registerState.email,
                             onValueChange = {
-                                registerScreenModel.onEvent(
+                                onEvent(
                                     RegisterEvent.EMAIL(it)
                                 )
                             },
@@ -179,7 +216,7 @@ object RegisterScreen : Screen {
                         OutlinedTextField(
                             value = registerState.password,
                             onValueChange = {
-                                registerScreenModel.onEvent(
+                                onEvent(
                                     RegisterEvent.PASSWORD(it)
                                 )
                             },
@@ -212,7 +249,7 @@ object RegisterScreen : Screen {
                         OutlinedTextField(
                             value = registerState.confirmPassword,
                             onValueChange = {
-                                registerScreenModel.onEvent(
+                                onEvent(
                                     RegisterEvent.CONFIRM_PASSWORD(it)
                                 )
                             },
@@ -240,23 +277,19 @@ object RegisterScreen : Screen {
 
                     Spacer(modifier = modifier.padding(12.dp))
 
-                    Button(
+                    LoadingButton(
                         onClick = {
-                            registerScreenModel.onEvent(
+                            onEvent(
                                 RegisterEvent.SUBMIT
                             )
                         },
-                        modifier = modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(24.dp)
-                    ) {
-                        Text(
-                            text = "Register"
-                        )
-                    }
+                        label = "Register",
+                        isLoading = registerState.isLoading
+                    )
 
                     OutlinedButton(
                         onClick = {
-                            navigator.push(LoginScreen)
+                           navigateToLoginScreen()
                         },
                         modifier = modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(24.dp),
@@ -271,18 +304,15 @@ object RegisterScreen : Screen {
 
             }
 
-            ProgressBar(isLoading = registerState.isLoading)
-
         }
 
         DisposableEffect(Unit){
             onDispose {
-                registerScreenModel.onEvent(
+                onEvent(
                     RegisterEvent.CLEAR
                 )
             }
         }
 
-    }
 
 }

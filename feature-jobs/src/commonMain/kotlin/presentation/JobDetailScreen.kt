@@ -37,7 +37,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -57,18 +56,10 @@ class JobDetailScreen(
     private val id: String
 ) : Screen {
 
-    @OptIn(
-        ExperimentalMaterial3Api::class,
-        ExperimentalLayoutApi::class
-    )
     @Composable
     override fun Content() {
 
-        val modifier: Modifier = Modifier
-
         val navigator = LocalNavigator.currentOrThrow
-
-        val scrollState = rememberScrollState()
 
         val jobsViewModel = rememberScreenModel {
             JobsScreenModeL(
@@ -76,449 +67,469 @@ class JobDetailScreen(
             )
         }
 
-        val state = jobsViewModel.state
+        val jobsState = jobsViewModel.state
 
         LaunchedEffect(Unit) {
             jobsViewModel.getJob(id)
         }
 
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {},
-                    navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                navigator.pop()
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                                contentDescription = "navigate back"
-                            )
-                        }
-                    },
-                    actions = {
-                        IconButton(
-                            onClick = {
-
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Share,
-                                contentDescription = "share job"
-                            )
-                        }
-                    }
-                )
-            },
-            modifier = modifier.padding(
-                top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
-            )
-        ) { paddingValues ->
-            Box(
-                modifier = modifier.padding(paddingValues)
-            ) {
-
-                if (!state.isLoading) {
-                    Column(
-                        modifier = modifier
-                            .fillMaxSize()
-                            .verticalScroll(scrollState),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-
-                        if (!state.job?.companyLogo.isNullOrBlank()){
-                            CompanyLogo(
-                                modifier = modifier
-                                    .padding(top = 40.dp)
-                                    .size(90.dp)
-                                    .clip(CircleShape),
-                                companyLogo = state.job?.companyLogo.orEmpty(),
-                                companyName = state.job?.company.orEmpty()
-                            )
-                        }
-
-                        Column(
-                            modifier = modifier
-                                .padding(top = 24.dp)
-                                .fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-
-                            Text(
-                                text = state.job?.company.orEmpty(),
-                                fontSize = 12.sp
-                            )
-
-                            Text(
-                                text = state.job?.title.orEmpty(),
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp
-                            )
-
-                            Row(
-                                modifier = modifier.padding(top = 12.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.LocationOn,
-                                    contentDescription = "location",
-                                )
-                                Text(
-                                    text = "${if (state.job?.address?.isNotBlank() == true) state.job.address else state.job?.city}",
-                                    fontSize = 12.sp
-                                )
-                            }
-
-                            Text(
-                                text = state.job?.industry.orEmpty(),
-                                modifier = modifier.padding(top = 20.dp),
-                                fontSize = 12.sp
-                            )
-
-                            Text(
-                                text = state.job?.companyMotto.orEmpty(),
-                                textAlign = TextAlign.Center,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = modifier
-                                    .padding(top = 20.dp, start = 24.dp, end = 24.dp)
-                            )
-
-                        }
-
-                        Column(
-                            modifier = modifier
-                                .padding(top = 40.dp, start = 24.dp, end = 24.dp)
-                                .fillMaxWidth(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Overview",
-                                fontSize = 24.sp
-                            )
-                            HorizontalDivider(
-                                modifier = modifier
-                                    .padding(top = 12.dp)
-                                    .width(120.dp),
-                                thickness = 3.dp,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-
-                        Column(
-                            modifier = modifier
-                                .padding(top = 40.dp, start = 24.dp, end = 24.dp)
-                                .fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-
-                            Text(
-                                text = "Skills & Experience",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-
-                            Column(
-                                modifier = modifier.padding(top = 12.dp),
-                                verticalArrangement = Arrangement.spacedBy(6.dp)
-                            ) {
-                                Text(
-                                    text = "Job roles:",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                Text(
-                                    text = "Mobile Developer",
-                                    fontSize = 14.sp
-                                )
-                            }
-
-                            Column(
-                                modifier = modifier.padding(top = 8.dp),
-                                verticalArrangement = Arrangement.spacedBy(6.dp)
-                            ) {
-                                Text(
-                                    text = "Tech stack/tooling used:",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                FlowRow {
-                                    state.job?.skills.orEmpty().forEach {
-                                        Text(
-                                            text = it,
-                                            fontSize = 14.sp,
-                                            modifier = modifier.padding(end = 8.dp)
-                                        )
-                                    }
-                                }
-                            }
-
-                            Column(
-                                modifier = modifier.padding(top = 8.dp),
-                                verticalArrangement = Arrangement.spacedBy(6.dp)
-                            ) {
-                                Text(
-                                    text = "Core skills we consider:",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                FlowRow {
-                                    state.job?.skills.orEmpty().forEach {
-                                        Text(
-                                            text = it,
-                                            fontSize = 14.sp,
-                                            modifier = modifier.padding(end = 8.dp)
-                                        )
-                                    }
-                                }
-                            }
-
-                        }
-
-                        Column(
-                            modifier = modifier
-                                .padding(top = 40.dp, start = 24.dp, end = 24.dp)
-                                .fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-
-                            Text(
-                                text = "Logistics",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-
-                            Column(
-                                modifier = modifier.padding(top = 12.dp),
-                                verticalArrangement = Arrangement.spacedBy(6.dp)
-                            ) {
-                                Text(
-                                    text = "Base Salary:",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                Text(
-                                    text = state.job?.salary.orEmpty(),
-                                    fontSize = 14.sp
-                                )
-                            }
-
-                            Column(
-                                modifier = modifier.padding(top = 8.dp),
-                                verticalArrangement = Arrangement.spacedBy(6.dp)
-                            ) {
-                                Text(
-                                    text = "Employment type:",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                Text(
-                                    text = state.job?.employmentType.orEmpty(),
-                                    fontSize = 14.sp
-                                )
-                            }
-
-                            Column(
-                                modifier = modifier.padding(top = 8.dp),
-                                verticalArrangement = Arrangement.spacedBy(6.dp)
-                            ) {
-                                Text(
-                                    text = "Remote working:",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                Text(
-                                    text = state.job?.workEnvironment.orEmpty(),
-                                    fontSize = 14.sp
-                                )
-                            }
-
-                            Column(
-                                modifier = modifier.padding(top = 8.dp),
-                                verticalArrangement = Arrangement.spacedBy(6.dp)
-                            ) {
-                                Text(
-                                    text = "Visa sponsorship:",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                Text(
-                                    text = state.job?.visaSponsorship.orEmpty(),
-                                    fontSize = 14.sp
-                                )
-                            }
-
-                        }
-
-                        Column(
-                            modifier = modifier
-                                .padding(top = 40.dp, start = 24.dp, end = 24.dp)
-                                .fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-
-                            Text(
-                                text = "Job Description",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-
-                            Column(
-                                modifier = modifier.padding(top = 12.dp),
-                                verticalArrangement = Arrangement.spacedBy(6.dp)
-                            ) {
-                                Text(
-                                    text = state.job?.description.orEmpty(),
-                                    fontSize = 14.sp
-                                )
-                            }
-
-                        }
-
-                        Column(
-                            modifier = modifier
-                                .padding(top = 40.dp, start = 24.dp, end = 24.dp)
-                                .fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-
-                            Text(
-                                text = "Requirements",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-
-                            Column(
-                                modifier = modifier.padding(top = 12.dp),
-                                verticalArrangement = Arrangement.spacedBy(6.dp)
-                            ) {
-                                state.job?.requirements.orEmpty().lines()
-                                    .forEachIndexed { _, requirement ->
-                                        Row(
-                                            horizontalArrangement = Arrangement.spacedBy(12.dp)
-                                        ) {
-                                            if (!requirement.endsWith(":") && requirement.isNotBlank()) {
-                                                Text(
-                                                    text = bulletPoint
-                                                )
-                                            }
-                                            Text(
-                                                text = requirement,
-                                                fontSize = 14.sp
-                                            )
-                                        }
-                                    }
-                            }
-
-                        }
-
-                        Column(
-                            modifier = modifier
-                                .padding(top = 40.dp, start = 24.dp, end = 24.dp)
-                                .fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-
-                            Text(
-                                text = "About Us",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-
-                            Column(
-                                modifier = modifier.padding(top = 12.dp),
-                                verticalArrangement = Arrangement.spacedBy(6.dp)
-                            ) {
-                                Text(
-                                    text = state.job?.aboutUs.orEmpty(),
-                                    fontSize = 14.sp
-                                )
-                            }
-
-                        }
-
-                        Column(
-                            modifier = modifier
-                                .padding(top = 40.dp, start = 24.dp, end = 24.dp)
-                                .fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-
-                            Text(
-                                text = "Company Benefits",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-
-                            Column(
-                                modifier = modifier.padding(top = 12.dp),
-                                verticalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                state.job?.companyBenefits.orEmpty().lines()
-                                    .forEachIndexed { _, benefit ->
-                                        Row(
-                                            horizontalArrangement = Arrangement.spacedBy(12.dp)
-                                        ) {
-                                            if (!benefit.endsWith(":") && benefit.isNotBlank()) {
-                                                Text(
-                                                    text = bulletPoint
-                                                )
-                                            }
-                                            Text(
-                                                text = benefit,
-                                                fontSize = 14.sp
-                                            )
-                                        }
-                                    }
-                            }
-
-                        }
-
-                        Box(
-                            modifier = modifier
-                                .padding(top = 40.dp, bottom = 40.dp)
-                                .fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-
-                            Button(
-                                onClick = {
-                                    openUrl(url = state.job?.link)
-                                },
-                                modifier = modifier
-                                    .width(120.dp)
-                                    .height(30.dp),
-                                shape = RectangleShape,
-                                contentPadding = PaddingValues(0.dp)
-                            ) {
-                                Text(
-                                    text = "APPLY"
-                                )
-                            }
-
-                        }
-
-                    }
-                }
-
-                if (state.isLoading) {
-                    Box(
-                        modifier = modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-
+        JobDetailScreenContent(
+            jobsState = jobsState,
+            navigateBack = {
+                navigator.pop()
             }
-        }
-
+        )
 
     }
+
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+fun JobDetailScreenContent(
+    modifier: Modifier = Modifier,
+    jobsState: JobsState,
+    navigateBack: () -> Unit
+) {
+
+    val scrollState = rememberScrollState()
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            navigateBack()
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                            contentDescription = "navigate back"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(
+                        onClick = {
+
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Share,
+                            contentDescription = "share job"
+                        )
+                    }
+                }
+            )
+        },
+        modifier = modifier.padding(
+            top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
+        )
+    ) { paddingValues ->
+        Box(
+            modifier = modifier.padding(paddingValues)
+        ) {
+
+            if (!jobsState.isLoading) {
+                Column(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    if (!jobsState.job?.companyLogo.isNullOrBlank()){
+                        CompanyLogo(
+                            modifier = modifier
+                                .padding(top = 40.dp)
+                                .size(90.dp)
+                                .clip(CircleShape),
+                            companyLogo = jobsState.job?.companyLogo.orEmpty(),
+                            companyName = jobsState.job?.company.orEmpty()
+                        )
+                    }
+
+                    Column(
+                        modifier = modifier
+                            .padding(top = 24.dp)
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+
+                        Text(
+                            text = jobsState.job?.company.orEmpty(),
+                            fontSize = 12.sp
+                        )
+
+                        Text(
+                            text = jobsState.job?.title.orEmpty(),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp
+                        )
+
+                        Row(
+                            modifier = modifier.padding(top = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.LocationOn,
+                                contentDescription = "location",
+                            )
+                            Text(
+                                text = "${if (jobsState.job?.address?.isNotBlank() == true) jobsState.job.address else jobsState.job?.city}",
+                                fontSize = 12.sp
+                            )
+                        }
+
+                        Text(
+                            text = jobsState.job?.industry.orEmpty(),
+                            modifier = modifier.padding(top = 20.dp),
+                            fontSize = 12.sp
+                        )
+
+                        Text(
+                            text = jobsState.job?.companyMotto.orEmpty(),
+                            textAlign = TextAlign.Center,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = modifier
+                                .padding(top = 20.dp, start = 24.dp, end = 24.dp)
+                        )
+
+                    }
+
+                    Column(
+                        modifier = modifier
+                            .padding(top = 40.dp, start = 24.dp, end = 24.dp)
+                            .fillMaxWidth(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Overview",
+                            fontSize = 24.sp
+                        )
+                        HorizontalDivider(
+                            modifier = modifier
+                                .padding(top = 12.dp)
+                                .width(120.dp),
+                            thickness = 3.dp,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+
+                    Column(
+                        modifier = modifier
+                            .padding(top = 40.dp, start = 24.dp, end = 24.dp)
+                            .fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+
+                        Text(
+                            text = "Skills & Experience",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Column(
+                            modifier = modifier.padding(top = 12.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = "Job roles:",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Text(
+                                text = "Mobile Developer",
+                                fontSize = 14.sp
+                            )
+                        }
+
+                        Column(
+                            modifier = modifier.padding(top = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = "Tech stack/tooling used:",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                            FlowRow {
+                                jobsState.job?.skills.orEmpty().forEach {
+                                    Text(
+                                        text = it,
+                                        fontSize = 14.sp,
+                                        modifier = modifier.padding(end = 8.dp)
+                                    )
+                                }
+                            }
+                        }
+
+                        Column(
+                            modifier = modifier.padding(top = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = "Core skills we consider:",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                            FlowRow {
+                                jobsState.job?.skills.orEmpty().forEach {
+                                    Text(
+                                        text = it,
+                                        fontSize = 14.sp,
+                                        modifier = modifier.padding(end = 8.dp)
+                                    )
+                                }
+                            }
+                        }
+
+                    }
+
+                    Column(
+                        modifier = modifier
+                            .padding(top = 40.dp, start = 24.dp, end = 24.dp)
+                            .fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+
+                        Text(
+                            text = "Logistics",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Column(
+                            modifier = modifier.padding(top = 12.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = "Base Salary:",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Text(
+                                text = jobsState.job?.salary.orEmpty(),
+                                fontSize = 14.sp
+                            )
+                        }
+
+                        Column(
+                            modifier = modifier.padding(top = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = "Employment type:",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Text(
+                                text = jobsState.job?.employmentType.orEmpty(),
+                                fontSize = 14.sp
+                            )
+                        }
+
+                        Column(
+                            modifier = modifier.padding(top = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = "Remote working:",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Text(
+                                text = jobsState.job?.workEnvironment.orEmpty(),
+                                fontSize = 14.sp
+                            )
+                        }
+
+                        Column(
+                            modifier = modifier.padding(top = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = "Visa sponsorship:",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Text(
+                                text = jobsState.job?.visaSponsorship.orEmpty(),
+                                fontSize = 14.sp
+                            )
+                        }
+
+                    }
+
+                    Column(
+                        modifier = modifier
+                            .padding(top = 40.dp, start = 24.dp, end = 24.dp)
+                            .fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+
+                        Text(
+                            text = "Job Description",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Column(
+                            modifier = modifier.padding(top = 12.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = jobsState.job?.description.orEmpty(),
+                                fontSize = 14.sp
+                            )
+                        }
+
+                    }
+
+                    Column(
+                        modifier = modifier
+                            .padding(top = 40.dp, start = 24.dp, end = 24.dp)
+                            .fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+
+                        Text(
+                            text = "Requirements",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Column(
+                            modifier = modifier.padding(top = 12.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            jobsState.job?.requirements.orEmpty().lines()
+                                .forEachIndexed { _, requirement ->
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                    ) {
+                                        if (!requirement.endsWith(":") && requirement.isNotBlank()) {
+                                            Text(
+                                                text = bulletPoint
+                                            )
+                                        }
+                                        Text(
+                                            text = requirement,
+                                            fontSize = 14.sp
+                                        )
+                                    }
+                                }
+                        }
+
+                    }
+
+                    Column(
+                        modifier = modifier
+                            .padding(top = 40.dp, start = 24.dp, end = 24.dp)
+                            .fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+
+                        Text(
+                            text = "About Us",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Column(
+                            modifier = modifier.padding(top = 12.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = jobsState.job?.aboutUs.orEmpty(),
+                                fontSize = 14.sp
+                            )
+                        }
+
+                    }
+
+                    Column(
+                        modifier = modifier
+                            .padding(top = 40.dp, start = 24.dp, end = 24.dp)
+                            .fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+
+                        Text(
+                            text = "Company Benefits",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Column(
+                            modifier = modifier.padding(top = 12.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            jobsState.job?.companyBenefits.orEmpty().lines()
+                                .forEachIndexed { _, benefit ->
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                    ) {
+                                        if (!benefit.endsWith(":") && benefit.isNotBlank()) {
+                                            Text(
+                                                text = bulletPoint
+                                            )
+                                        }
+                                        Text(
+                                            text = benefit,
+                                            fontSize = 14.sp
+                                        )
+                                    }
+                                }
+                        }
+
+                    }
+
+                    Box(
+                        modifier = modifier
+                            .padding(top = 40.dp, bottom = 40.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+
+                        Button(
+                            onClick = {
+                                openUrl(url = jobsState.job?.link)
+                            },
+                            modifier = modifier
+                                .width(120.dp)
+                                .height(30.dp),
+                            shape = RectangleShape,
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Text(
+                                text = "APPLY"
+                            )
+                        }
+
+                    }
+
+                }
+            }
+
+            if (jobsState.isLoading) {
+                Box(
+                    modifier = modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+
+        }
+    }
+
 
 }

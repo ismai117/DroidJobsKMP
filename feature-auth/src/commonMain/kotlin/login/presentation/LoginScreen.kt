@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -14,6 +15,7 @@ import androidx.compose.material.icons.outlined.Password
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,26 +44,20 @@ import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import components.LoadingButton
 import components.ProgressBar
 import components.SnackBarMessage
 import di.AuthModule
 import forgetPassword.presentation.ForgetPasswordScreen
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import platform.getPlatform
 import register.presentation.RegisterScreen
 
-
+@OptIn(InternalVoyagerApi::class)
 object LoginScreen : Screen {
 
-    @OptIn(InternalVoyagerApi::class)
     @Composable
-    override fun Content()  {
-
-        val snackbarHostState = remember { SnackbarHostState() }
-        val scope = rememberCoroutineScope()
-
-        val modifier: Modifier = Modifier
+    override fun Content() {
 
         val navigator = LocalNavigator.currentOrThrow
         val jobsScreen = rememberScreen(Screens.JobsScreen)
@@ -74,210 +70,238 @@ object LoginScreen : Screen {
 
         val loginState = loginScreenModel.state
 
-        LaunchedEffect(loginState.status){
-            if(loginState.status){
+        LoginScreenContent(
+            loginState = loginState,
+            onEvent = {
+                loginScreenModel.onEvent(it)
+            },
+            navigateToJobsScreen = {
                 navigator.dispose(LoginScreen)
                 navigator.push(jobsScreen)
-            }
-        }
-
-        LaunchedEffect(loginState.error){
-            if (loginState.error.isNotBlank()){
-                scope.launch {
-                    snackbarHostState.showSnackbar(
-                        message = loginState.error
-                    )
-                }
-                loginScreenModel.onEvent(
-                    LoginEvent.RESET_MESSAGE
-                )
-            }
-        }
-
-        Scaffold(
-            snackbarHost = {
-                SnackBarMessage(
-                    snackBarHostState = snackbarHostState,
-                    onDismiss = {}
-                )
             },
-            modifier = modifier.padding(
-                top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
-            )
-        ) { paddingValues ->
-
-            Column (
-                modifier = modifier
-                    .padding(paddingValues)
-                    .fillMaxSize(),
-//                    .border(width = 1.dp, color = Color.White),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-
-                Text(
-                    text = "Sign in",
-                    fontSize = 32.sp,
-                    modifier = modifier
-                        .padding(top = 100.dp)
-//                        .border(width = 1.dp, color = Color.White)
-                )
-
-                Column(
-                    modifier = modifier
-                        .padding(top = 60.dp, start = 24.dp, end = 24.dp)
-                        .widthIn(max = 330.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        OutlinedTextField(
-                            value = loginState.email,
-                            onValueChange = {
-                                loginScreenModel.onEvent(
-                                    LoginEvent.EMAIL(it)
-                                )
-                            },
-                            modifier = modifier.fillMaxWidth(),
-                            label = {
-                                Text(
-                                    text = "E-mail"
-                                )
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Outlined.Email,
-                                    contentDescription = "email"
-                                )
-                            },
-                            isError = loginState.emailError?.isNotBlank() == true,
-                            keyboardOptions = KeyboardOptions(
-                                imeAction = ImeAction.Done
-                            )
-                        )
-
-                        if (!loginState.emailError.isNullOrBlank()) {
-                            Text(
-                                text = loginState.emailError,
-                                color = MaterialTheme.colorScheme.error,
-                                modifier = modifier.padding(start = 12.dp)
-                            )
-                        }
-
-                    }
-
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        OutlinedTextField(
-                            value = loginState.password,
-                            onValueChange = {
-                                loginScreenModel.onEvent(
-                                    LoginEvent.PASSWORD(it)
-                                )
-                            },
-                            modifier = modifier.fillMaxWidth(),
-                            label = {
-                                Text(
-                                    text = "Password"
-                                )
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Outlined.Password,
-                                    contentDescription = "Password"
-                                )
-                            },
-                            trailingIcon = {
-                                IconButton(
-                                    onClick = {
-                                        if (!loginState.passwordVisible){
-                                            loginScreenModel.onEvent(
-                                                LoginEvent.SHOW_PASSWORD(visible = true)
-                                            )
-                                        }else{
-                                            loginScreenModel.onEvent(
-                                                LoginEvent.SHOW_PASSWORD(visible = false)
-                                            )
-                                        }
-                                    }
-                                ){
-                                    Icon(
-                                        imageVector = if (loginState.passwordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
-                                        contentDescription = "Show password",
-                                    )
-                                }
-                            },
-                            isError = loginState.passwordError?.isNotBlank() == true,
-                            visualTransformation = if (loginState.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                            keyboardOptions = KeyboardOptions(
-                                imeAction = ImeAction.Done,
-                                keyboardType = KeyboardType.Password
-                            )
-                        )
-
-                        if (!loginState.passwordError.isNullOrBlank()) {
-                            Text(
-                                text = loginState.passwordError,
-                                color = MaterialTheme.colorScheme.error,
-                                modifier = modifier.padding(start = 12.dp)
-                            )
-                        }
-                    }
-
-                    TextButton(
-                        onClick = {
-                            navigator.push(ForgetPasswordScreen)
-                        },
-                        modifier = modifier.align(Alignment.End)
-                    ) {
-                        Text(
-                            text = "Forget Password"
-                        )
-                    }
-
-                    Button(
-                        onClick = {
-                            loginScreenModel.onEvent(
-                                LoginEvent.SUBMIT
-                            )
-                        },
-                        modifier = modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(24.dp)
-                    ) {
-                        Text(
-                            text = "Login"
-                        )
-                    }
-
-                    OutlinedButton(
-                        onClick = {
-                            navigator.push(RegisterScreen)
-                        },
-                        modifier = modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(24.dp),
-                    ) {
-                        Text(
-                            text = "Register"
-                        )
-                    }
-
-                }
-
+            navigateToRegisterScreen = {
+                navigator.push(RegisterScreen)
+            },
+            navigateToForgetPasswordScreen = {
+                navigator.push(ForgetPasswordScreen)
             }
-
-            ProgressBar(isLoading = loginState.isLoading)
-
-        }
-
-        DisposableEffect(Unit){
-            onDispose {
-                loginScreenModel.onEvent(
-                    LoginEvent.CLEAR
-                )
-            }
-        }
+        )
 
     }
 
 }
+
+@Composable
+fun LoginScreenContent(
+    modifier: Modifier = Modifier,
+    loginState: LoginState,
+    onEvent: (LoginEvent) -> Unit,
+    navigateToJobsScreen: () -> Unit,
+    navigateToRegisterScreen: () -> Unit,
+    navigateToForgetPasswordScreen: () -> Unit,
+){
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(loginState.status){
+        if(loginState.status){
+           navigateToJobsScreen()
+        }
+    }
+
+    LaunchedEffect(loginState.error){
+        if (loginState.error.isNotBlank()){
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    message = loginState.error
+                )
+            }
+            onEvent(
+                LoginEvent.RESET_MESSAGE
+            )
+        }
+    }
+
+    Scaffold(
+        snackbarHost = {
+            SnackBarMessage(
+                snackBarHostState = snackbarHostState,
+                onDismiss = {}
+            )
+        },
+        modifier = modifier.padding(
+            top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
+        )
+    ) { paddingValues ->
+
+        Column (
+            modifier = modifier
+                .padding(paddingValues)
+                .fillMaxSize(),
+//                    .border(width = 1.dp, color = Color.White),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+
+            Text(
+                text = "Sign in",
+                fontSize = 32.sp,
+                modifier = modifier
+                    .padding(top = 100.dp)
+//                        .border(width = 1.dp, color = Color.White)
+            )
+
+            Column(
+                modifier = modifier
+                    .padding(top = 60.dp, start = 24.dp, end = 24.dp)
+                    .widthIn(max = 330.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    OutlinedTextField(
+                        value = loginState.email,
+                        onValueChange = {
+                            onEvent(
+                                LoginEvent.EMAIL(it)
+                            )
+                        },
+                        modifier = modifier.fillMaxWidth(),
+                        label = {
+                            Text(
+                                text = "E-mail"
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Email,
+                                contentDescription = "email"
+                            )
+                        },
+                        isError = loginState.emailError?.isNotBlank() == true,
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done
+                        )
+                    )
+
+                    if (!loginState.emailError.isNullOrBlank()) {
+                        Text(
+                            text = loginState.emailError,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = modifier.padding(start = 12.dp)
+                        )
+                    }
+
+                }
+
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    OutlinedTextField(
+                        value = loginState.password,
+                        onValueChange = {
+                            onEvent(
+                                LoginEvent.PASSWORD(it)
+                            )
+                        },
+                        modifier = modifier.fillMaxWidth(),
+                        label = {
+                            Text(
+                                text = "Password"
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Password,
+                                contentDescription = "Password"
+                            )
+                        },
+                        trailingIcon = {
+                            IconButton(
+                                onClick = {
+                                    if (!loginState.passwordVisible){
+                                        onEvent(
+                                            LoginEvent.SHOW_PASSWORD(visible = true)
+                                        )
+                                    }else{
+                                        onEvent(
+                                            LoginEvent.SHOW_PASSWORD(visible = false)
+                                        )
+                                    }
+                                }
+                            ){
+                                Icon(
+                                    imageVector = if (loginState.passwordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
+                                    contentDescription = "Show password",
+                                )
+                            }
+                        },
+                        isError = loginState.passwordError?.isNotBlank() == true,
+                        visualTransformation = if (loginState.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done,
+                            keyboardType = KeyboardType.Password
+                        )
+                    )
+
+                    if (!loginState.passwordError.isNullOrBlank()) {
+                        Text(
+                            text = loginState.passwordError,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = modifier.padding(start = 12.dp)
+                        )
+                    }
+                }
+
+                TextButton(
+                    onClick = {
+                       navigateToForgetPasswordScreen()
+                    },
+                    modifier = modifier.align(Alignment.End)
+                ) {
+                    Text(
+                        text = "Forget Password"
+                    )
+                }
+
+                LoadingButton(
+                    onClick = {
+                        onEvent(
+                            LoginEvent.SUBMIT
+                        )
+                    },
+                    label = "Login",
+                    isLoading = loginState.isLoading
+                )
+
+                OutlinedButton(
+                    onClick = {
+                       navigateToRegisterScreen()
+                    },
+                    modifier = modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(24.dp),
+                ) {
+                    Text(
+                        text = "Register"
+                    )
+                }
+
+            }
+
+        }
+
+    }
+
+    DisposableEffect(Unit){
+        onDispose {
+            onEvent(
+                LoginEvent.CLEAR
+            )
+        }
+    }
+
+
+}
+
+

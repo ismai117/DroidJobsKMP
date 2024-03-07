@@ -8,7 +8,7 @@ object ValidateLoginPassword {
         if (password.isBlank()) {
             return ValidationResult(
                 successful = false,
-                errorMessage = "Password cannot be blank!"
+                errorMessage = "Password can't be blank!"
             )
         }
         if (password.length < 8) {
