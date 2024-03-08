@@ -1,10 +1,12 @@
 package presentation
 
 import Screens
+import androidx.compose.foundation.border
 import components.FlexLayout
 import components.SearchBarView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -112,11 +115,15 @@ fun JobsScreenContent(
     val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
-        modifier = modifier.padding(
+        modifier = modifier
+            .border(width = 1.dp, color = Color.White)
+            .padding(
             top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
         ),
         topBar = {
             TopAppBar(
+                modifier = modifier
+                    .border(width = 1.dp, color = Color.White),
                 title = {
                     Text(
                         text = "Jobs",

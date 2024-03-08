@@ -26,7 +26,6 @@ kotlin {
             }
         }
         binaries.executable()
-        applyBinaryen()
     }
 
     sourceSets {
