@@ -1,5 +1,6 @@
 package register.presentation
 
+import Footer
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -168,7 +169,7 @@ fun RegisterScreenContent(
                     text = "Sign up",
                     fontSize = 32.sp,
                     modifier = modifier
-                        .padding(top = 80.dp)
+                        .padding(top = 60.dp)
 //                        .border(width = 1.dp, color = Color.White)
                 )
 
@@ -301,6 +302,10 @@ fun RegisterScreenContent(
 
 
                 }
+
+                Spacer(modifier = modifier.weight(1f))
+
+                Footer()
 
             }
 

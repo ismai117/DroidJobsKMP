@@ -1,14 +1,18 @@
 package login.presentation
 
+import Footer
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.outlined.Email
@@ -112,6 +116,7 @@ fun LoginScreenContent(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val scrollState = rememberScrollState()
 
     LaunchedEffect(loginState.status){
         if(loginState.status){
@@ -165,7 +170,8 @@ fun LoginScreenContent(
         Column (
             modifier = modifier
                 .padding(paddingValues)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .verticalScroll(scrollState),
 //                    .border(width = 1.dp, color = Color.White),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -174,7 +180,7 @@ fun LoginScreenContent(
                 text = "Sign in",
                 fontSize = 32.sp,
                 modifier = modifier
-                    .padding(top = 100.dp)
+                    .padding(top = 80.dp)
 //                        .border(width = 1.dp, color = Color.White)
             )
 
@@ -315,6 +321,11 @@ fun LoginScreenContent(
                 }
 
             }
+
+
+            Spacer(modifier = modifier.weight(1f))
+
+            Footer()
 
         }
 

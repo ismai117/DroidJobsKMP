@@ -31,7 +31,11 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.ui)
             implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
+            implementation(compose.components.resources)
             implementation("media.kamel:kamel-image:0.9.3-wasm")
+            implementation(libs.settings)
+            implementation(libs.voyagerScreenModel)
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)

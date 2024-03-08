@@ -1,6 +1,8 @@
 package presentation
 
-import domain.model.Jobs
+
+import jobs.Jobs
+
 
 
 data class JobsState(

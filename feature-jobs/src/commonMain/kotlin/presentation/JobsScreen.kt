@@ -1,6 +1,6 @@
 package presentation
 
-
+import Screens
 import components.FlexLayout
 import components.SearchBarView
 import androidx.compose.foundation.layout.Box
@@ -15,12 +15,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -31,10 +34,13 @@ import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import components.SnackBarMessage
 import di.JobsModule
-import domain.model.Jobs
+import jobs.Jobs
+import kotlinx.coroutines.launch
+import openUrl
 import platform.getPlatform
-
+import user.UserModule
 
 
 object JobsScreen : Screen {
@@ -44,6 +50,7 @@ object JobsScreen : Screen {
 
         val navigator = LocalNavigator.currentOrThrow
         val settingsScreen = rememberScreen(Screens.SettingsScreen)
+        val loginScreen = rememberScreen(Screens.LoginScreen)
 
         val jobScreenModel = rememberScreenModel {
             JobsScreenModeL(
@@ -57,6 +64,11 @@ object JobsScreen : Screen {
         val jobs by jobScreenModel.jobs.collectAsState()
         val searching by jobScreenModel.searching.collectAsState()
 
+
+        LaunchedEffect(Unit){
+            UserModule.userState.getUserState()
+        }
+
         LaunchedEffect(Unit){
             jobScreenModel.getAllJobs()
         }
@@ -67,6 +79,9 @@ object JobsScreen : Screen {
             query = query,
             onQueryChange = jobScreenModel::onQueryChange,
             searching = searching,
+            navigateToLoginScreen = {
+                navigator.push(loginScreen)
+            },
             navigateToDetailScreen = {
                 navigator.push(JobDetailScreen(it))
             },
@@ -88,12 +103,18 @@ fun JobsScreenContent(
     query: String,
     onQueryChange: (String) -> Unit,
     searching: Boolean,
+    navigateToLoginScreen: () -> Unit,
     navigateToDetailScreen: (String) -> Unit,
     navigateToSettingsScreen: () -> Unit
 ){
 
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
+        modifier = modifier.padding(
+            top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
+        ),
         topBar = {
             TopAppBar(
                 title = {
@@ -117,9 +138,12 @@ fun JobsScreenContent(
                 }
             )
         },
-        modifier = modifier.padding(
-            top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
-        )
+        snackbarHost = {
+            SnackBarMessage(
+                snackBarHostState = snackbarHostState,
+                onDismiss = {}
+            )
+        }
     ) { paddingValues ->
 
         Box(
@@ -167,11 +191,19 @@ fun JobsScreenContent(
                 FlexLayout(
                     modifier = modifier,
                     jobs = jobs,
+                    navigateToLoginScreen = {
+                        navigateToLoginScreen()
+                    },
                     navigateToDetailScreen = {
                         navigateToDetailScreen(it)
                     },
                     openUrl = {
                         openUrl(it)
+                    },
+                    shareLink = {
+                        scope.launch {
+                            snackbarHostState.showSnackbar("The share link feature is not yet implemented.")
+                        }
                     }
                 )
 
@@ -186,4 +218,3 @@ fun JobsScreenContent(
 }
 
 
-expect fun openUrl(url: String?)

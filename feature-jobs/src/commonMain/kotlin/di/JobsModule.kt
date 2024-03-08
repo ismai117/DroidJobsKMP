@@ -1,8 +1,8 @@
 package di
 
 import data.repository.JobsRepositoryImpl
-import data.service.JobsService
 import domain.repository.JobsRepository
+import jobs.JobsService
 
 
 object JobsModule {

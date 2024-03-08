@@ -1,7 +1,6 @@
 package presentation
 
-
-
+import Screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -30,10 +30,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,13 +47,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
+import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import components.CompanyLogo
-import data.service.bulletPoint
+import components.SnackBarMessage
 import di.JobsModule
+import jobs.bulletPoint
+import kotlinx.coroutines.launch
+import openUrl
 import platform.getPlatform
+import user.UserModule
 
 
 class JobDetailScreen(
@@ -60,6 +69,10 @@ class JobDetailScreen(
     override fun Content() {
 
         val navigator = LocalNavigator.currentOrThrow
+
+        val loginScreen = rememberScreen(Screens.LoginScreen)
+
+        val isUserLoggedIn by UserModule.userState.isUserLoggedIn
 
         val jobsViewModel = rememberScreenModel {
             JobsScreenModeL(
@@ -75,6 +88,10 @@ class JobDetailScreen(
 
         JobDetailScreenContent(
             jobsState = jobsState,
+            isUserLoggedIn = isUserLoggedIn,
+            navigateToLoginScreen = {
+                navigator.push(loginScreen)
+            },
             navigateBack = {
                 navigator.pop()
             }
@@ -90,12 +107,20 @@ class JobDetailScreen(
 fun JobDetailScreenContent(
     modifier: Modifier = Modifier,
     jobsState: JobsState,
+    isUserLoggedIn: Boolean,
+    navigateToLoginScreen: () -> Unit,
     navigateBack: () -> Unit
 ) {
 
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
     val scrollState = rememberScrollState()
 
+
     Scaffold(
+        modifier = modifier.padding(
+            top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
+        ),
         topBar = {
             TopAppBar(
                 title = {},
@@ -114,7 +139,25 @@ fun JobDetailScreenContent(
                 actions = {
                     IconButton(
                         onClick = {
-
+                            if (isUserLoggedIn){
+                                scope.launch {
+                                    snackbarHostState.showSnackbar("The bookmark feature is not yet implemented.")
+                                }
+                            } else {
+                                navigateToLoginScreen()
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.BookmarkBorder,
+                            contentDescription = "bookmark job"
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                snackbarHostState.showSnackbar("The share link feature is not yet implemented.")
+                            }
                         }
                     ) {
                         Icon(
@@ -125,9 +168,12 @@ fun JobDetailScreenContent(
                 }
             )
         },
-        modifier = modifier.padding(
-            top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
-        )
+        snackbarHost = {
+            SnackBarMessage(
+                snackBarHostState = snackbarHostState,
+                onDismiss = {}
+            )
+        }
     ) { paddingValues ->
         Box(
             modifier = modifier.padding(paddingValues)

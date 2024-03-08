@@ -61,7 +61,6 @@ kotlin {
             implementation(libs.bundles.ktor.common)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.napier)
-            implementation(libs.settings)
             implementation(project(":commonUI"))
             implementation(project(":navigation"))
         }

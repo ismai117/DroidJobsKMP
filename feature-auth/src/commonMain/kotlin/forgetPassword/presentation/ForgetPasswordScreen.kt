@@ -1,5 +1,6 @@
 package forgetPassword.presentation
 
+import Footer
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -155,7 +156,7 @@ fun ForgetPasswordContent(
                 text = "Reset Password",
                 fontSize = 32.sp,
                 modifier = modifier
-                    .padding(top = 80.dp)
+                    .padding(top = 60.dp)
 //                        .border(width = 1.dp, color = Color.White)
             )
 
@@ -213,6 +214,10 @@ fun ForgetPasswordContent(
                     )
                 }
             }
+
+            Spacer(modifier = modifier.weight(1f))
+
+            Footer()
 
         }
 

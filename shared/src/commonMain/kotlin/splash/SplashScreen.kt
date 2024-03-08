@@ -9,13 +9,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,8 +22,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import kottieComposition.KottieCompositionSpec
 import kottieComposition.animateKottieCompositionAsState
 import kottieComposition.rememberKottieComposition
-import login.presentation.LoginScreen
-import presentation.JobsScreen
 import user.UserModule
 
 
@@ -42,7 +36,7 @@ object SplashScreen : Screen {
         val jobsScreen = rememberScreen(Screens.JobsScreen)
         val starterScreen = rememberScreen(Screens.StarterScreen)
 
-        val isUserLoggedIn by UserModule.userState.isUserLoggedIn.collectAsState()
+        val isUserLoggedIn by UserModule.userState.isUserLoggedIn
 
         val composition = rememberKottieComposition(
             spec = KottieCompositionSpec.Url("https://lottie.host/0094976a-6a83-4795-b0ce-6da075ca5b6b/HSbPWOOaJV.json")
@@ -86,7 +80,6 @@ object SplashScreen : Screen {
 
                 Text(
                     text = "DroidJobs",
-                    color = Color.White,
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold
                 )

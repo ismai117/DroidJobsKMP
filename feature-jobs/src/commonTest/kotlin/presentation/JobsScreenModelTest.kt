@@ -1,6 +1,7 @@
 package presentation
 
-import di.JobsModule
+import jobs.di.JobsModule
+import jobs.presentation.JobsScreenModeL
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope

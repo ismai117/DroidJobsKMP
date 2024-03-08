@@ -1,11 +1,10 @@
 package data.repository
 
 
-import data.service.JobsService
-import domain.model.Jobs
 import domain.repository.JobsRepository
+import jobs.Jobs
+import jobs.JobsService
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import utils.ResultState
