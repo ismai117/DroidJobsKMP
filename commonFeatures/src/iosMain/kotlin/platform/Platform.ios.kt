@@ -1,7 +1,7 @@
 package platform
 
 class IOSPlatform: Platform {
-    override val name: String = "IOS"
+    override val type = Platforms.IOS
 }
 
 actual fun getPlatform(): Platform = IOSPlatform()

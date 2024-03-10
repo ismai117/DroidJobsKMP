@@ -43,9 +43,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -58,6 +62,7 @@ import register.presentation.RegisterScreen
 import jobs.JobsService
 import kotlinx.coroutines.launch
 import openUrl
+import platform.Platforms
 import theme.LocalThemeIsDark
 import user.UserModule
 
@@ -196,7 +201,7 @@ fun StarterScreenContent(
             )
         },
         modifier = modifier.padding(
-            top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
+            top = if (getPlatform().type == Platforms.DESKTOP) 24.dp else 0.dp
         ).testTag("starter_topAppBar"),
         contentWindowInsets = WindowInsets(0.dp),
         snackbarHost = {
@@ -213,23 +218,82 @@ fun StarterScreenContent(
         ) {
             containerWidthOnChange(maxWidth.value.dp)
 
-            FlexLayout(
-                jobs = jobs,
-                navigateToLoginScreen = {
-                    navigateToLoginScreen()
-                },
-                navigateToDetailScreen = {
-                    navigateToDetailScreen(it)
-                },
-                openUrl = {
-                    openUrl(it)
-                },
-                shareLink = {
-                    scope.launch {
-                        snackbarHostState.showSnackbar("The share link feature is not yet implemented.")
-                    }
+            Column {
+
+                val banner = buildAnnotatedString {
+                    append("Hi, Android Devs")
+                    append("\n")
+                    append("Your Next Opportunity Awaits!")
                 }
-            )
+
+                Box(
+                    modifier = modifier
+                         .padding(top = 60.dp, start = 12.dp, end = 12.dp)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.TopCenter
+                ){
+                    Text(
+                        text = banner.text,
+                        fontSize = when(getPlatform().type){
+                            Platforms.ANDROID -> {
+                                24.sp
+                            }
+                            Platforms.IOS -> {
+                                24.sp
+                            }
+                            Platforms.DESKTOP -> {
+                                42.sp
+                            }
+                            Platforms.WEB_JS -> {
+                                42.sp
+                            }
+                            Platforms.WEB_WASM -> {
+                                42.sp
+                            }
+                        },
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        lineHeight = when(getPlatform().type){
+                            Platforms.ANDROID -> {
+                                34.sp
+                            }
+                            Platforms.IOS -> {
+                                34.sp
+                            }
+                            Platforms.DESKTOP -> {
+                                52.sp
+                            }
+                            Platforms.WEB_JS -> {
+                                52.sp
+                            }
+                            Platforms.WEB_WASM -> {
+                                52.sp
+                            }
+                        }
+                    )
+                }
+
+                Spacer(modifier = modifier.padding(24.dp))
+
+                FlexLayout(
+                    jobs = jobs,
+                    navigateToLoginScreen = {
+                        navigateToLoginScreen()
+                    },
+                    navigateToDetailScreen = {
+                        navigateToDetailScreen(it)
+                    },
+                    openUrl = {
+                        openUrl(it)
+                    },
+                    shareLink = {
+                        scope.launch {
+                            snackbarHostState.showSnackbar("The share link feature is not yet implemented.")
+                        }
+                    }
+                )
+
+            }
 
         }
 

@@ -49,6 +49,7 @@ import components.ProgressBar
 import di.BookmarkModule
 import bookmark.presentation.BookmarkScreenModel
 import components.CompanyLogo
+import platform.Platforms
 import presentation.BookmarkState
 import starter.presentation.StarterScreen
 
@@ -138,7 +139,7 @@ fun BookmarkScreenContent(
             )
         },
         modifier = modifier.padding(
-            top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
+            top = if (getPlatform().type == Platforms.DESKTOP) 24.dp else 0.dp
         )
     ) { paddingValues ->
 

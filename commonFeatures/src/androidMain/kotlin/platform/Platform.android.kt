@@ -3,7 +3,7 @@ package platform
 import kotlinx.coroutines.Dispatchers
 
 class AndroidPlatform : Platform {
-    override val name: String = "Android"
+    override val type = Platforms.ANDROID
 }
 
 actual fun getPlatform(): Platform = AndroidPlatform()

@@ -1,7 +1,7 @@
 package platform
 
 class WebPlatform : Platform {
-    override val name: String = "Js"
+    override val type = Platforms.WEB_JS
 }
 
 actual fun getPlatform(): Platform = WebPlatform()

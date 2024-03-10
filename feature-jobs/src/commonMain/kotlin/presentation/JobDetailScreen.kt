@@ -63,6 +63,7 @@ import di.JobsModule
 import jobs.bulletPoint
 import kotlinx.coroutines.launch
 import openUrl
+import platform.Platforms
 import platform.getPlatform
 import user.UserModule
 
@@ -154,7 +155,7 @@ fun JobDetailScreenContent(
     Scaffold(
         modifier = modifier
             .padding(
-            top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
+            top = if (getPlatform().type == Platforms.DESKTOP) 24.dp else 0.dp
         ),
         topBar = {
             TopAppBar(

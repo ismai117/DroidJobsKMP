@@ -1,7 +1,7 @@
 package platform
 
 class WebPlatform : Platform {
-    override val name: String = "Wasm"
+    override val type = Platforms.WEB_WASM
 }
 
 actual fun getPlatform(): Platform = WebPlatform()

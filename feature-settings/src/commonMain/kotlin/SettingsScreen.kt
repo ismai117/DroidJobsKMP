@@ -32,6 +32,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import di.AuthModule
 import login.presentation.LoginScreenModel
+import platform.Platforms
 import platform.getPlatform
 
 
@@ -104,7 +105,7 @@ fun SettingsScreenContent(
             )
         },
         modifier = modifier.padding(
-            top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
+            top = if (getPlatform().type == Platforms.DESKTOP) 24.dp else 0.dp
         )
     ) { paddingValues ->
 

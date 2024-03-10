@@ -57,6 +57,7 @@ import components.SnackBarMessage
 import di.AuthModule
 import forgetPassword.presentation.ForgetPasswordScreen
 import kotlinx.coroutines.launch
+import platform.Platforms
 import platform.getPlatform
 import register.presentation.RegisterScreen
 import starter.presentation.StarterScreen
@@ -163,7 +164,7 @@ fun LoginScreenContent(
             )
         },
         modifier = modifier.padding(
-            top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
+            top = if (getPlatform().type == Platforms.DESKTOP) 24.dp else 0.dp
         )
     ) { paddingValues ->
 
