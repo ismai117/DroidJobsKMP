@@ -1,12 +1,12 @@
 package forgetPassword.data.fake
 
+import UIState
 import forgetPassword.domain.repository.ForgetPasswordRepository
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import utils.utils.UIState
 
 
 class FakeForgetPasswordRepositoryImpl : ForgetPasswordRepository{

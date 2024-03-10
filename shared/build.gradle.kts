@@ -1,7 +1,9 @@
 @file:Suppress("OPT_IN_USAGE")
 
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
+import org.jetbrains.compose.ExperimentalComposeLibrary
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_9
 
 
 plugins {
@@ -9,21 +11,12 @@ plugins {
     alias(libs.plugins.kotlinCocoapods)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
 
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        instrumentedTestVariant {
-            sourceSetTree.set(KotlinSourceSetTree.test)
-
-            dependencies {
-                implementation("androidx.compose.ui:ui-test-junit4-android:1.6.2")
-                debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.2")
-            }
-        }
-    }
+    androidTarget()
 
     js(IR) {
         browser()
@@ -43,7 +36,7 @@ kotlin {
         summary = "Some description for the Shared Module"
         homepage = "Link to the Shared Module homepage"
         version = "1.0"
-        ios.deploymentTarget = "14.1"
+        ios.deploymentTarget = "17.4"
         podfile = project.file("../iosApp/Podfile")
         framework {
             baseName = "shared"
@@ -54,7 +47,11 @@ kotlin {
             linkOnly = true
         }
     }
-    
+
+    compilerOptions {
+        languageVersion.set(KOTLIN_1_9)
+    }
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
@@ -69,21 +66,21 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
             implementation(compose.ui)
-            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.voyagerNavigation)
             implementation(libs.voyagerScreenModel)
             implementation(libs.voyagerTransitions)
             implementation(libs.kottie)
-            implementation(project(":commonUI"))
+            implementation(project(":commonFeatures"))
             implementation(project(":navigation"))
             implementation(project(":feature-jobs"))
             implementation(project(":feature-auth"))
             implementation(project(":feature-settings"))
+            implementation(project(":feature-bookmark"))
         }
         commonTest.dependencies {
-            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+            @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.uiTest)
             implementation(kotlin("test"))
             implementation(kotlin("test-annotations-common"))
@@ -113,7 +110,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlin {
-        jvmToolchain(17)
-    }
+}
+
+compose {
+    kotlinCompilerPlugin.set(libs.versions.compose.compiler)
+    kotlinCompilerPluginArgs.add("suppressKotlinVersionCompatibilityCheck=${libs.versions.kotlin}")
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions.jvmTarget = "17"
 }

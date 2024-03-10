@@ -80,6 +80,7 @@ object StarterScreen : Screen {
 
         LaunchedEffect(Unit){
             UserModule.userState.getUserState()
+            println("isUserLoggedIn: ${UserModule.userState.isUserLoggedIn.value}")
         }
 
         LaunchedEffect(id){

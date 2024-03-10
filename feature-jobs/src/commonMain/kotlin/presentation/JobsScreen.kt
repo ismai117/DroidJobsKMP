@@ -32,12 +32,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import bookmark.presentation.BookmarkScreenModel
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import components.SnackBarMessage
+import di.BookmarkModule
 import di.JobsModule
 import jobs.Jobs
 import kotlinx.coroutines.launch
@@ -116,14 +118,11 @@ fun JobsScreenContent(
 
     Scaffold(
         modifier = modifier
-            .border(width = 1.dp, color = Color.White)
             .padding(
             top = if (getPlatform().name == "Desktop") 24.dp else 0.dp
         ),
         topBar = {
             TopAppBar(
-                modifier = modifier
-                    .border(width = 1.dp, color = Color.White),
                 title = {
                     Text(
                         text = "Jobs",

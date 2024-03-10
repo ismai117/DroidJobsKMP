@@ -42,7 +42,7 @@ kotlin {
             implementation(libs.voyagerNavigation)
             implementation(libs.voyagerScreenModel)
             implementation(libs.voyagerTransitions)
-            implementation(project(":commonUI"))
+            implementation(project(":commonFeatures"))
             implementation(project(":navigation"))
             implementation(project(":feature-settings"))
         }

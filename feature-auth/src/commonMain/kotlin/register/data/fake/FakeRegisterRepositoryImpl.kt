@@ -1,13 +1,13 @@
 package register.data.fake
 
 
+import UIState
 import kotlinx.coroutines.cancel
 import register.domain.repository.RegisterRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import utils.utils.UIState
 
 
 class FakeRegisterRepositoryImpl : RegisterRepository {

@@ -7,7 +7,6 @@ import register.domain.repository.RegisterRepository
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.launch
-import utils.utils.UIState
 import validations.email.ValidateEmail
 import validations.register.ValidateRegisterConfirmPassword
 import validations.register.ValidateRegisterPassword

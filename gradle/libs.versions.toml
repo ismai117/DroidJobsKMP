@@ -10,10 +10,11 @@ androidx-core-ktx = "1.12.0"
 androidx-espresso-core = "3.5.1"
 androidx-material = "1.11.0"
 androidx-test-junit = "1.1.5"
-compose = "1.6.2"
+compose = "1.6.3"
+compose-compiler = "1.5.9-kt-2.0.0-Beta4"
 compose-plugin = "1.6.0"
 junit = "4.13.2"
-kotlin = "1.9.22"
+kotlin = "2.0.0-Beta4"
 kotlinx-coroutines = "1.8.0"
 kottie = "1.7.3-alpha01"
 voyager = "1.1.0-alpha03"
@@ -22,6 +23,7 @@ kotlinx-serialization = "1.6.2"
 napier = "2.7.1"
 multiplatformSettings= "1.1.1"
 buildConfig = "4.1.1"
+ksp = "2.0.0-Beta4-1.0.19"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -49,6 +51,7 @@ voyagerTransitions = { module = "cafe.adriel.voyager:voyager-transitions", versi
 
 ktor = { group = "io.ktor", name = "ktor", version.ref = "ktor" }
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref = "ktor" }
 ktor-client-json = { group = "io.ktor", name = "ktor-client-json", version.ref = "ktor" }
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
 ktor-client-serialization = { group = "io.ktor", name = "ktor-client-serialization", version.ref = "ktor" }
@@ -59,6 +62,7 @@ ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.r
 ktor-client-java = { group = "io.ktor", name = "ktor-client-java", version.ref = "ktor" }
 ktor-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }
 
+
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
@@ -67,7 +71,7 @@ settings = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref
 
 
 [bundles]
-ktor-common = ["ktor-client-core", "ktor-client-json", "ktor-client-logging", "ktor-client-serialization", "ktor-client-content-negotiation", "ktor-serialization-kotlinx-json"]
+ktor-common = ["ktor-client-core", "ktor-client-auth", "ktor-client-json", "ktor-client-logging", "ktor-client-serialization", "ktor-client-content-negotiation", "ktor-serialization-kotlinx-json"]
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -77,3 +81,4 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 kotlinCocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

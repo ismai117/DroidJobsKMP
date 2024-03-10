@@ -50,6 +50,7 @@ android {
     compileSdk = 34
     defaultConfig {
         minSdk = 24
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -59,3 +60,4 @@ android {
         jvmToolchain(17)
     }
 }
+

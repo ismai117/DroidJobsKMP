@@ -1,5 +1,9 @@
 @file:Suppress("OPT_IN_USAGE")
 
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
+
+
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinMultiplatform)
@@ -29,13 +33,16 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.ui)
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
-            implementation(compose.components.resources)
-            implementation("media.kamel:kamel-image:0.9.3-wasm")
-            implementation(libs.settings)
+            implementation(compose.ui)
+            implementation(libs.voyagerNavigation)
             implementation(libs.voyagerScreenModel)
+            implementation(libs.voyagerTransitions)
+            implementation(libs.settings)
+            implementation(project(":commonFeatures"))
+            implementation(project(":navigation"))
+            implementation(project(":feature-auth"))
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -43,12 +50,15 @@ kotlin {
         jsMain.dependencies {
             implementation(compose.html.core)
         }
+        iosMain.dependencies {
+        }
     }
+
 }
 
 
 android {
-    namespace = "org.ncgroup.droidjobskmp.commonUI"
+    namespace = "org.ncgroup.droidjobskmp.featureSettings"
     compileSdk = 34
     defaultConfig {
         minSdk = 24
@@ -61,3 +71,4 @@ android {
         jvmToolchain(17)
     }
 }
+

@@ -1,7 +1,7 @@
 package login.domain.repository
 
+import UIState
 import kotlinx.coroutines.flow.Flow
-import utils.utils.UIState
 
 
 interface LoginRepository {

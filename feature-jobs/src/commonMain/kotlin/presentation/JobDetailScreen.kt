@@ -1,7 +1,6 @@
 package presentation
 
 import Screens
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.LocationOn
@@ -37,6 +36,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -44,12 +44,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import bookmark.presentation.BookmarkEvent
+import bookmark.presentation.BookmarkScreenModel
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
@@ -57,6 +58,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import components.CompanyLogo
 import components.SnackBarMessage
+import di.BookmarkModule
 import di.JobsModule
 import jobs.bulletPoint
 import kotlinx.coroutines.launch
@@ -78,21 +80,40 @@ class JobDetailScreen(
 
         val isUserLoggedIn by UserModule.userState.isUserLoggedIn
 
-        val jobsViewModel = rememberScreenModel {
+        val jobsScreenModel= rememberScreenModel {
             JobsScreenModeL(
                 jobsRepository = JobsModule.jobsRepository
             )
         }
 
-        val jobsState = jobsViewModel.state
+        val jobsState = jobsScreenModel.state
+
+        val bookmarkScreenModel = rememberScreenModel {
+            BookmarkScreenModel(
+                bookmarkRepository = BookmarkModule.bookmarkRepository
+            )
+        }
+
+        val bookmarkState = bookmarkScreenModel.state
 
         LaunchedEffect(Unit) {
-            jobsViewModel.getJob(id)
+            jobsScreenModel.getJob(id)
+        }
+
+        LaunchedEffect(Unit){
+            UserModule.userState.getUserState()
         }
 
         JobDetailScreenContent(
             jobsState = jobsState,
             isUserLoggedIn = isUserLoggedIn,
+            bookmarkState = bookmarkState,
+            bookmarkOnEvent = {
+                bookmarkScreenModel.onEvent(it)
+            },
+            refreshBookmarks = {
+                bookmarkScreenModel.getBookmarks()
+            },
             navigateToLoginScreen = {
                 navigator.push(loginScreen)
             },
@@ -112,6 +133,9 @@ fun JobDetailScreenContent(
     modifier: Modifier = Modifier,
     jobsState: JobsState,
     isUserLoggedIn: Boolean,
+    bookmarkState: BookmarkState,
+    bookmarkOnEvent: (BookmarkEvent) -> Unit,
+    refreshBookmarks: () -> Unit,
     navigateToLoginScreen: () -> Unit,
     navigateBack: () -> Unit
 ) {
@@ -120,6 +144,12 @@ fun JobDetailScreenContent(
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollState = rememberScrollState()
 
+    LaunchedEffect(bookmarkState.statusInsertBookmark){
+        if (bookmarkState.statusInsertBookmark){
+            refreshBookmarks()
+            snackbarHostState.showSnackbar("Job added to your bookmark!")
+        }
+    }
 
     Scaffold(
         modifier = modifier
@@ -146,19 +176,33 @@ fun JobDetailScreenContent(
                 actions = {
                     IconButton(
                         onClick = {
-                            if (isUserLoggedIn){
-                                scope.launch {
-                                    snackbarHostState.showSnackbar("The bookmark feature is not yet implemented.")
+                            if (isUserLoggedIn && !jobsState.job?.id.isNullOrBlank()){
+                                if(!bookmarkState.bookmarks.any { it.jobID == jobsState.job?.id }){
+                                    bookmarkOnEvent(
+                                        BookmarkEvent.INSERT(
+                                            jobId = jobsState.job!!.id,
+                                            jobTitle = jobsState.job.title,
+                                            companyName = jobsState.job.company,
+                                            companyLogo = jobsState.job.companyLogo,
+                                        )
+                                    )
                                 }
                             } else {
                                 navigateToLoginScreen()
                             }
                         }
                     ) {
-                        Icon(
-                            imageVector = Icons.Outlined.BookmarkBorder,
-                            contentDescription = "bookmark job"
-                        )
+                        if (isUserLoggedIn){
+                            Icon(
+                                imageVector = if (bookmarkState.bookmarks.any { it.jobID == jobsState.job?.id }) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
+                                contentDescription = "bookmark job"
+                            )
+                        }else{
+                            Icon(
+                                imageVector = Icons.Outlined.BookmarkBorder,
+                                contentDescription = "bookmark job"
+                            )
+                        }
                     }
                     IconButton(
                         onClick = {
@@ -581,6 +625,14 @@ fun JobDetailScreenContent(
                 }
             }
 
+        }
+    }
+
+    DisposableEffect(Unit){
+        onDispose {
+            bookmarkOnEvent(
+                BookmarkEvent.CLEAR
+            )
         }
     }
 

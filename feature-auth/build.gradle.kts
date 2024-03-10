@@ -15,17 +15,7 @@ plugins {
 
 kotlin {
 
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        instrumentedTestVariant {
-            sourceSetTree.set(KotlinSourceSetTree.test)
-
-            dependencies {
-                implementation("androidx.compose.ui:ui-test-junit4-android:1.6.2")
-                debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.2")
-            }
-        }
-    }
+    androidTarget()
 
     jvm()
 
@@ -55,13 +45,13 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation(compose.ui)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.serialization.json)
             implementation(libs.voyagerNavigation)
             implementation(libs.voyagerScreenModel)
             implementation(libs.voyagerTransitions)
             implementation(libs.bundles.ktor.common)
-            implementation(libs.kotlinx.serialization.json)
             implementation(libs.napier)
-            implementation(project(":commonUI"))
+            implementation(project(":commonFeatures"))
             implementation(project(":navigation"))
         }
         commonTest.dependencies {
@@ -102,6 +92,7 @@ android {
         jvmToolchain(17)
     }
 }
+
 
 val properties = Properties().apply {
     load(project.rootProject.file("local.properties").inputStream())

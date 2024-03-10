@@ -1,7 +1,3 @@
-package utils.utils
-
-
-
 sealed class UIState<T>(
     val data: T? = null,
     val message: String = ""

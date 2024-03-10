@@ -6,7 +6,7 @@ plugins {
 }
 
 val copyWasmResources = tasks.create("copyWasmResourcesWorkaround", Copy::class.java) {
-    from(project(":commonUI").file("src/commonMain/composeResources"))
+    from(project(":commonFeatures").file("src/commonMain/composeResources"))
     into("build/processedResources/wasmJs/main")
 }
 

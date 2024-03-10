@@ -17,8 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import droidjobskmp.commonui.generated.resources.Res
-import droidjobskmp.commonui.generated.resources.icons8_github_24
+import droidjobskmp.commonfeatures.generated.resources.Res
+import droidjobskmp.commonfeatures.generated.resources.icons8_github_24
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import theme.LocalThemeIsDark

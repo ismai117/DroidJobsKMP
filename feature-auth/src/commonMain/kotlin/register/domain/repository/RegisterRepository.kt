@@ -1,7 +1,7 @@
 package register.domain.repository
 
+import UIState
 import kotlinx.coroutines.flow.Flow
-import utils.utils.UIState
 
 interface RegisterRepository {
   suspend fun register(

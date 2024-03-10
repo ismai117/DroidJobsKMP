@@ -1,5 +1,6 @@
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
@@ -41,6 +43,7 @@ object SettingsScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
 
         val starterScreen = rememberScreen(Screens.StarterScreen)
+        val bookmarkScreen = rememberScreen(Screens.BookmarkScreen)
 
         val loginScreenModel = rememberScreenModel {
             LoginScreenModel(
@@ -49,6 +52,9 @@ object SettingsScreen : Screen {
         }
 
         SettingsScreenContent(
+            navigateToBookmarkScreen = {
+                navigator.push(bookmarkScreen)
+            },
             logout = {
                 loginScreenModel.logout()
                 navigator.popUntilRoot()
@@ -68,6 +74,7 @@ object SettingsScreen : Screen {
 @Composable
 fun SettingsScreenContent(
     modifier: Modifier = Modifier,
+    navigateToBookmarkScreen: () -> Unit,
     logout: () -> Unit,
     navigateBack: () -> Unit
 ) {
@@ -77,7 +84,11 @@ fun SettingsScreenContent(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {},
+                title = {
+                    Text(
+                        text = "Settings"
+                    )
+                },
                 navigationIcon = {
                     IconButton(
                         onClick = {
@@ -140,9 +151,27 @@ fun SettingsScreenContent(
                     )
                 }
 
+                Box(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(55.dp)
+                        .clickable {
+                             navigateToBookmarkScreen()
+                        },
+//                           .border(width = 1.dp, color = Color.White),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Text(
+                        text = "Bookmark",
+                        fontSize = 14.sp,
+                        lineHeight = 1.em,
+                        modifier = modifier.padding(start = 24.dp)
+                    )
+                }
+
                 HorizontalDivider()
 
-                Column(
+                Box(
                     modifier = modifier
                         .fillMaxWidth()
                         .height(55.dp)
@@ -150,7 +179,7 @@ fun SettingsScreenContent(
                             logout()
                         },
 //                           .border(width = 1.dp, color = Color.White),
-                    verticalArrangement = Arrangement.Center
+                    contentAlignment = Alignment.CenterStart
                 ) {
                     Text(
                         text = "Logout",

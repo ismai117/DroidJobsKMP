@@ -47,11 +47,18 @@ object SplashScreen : Screen {
             iterations = 1
         )
 
+        LaunchedEffect(Unit){
+            UserModule.userState.getUserState()
+            println("isUserLoggedIn: ${UserModule.userState.isUserLoggedIn.value}")
+        }
+
         LaunchedEffect(animationState.isPlaying){
             if (animationState.isCompleted){
                 if (isUserLoggedIn){
+                    navigator.popAll()
                     navigator.push(jobsScreen)
                 }else{
+                    navigator.popAll()
                     navigator.push(starterScreen)
                 }
             }
