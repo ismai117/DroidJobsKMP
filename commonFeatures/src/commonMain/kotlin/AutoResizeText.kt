@@ -19,13 +19,17 @@ fun autoResizeText(
     text: String,
     style: TextStyle = MaterialTheme.typography.headlineLarge
 ){
+
     var resizedTextStyle by remember {
         mutableStateOf(style)
     }
+
     var shouldDraw by remember {
         mutableStateOf(false)
     }
+
     val defaultFontSize = style.fontSize
+
     Text(
         text = text,
         modifier = modifier.drawWithContent {
