@@ -46,9 +46,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import autoResizeText
 import bookmark.presentation.BookmarkEvent
 import bookmark.presentation.BookmarkScreenModel
 import cafe.adriel.voyager.core.model.rememberScreenModel
@@ -290,14 +290,15 @@ fun JobDetailScreenContent(
                             fontSize = 12.sp
                         )
 
-                        Text(
-                            text = jobsState.job?.companyMotto.orEmpty(),
-                            textAlign = TextAlign.Center,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = modifier
-                                .padding(top = 20.dp, start = 24.dp, end = 24.dp)
-                        )
+                        Box(
+                            modifier = modifier.padding(top = 20.dp, start = 24.dp, end = 24.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            autoResizeText(
+                                text = jobsState.job?.companyMotto.orEmpty(),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
 
                     }
 

@@ -1,5 +1,5 @@
 [versions]
-agp = "8.2.2"
+agp = "8.2.0"
 android-compileSdk = "34"
 android-minSdk = "24"
 android-targetSdk = "34"
@@ -24,6 +24,7 @@ napier = "2.7.1"
 multiplatformSettings= "1.1.1"
 buildConfig = "4.1.1"
 ksp = "2.0.0-Beta4-1.0.19"
+composeIcons = "1.1.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -69,6 +70,7 @@ napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 
 settings = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettings" }
 
+composeIcons-featherIcons = { module = "br.com.devsrsouza.compose.icons:feather", version.ref = "composeIcons" }
 
 [bundles]
 ktor-common = ["ktor-client-core", "ktor-client-auth", "ktor-client-json", "ktor-client-logging", "ktor-client-serialization", "ktor-client-content-negotiation", "ktor-serialization-kotlinx-json"]

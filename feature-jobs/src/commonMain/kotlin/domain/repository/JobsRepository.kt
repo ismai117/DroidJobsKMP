@@ -2,6 +2,7 @@ package domain.repository
 
 
 
+import UIState
 import jobs.Jobs
 import kotlinx.coroutines.flow.Flow
 import utils.ResultState

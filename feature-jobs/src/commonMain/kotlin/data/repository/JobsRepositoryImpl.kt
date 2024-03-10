@@ -1,6 +1,8 @@
 package data.repository
 
 
+import UIState
+import bookmark.data.service.BookmarkService
 import domain.repository.JobsRepository
 import jobs.Jobs
 import jobs.JobsService

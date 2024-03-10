@@ -1,12 +1,10 @@
 package presentation
 
 import Screens
-import androidx.compose.foundation.border
 import components.FlexLayout
 import components.SearchBarView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,18 +26,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import bookmark.presentation.BookmarkScreenModel
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import components.SnackBarMessage
-import di.BookmarkModule
 import di.JobsModule
 import jobs.Jobs
 import kotlinx.coroutines.launch
@@ -211,7 +206,8 @@ fun JobsScreenContent(
                         scope.launch {
                             snackbarHostState.showSnackbar("The share link feature is not yet implemented.")
                         }
-                    }
+                    },
+                    showBanner = false
                 )
 
             }

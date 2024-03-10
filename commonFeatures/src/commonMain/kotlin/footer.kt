@@ -48,11 +48,7 @@ fun Footer(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Image(
-                    painter = painterResource(Res.drawable.icons8_github_24),
-                    contentDescription = "DroidJobs Repo",
-                    colorFilter = ColorFilter.tint(if (isDark) Color.White else Color.Black)
-                )
+                GithubLogo()
                 Text(
                     text = "DroidJobs Repository",
                     lineHeight = 1.em
@@ -61,3 +57,4 @@ fun Footer(
         }
     }
 }
+

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -26,6 +27,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
@@ -41,15 +43,19 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.isUnspecified
 import androidx.compose.ui.unit.sp
+import autoResizeText
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -220,61 +226,6 @@ fun StarterScreenContent(
 
             Column {
 
-                val banner = buildAnnotatedString {
-                    append("Hi, Android Devs")
-                    append("\n")
-                    append("Your Next Opportunity Awaits!")
-                }
-
-                Box(
-                    modifier = modifier
-                         .padding(top = 60.dp, start = 12.dp, end = 12.dp)
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.TopCenter
-                ){
-                    Text(
-                        text = banner.text,
-                        fontSize = when(getPlatform().type){
-                            Platforms.ANDROID -> {
-                                24.sp
-                            }
-                            Platforms.IOS -> {
-                                24.sp
-                            }
-                            Platforms.DESKTOP -> {
-                                42.sp
-                            }
-                            Platforms.WEB_JS -> {
-                                42.sp
-                            }
-                            Platforms.WEB_WASM -> {
-                                42.sp
-                            }
-                        },
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        lineHeight = when(getPlatform().type){
-                            Platforms.ANDROID -> {
-                                34.sp
-                            }
-                            Platforms.IOS -> {
-                                34.sp
-                            }
-                            Platforms.DESKTOP -> {
-                                52.sp
-                            }
-                            Platforms.WEB_JS -> {
-                                52.sp
-                            }
-                            Platforms.WEB_WASM -> {
-                                52.sp
-                            }
-                        }
-                    )
-                }
-
-                Spacer(modifier = modifier.padding(24.dp))
-
                 FlexLayout(
                     jobs = jobs,
                     navigateToLoginScreen = {
@@ -290,7 +241,8 @@ fun StarterScreenContent(
                         scope.launch {
                             snackbarHostState.showSnackbar("The share link feature is not yet implemented.")
                         }
-                    }
+                    },
+                    showBanner = true
                 )
 
             }
@@ -397,3 +349,23 @@ fun StarterScreenContent(
 
 }
 
+
+/**
+ *  fontSize = when(getPlatform().type){
+ *                             Platforms.ANDROID -> {
+ *                                 24.sp
+ *                             }
+ *                             Platforms.IOS -> {
+ *                                 24.sp
+ *                             }
+ *                             Platforms.DESKTOP -> {
+ *                                 42.sp
+ *                             }
+ *                             Platforms.WEB_JS -> {
+ *                                 42.sp
+ *                             }
+ *                             Platforms.WEB_WASM -> {
+ *                                 42.sp
+ *                             }
+ *                         },
+ */

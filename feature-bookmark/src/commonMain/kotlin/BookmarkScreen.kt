@@ -36,6 +36,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import bookmark.presentation.BookmarkEvent
+import bookmark.presentation.BookmarkScreenModel
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
@@ -44,14 +46,11 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import di.AuthModule
 import login.presentation.LoginScreenModel
 import platform.getPlatform
-import bookmark.presentation.BookmarkEvent
 import components.ProgressBar
 import di.BookmarkModule
-import bookmark.presentation.BookmarkScreenModel
 import components.CompanyLogo
 import platform.Platforms
 import presentation.BookmarkState
-import starter.presentation.StarterScreen
 
 
 object BookmarkScreen : Screen {

@@ -35,6 +35,7 @@ kotlin {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.ktor.client.android)
+            implementation(libs.composeIcons.featherIcons)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -55,13 +56,16 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.ktor.client.java)
+            implementation(libs.composeIcons.featherIcons)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation(libs.composeIcons.featherIcons)
         }
         jsMain.dependencies {
             implementation(compose.html.core)
             implementation(libs.ktor.client.js)
+            implementation(libs.composeIcons.featherIcons)
         }
     }
 }
@@ -69,9 +73,9 @@ kotlin {
 
 android {
     namespace = "org.ncgroup.droidjobskmp.commonUI"
-    compileSdk = 34
+    compileSdk =  libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = 24
+        minSdk = libs.versions.android.minSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
