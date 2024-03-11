@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -35,6 +37,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import components.SnackBarMessage
+import components.isScrollingUp
 import di.JobsModule
 import jobs.Jobs
 import kotlinx.coroutines.launch
@@ -112,6 +115,14 @@ fun JobsScreenContent(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val lazyGridState = rememberLazyGridState()
+
+    val isScrolling = lazyGridState.isScrollingUp()
+
+    LaunchedEffect(isScrolling){
+        println("is scrolling")
+    }
+
     Scaffold(
         modifier = modifier
             .padding(
@@ -145,7 +156,7 @@ fun JobsScreenContent(
                 snackBarHostState = snackbarHostState,
                 onDismiss = {}
             )
-        }
+        },
     ) { paddingValues ->
 
         Box(
@@ -192,6 +203,7 @@ fun JobsScreenContent(
 
                 FlexLayout(
                     modifier = modifier,
+                    lazyGridState = lazyGridState,
                     jobs = jobs,
                     navigateToLoginScreen = {
                         navigateToLoginScreen()

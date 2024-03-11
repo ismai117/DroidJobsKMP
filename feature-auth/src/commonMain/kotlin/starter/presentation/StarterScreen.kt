@@ -1,22 +1,21 @@
 package starter.presentation
 
 
-import Footer
+
 import ThemeDialog
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.DarkMode
@@ -27,7 +26,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
@@ -43,25 +41,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import androidx.compose.ui.unit.isUnspecified
-import androidx.compose.ui.unit.sp
-import autoResizeText
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import components.FlexLayout
 import components.SnackBarMessage
+import components.isScrollingUp
 import login.presentation.LoginScreen
 import platform.getPlatform
 import register.presentation.RegisterScreen
@@ -89,13 +80,13 @@ object StarterScreen : Screen {
 
         var containerWidth by remember { mutableStateOf(768.dp) }
 
-        LaunchedEffect(Unit){
+        LaunchedEffect(Unit) {
             UserModule.userState.getUserState()
             println("isUserLoggedIn: ${UserModule.userState.isUserLoggedIn.value}")
         }
 
-        LaunchedEffect(id){
-            if (id.isNotBlank()){
+        LaunchedEffect(id) {
+            if (id.isNotBlank()) {
                 navigator.push(jobsDetailScreen)
                 id = ""
             }
@@ -128,7 +119,7 @@ fun StarterScreenContent(
     navigateToRegisterScreen: navigateToRegisterScreen,
     containerWidth: Dp = 768.dp,
     containerWidthOnChange: (Dp) -> Unit
-){
+) {
 
     var theme by LocalThemeIsDark.current
 
@@ -142,9 +133,25 @@ fun StarterScreenContent(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val lazyGridState = rememberLazyGridState()
+    val isScrolling = lazyGridState.isScrollingUp()
+
+    LaunchedEffect(isScrolling) {
+        if (isScrolling) {
+            println("is scrolling up")
+        }
+    }
+
+    val topBarOffset by animateDpAsState(targetValue = if (isScrolling) 0.dp else (-140).dp)
+
     Scaffold(
         topBar = {
             TopAppBar(
+                modifier = modifier
+                    .statusBarsPadding()
+                    .padding(top = if (getPlatform().type == Platforms.DESKTOP) 24.dp else 0.dp).testTag("starter_topAppBar")
+                    .offset(y = topBarOffset),
+//                    .border(width = 1.dp, color = Color.White),
                 title = {
                     Text(
                         text = "DroidJobs",
@@ -182,7 +189,7 @@ fun StarterScreenContent(
                         }
                         TextButton(
                             onClick = {
-                               navigateToRegisterScreen()
+                                navigateToRegisterScreen()
                             },
                             modifier = modifier
                                 .testTag("starter_topAppBar_signUp_textBtn")
@@ -206,27 +213,25 @@ fun StarterScreenContent(
                 }
             )
         },
-        modifier = modifier.padding(
-            top = if (getPlatform().type == Platforms.DESKTOP) 24.dp else 0.dp
-        ).testTag("starter_topAppBar"),
-        contentWindowInsets = WindowInsets(0.dp),
         snackbarHost = {
             SnackBarMessage(
                 snackBarHostState = snackbarHostState,
                 onDismiss = {}
             )
-        }
+        },
+        contentWindowInsets = WindowInsets(0.dp),
     ) { paddingValues ->
         BoxWithConstraints(
             modifier = modifier
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
+
             containerWidthOnChange(maxWidth.value.dp)
 
             Column {
-
                 FlexLayout(
+                    lazyGridState = lazyGridState,
                     jobs = jobs,
                     navigateToLoginScreen = {
                         navigateToLoginScreen()
@@ -249,13 +254,13 @@ fun StarterScreenContent(
 
         }
 
-        if (openDrawer && containerWidth < 768.dp){
+        if (openDrawer && containerWidth < 768.dp) {
             ModalBottomSheet(
                 onDismissRequest = {
                     openDrawer = false
                 },
                 modifier = modifier.fillMaxWidth()
-            ){
+            ) {
                 Column(
                     modifier = modifier.fillMaxSize()
                 ) {
@@ -275,7 +280,7 @@ fun StarterScreenContent(
                             modifier = modifier
                                 .fillMaxSize(),
                             contentAlignment = Alignment.CenterStart
-                        ){
+                        ) {
                             Text(
                                 text = "Sign in",
                                 modifier = modifier.padding(start = 16.dp),
@@ -300,7 +305,7 @@ fun StarterScreenContent(
                             modifier = modifier
                                 .fillMaxSize(),
                             contentAlignment = Alignment.CenterStart
-                        ){
+                        ) {
                             Text(
                                 text = "Sign up",
                                 modifier = modifier.padding(start = 16.dp),
@@ -314,7 +319,7 @@ fun StarterScreenContent(
                             .fillMaxWidth()
                             .height(55.dp)
                             .clickable {
-                               themeDialog = true
+                                themeDialog = true
                             },
                         colors = CardDefaults.cardColors(
                             containerColor = Color.Transparent
@@ -324,7 +329,7 @@ fun StarterScreenContent(
                             modifier = modifier
                                 .fillMaxSize(),
                             contentAlignment = Alignment.CenterStart
-                        ){
+                        ) {
                             Text(
                                 text = "Theme",
                                 modifier = modifier.padding(start = 16.dp),
@@ -349,23 +354,3 @@ fun StarterScreenContent(
 
 }
 
-
-/**
- *  fontSize = when(getPlatform().type){
- *                             Platforms.ANDROID -> {
- *                                 24.sp
- *                             }
- *                             Platforms.IOS -> {
- *                                 24.sp
- *                             }
- *                             Platforms.DESKTOP -> {
- *                                 42.sp
- *                             }
- *                             Platforms.WEB_JS -> {
- *                                 42.sp
- *                             }
- *                             Platforms.WEB_WASM -> {
- *                                 42.sp
- *                             }
- *                         },
- */

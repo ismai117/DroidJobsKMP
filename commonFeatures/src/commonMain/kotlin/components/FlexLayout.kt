@@ -2,7 +2,9 @@ package components
 
 
 import Footer
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,16 +13,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -32,50 +39,72 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import autoResizeText
 import jobs.Jobs
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.map
 
 import user.UserModule
 
+private typealias navigateToLoginScreen = () -> Unit
+private typealias navigateToDetailScreen = (String) -> Unit
 
 @Composable
 fun FlexLayout(
     modifier: Modifier = Modifier,
+    lazyGridState: LazyGridState,
     jobs: List<Jobs>,
-    navigateToLoginScreen: () -> Unit,
-    navigateToDetailScreen: (String) -> Unit,
     openUrl: (String) -> Unit,
     shareLink: (String) -> Unit,
-    showBanner: Boolean
+    showBanner: Boolean,
+    navigateToLoginScreen: navigateToLoginScreen,
+    navigateToDetailScreen: navigateToDetailScreen
 ) {
 
     val isUserLoggedIn by UserModule.userState.isUserLoggedIn
+
+    val isScrolling = lazyGridState.isScrollingUp()
+
+    val footerOffset by animateDpAsState(targetValue = if (isScrolling) 0.dp else (140).dp)
+
 
     Column(
         modifier = modifier.fillMaxSize()
     ) {
 
         LazyVerticalGrid(
+            columns = GridCells.Adaptive(300.dp),
             modifier = modifier
                 .padding(top = 24.dp)
                 .weight(1f),
-            columns = GridCells.Adaptive(300.dp),
+            state = lazyGridState,
             contentPadding = PaddingValues(24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalArrangement = Arrangement.spacedBy(24.dp),
@@ -92,7 +121,10 @@ fun FlexLayout(
                         contentAlignment = Alignment.TopCenter
                     ){
                         val banner = buildAnnotatedString {
-                            append("Hi, Android Devs")
+                            withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.secondary)){
+                                append("Hi, ")
+                            }
+                            append("android Devs")
                             append("\n")
                             append("Your Next Opportunity Awaits!")
                         }
@@ -295,7 +327,33 @@ fun FlexLayout(
 
         }
 
-        Footer()
+        if(isScrolling){
+            Footer(
+                modifier = modifier.offset(y = footerOffset)
+            )
+        }
+
     }
 
+}
+
+
+
+
+@Composable
+fun LazyGridState.isScrollingUp(): Boolean {
+    var previousIndex by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }
+    var previousScrollOffset by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
+    return remember(this) {
+        derivedStateOf {
+            if (previousIndex != firstVisibleItemIndex) {
+                previousIndex > firstVisibleItemIndex
+            } else {
+                previousScrollOffset >= firstVisibleItemScrollOffset
+            }.also {
+                previousIndex = firstVisibleItemIndex
+                previousScrollOffset = firstVisibleItemScrollOffset
+            }
+        }
+    }.value
 }
