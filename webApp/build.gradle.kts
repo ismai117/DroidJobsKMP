@@ -3,19 +3,6 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
 }
 
-
-val copyJsResources = tasks.create("copyJsResourcesWorkaround", Copy::class.java) {
-    from(project(":commonFeatures").file("src/commonMain/composeResources"))
-    into("build/processedResources/js/main")
-}
-
-afterEvaluate {
-    project.tasks.getByName("jsProcessResources").finalizedBy(copyJsResources)
-    project.tasks.getByName("jsDevelopmentExecutableCompileSync").mustRunAfter(copyJsResources)
-    project.tasks.getByName("jsProductionExecutableCompileSync").mustRunAfter(copyJsResources)
-}
-
-
 kotlin {
     js(IR) {
         moduleName = "webApp"
