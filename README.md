@@ -10,7 +10,7 @@ Supported Platforms
 - Web
 - Desktop
 
-Web App - Live
+Web App - [Currently not working]
 [View](https://ismai117.github.io/DroidJobsKMP/)
 
 ##
