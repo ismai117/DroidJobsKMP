@@ -17,8 +17,13 @@ afterEvaluate {
 
 
 kotlin {
-    js {
-        browser()
+    js(IR) {
+        moduleName = "webApp"
+        browser {
+            commonWebpackConfig {
+                outputFileName = "webApp.js"
+            }
+        }
         binaries.executable()
     }
     sourceSets {
