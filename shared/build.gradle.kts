@@ -20,10 +20,12 @@ kotlin {
 
     js(IR) {
         browser()
+        binaries.executable()
     }
 
     wasmJs {
         browser()
+        binaries.executable()
     }
     
     jvm()

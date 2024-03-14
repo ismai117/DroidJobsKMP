@@ -5,12 +5,7 @@ plugins {
 
 kotlin {
     js(IR) {
-        moduleName = "webApp"
-        browser {
-            commonWebpackConfig {
-                outputFileName = "webApp.js"
-            }
-        }
+        browser()
         binaries.executable()
     }
     sourceSets {
