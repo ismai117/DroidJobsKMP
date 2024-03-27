@@ -28,8 +28,7 @@ fun App(
         Box(
             modifier = modifier
                 .padding(paddingValues)
-                .fillMaxWidth()
-                .fillMaxHeight()
+                .fillMaxSize()
                 .navigationBarsPadding(),
             contentAlignment = Alignment.Center,
         ) {
