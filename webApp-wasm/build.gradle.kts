@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -31,8 +32,11 @@ kotlin {
     sourceSets {
         val wasmJsMain by getting {
             dependencies {
-                implementation(project(":shared"))
+                api(compose.runtime)
+                api(compose.foundation)
+                api(compose.material)
                 implementation(compose.ui)
+                implementation(project(":shared"))
             }
         }
     }

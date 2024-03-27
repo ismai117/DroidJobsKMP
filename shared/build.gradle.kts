@@ -20,7 +20,6 @@ kotlin {
 
     js(IR) {
         browser()
-        binaries.executable()
     }
 
     wasmJs {
@@ -50,7 +49,8 @@ kotlin {
     }
 
     compilerOptions {
-        languageVersion.set(KOTLIN_1_9)
+        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_9)
+        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_9)
     }
 
     sourceSets {
@@ -116,8 +116,4 @@ android {
 compose {
     kotlinCompilerPlugin.set(libs.versions.compose.compiler)
     kotlinCompilerPluginArgs.add("suppressKotlinVersionCompatibilityCheck=${libs.versions.kotlin}")
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions.jvmTarget = "17"
 }
