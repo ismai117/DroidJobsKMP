@@ -3,8 +3,6 @@ package register.presentation
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -17,12 +15,12 @@ import kotlin.test.assertEquals
 @OptIn(ExperimentalCoroutinesApi::class)
 class RegisterScreenModelTest {
 
-    private lateinit var screenModel: RegisterScreenModel
+    private lateinit var screenModel: RegisterViewModel
 
     @BeforeTest
     fun setUp(){
         Dispatchers.setMain(Dispatchers.Unconfined)
-        screenModel = RegisterScreenModel(
+        screenModel = RegisterViewModel(
            registerRepository = FakeRegisterRepositoryImpl()
         )
     }

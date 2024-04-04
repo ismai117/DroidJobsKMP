@@ -1,9 +1,7 @@
 package starter.presentation
 
 
-
 import ThemeDialog
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -12,7 +10,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -46,66 +43,45 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import cafe.adriel.voyager.core.registry.rememberScreen
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import components.FlexLayout
 import components.SnackBarMessage
-import components.isScrollingUp
-import login.presentation.LoginScreen
-import platform.getPlatform
-import register.presentation.RegisterScreen
 import jobs.JobsService
 import kotlinx.coroutines.launch
 import openUrl
 import platform.Platforms
+import platform.getPlatform
+import starter.components.StarterFlexLayout
+import starter.components.isScrollingUp
 import theme.LocalThemeIsDark
 import user.UserModule
 
-private typealias navigateToDetailScreen = (String) -> Unit
+
+private typealias navigateToJobDetailScreen = (String) -> Unit
 private typealias navigateToLoginScreen = () -> Unit
 private typealias navigateToRegisterScreen = () -> Unit
 
 
-object StarterScreen : Screen {
+@Composable
+fun StarterScreen (
+     navigateToJobDetailScreen: navigateToJobDetailScreen,
+     navigateToLoginScreen: navigateToLoginScreen,
+     navigateToRegisterScreen: navigateToRegisterScreen
+) {
 
-    private var id by mutableStateOf("")
+    var containerWidth by remember { mutableStateOf(768.dp) }
 
-    @Composable
-    override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-
-        val jobsDetailScreen = rememberScreen(Screens.JobDetailScreen(id))
-
-        var containerWidth by remember { mutableStateOf(768.dp) }
-
-        LaunchedEffect(Unit) {
-            UserModule.userState.getUserState()
-            println("isUserLoggedIn: ${UserModule.userState.isUserLoggedIn.value}")
-        }
-
-        LaunchedEffect(id) {
-            if (id.isNotBlank()) {
-                navigator.push(jobsDetailScreen)
-                id = ""
-            }
-        }
-
-        StarterScreenContent(
-            navigateToDetailScreen = {
-                id = it
-            },
-            navigateToLoginScreen = {
-                navigator.push(LoginScreen)
-            },
-            navigateToRegisterScreen = {
-                navigator.push(RegisterScreen)
-            },
-            containerWidth = containerWidth,
-            containerWidthOnChange = { containerWidth = it }
-        )
+    LaunchedEffect(Unit) {
+        UserModule.userState.getUserState()
     }
+
+    StarterScreenContent(
+        containerWidth = containerWidth,
+        containerWidthOnChange = {
+            containerWidth = it
+        },
+        navigateToJobDetailScreen = navigateToJobDetailScreen,
+        navigateToLoginScreen = navigateToLoginScreen,
+        navigateToRegisterScreen = navigateToRegisterScreen
+    )
 
 }
 
@@ -114,11 +90,11 @@ object StarterScreen : Screen {
 @Composable
 fun StarterScreenContent(
     modifier: Modifier = Modifier,
-    navigateToDetailScreen: navigateToDetailScreen,
-    navigateToLoginScreen: navigateToLoginScreen,
-    navigateToRegisterScreen: navigateToRegisterScreen,
     containerWidth: Dp = 768.dp,
-    containerWidthOnChange: (Dp) -> Unit
+    containerWidthOnChange: (Dp) -> Unit,
+    navigateToJobDetailScreen: navigateToJobDetailScreen,
+    navigateToLoginScreen: navigateToLoginScreen,
+    navigateToRegisterScreen: navigateToRegisterScreen
 ) {
 
     var theme by LocalThemeIsDark.current
@@ -142,15 +118,13 @@ fun StarterScreenContent(
         }
     }
 
-    val topBarOffset by animateDpAsState(targetValue = if (isScrolling) 0.dp else (-140).dp)
 
     Scaffold(
         topBar = {
             TopAppBar(
                 modifier = modifier
                     .statusBarsPadding()
-                    .padding(top = if (getPlatform().type == Platforms.DESKTOP) 24.dp else 0.dp).testTag("starter_topAppBar")
-                    .offset(y = topBarOffset),
+                    .padding(top = if (getPlatform().type == Platforms.DESKTOP) 24.dp else 0.dp).testTag("starter_topAppBar"),
 //                    .border(width = 1.dp, color = Color.White),
                 title = {
                     Text(
@@ -221,6 +195,7 @@ fun StarterScreenContent(
         },
         contentWindowInsets = WindowInsets(0.dp),
     ) { paddingValues ->
+
         BoxWithConstraints(
             modifier = modifier
                 .padding(paddingValues)
@@ -229,28 +204,20 @@ fun StarterScreenContent(
 
             containerWidthOnChange(maxWidth.value.dp)
 
-            Column {
-                FlexLayout(
-                    lazyGridState = lazyGridState,
-                    jobs = jobs,
-                    navigateToLoginScreen = {
-                        navigateToLoginScreen()
-                    },
-                    navigateToDetailScreen = {
-                        navigateToDetailScreen(it)
-                    },
-                    openUrl = {
-                        openUrl(it)
-                    },
-                    shareLink = {
-                        scope.launch {
-                            snackbarHostState.showSnackbar("The share link feature is not yet implemented.")
-                        }
-                    },
-                    showBanner = true
-                )
+            StarterFlexLayout(
+                lazyGridState = lazyGridState,
+                jobs = jobs,
 
-            }
+                openUrl = {
+                    openUrl(it)
+                },
+                shareLink = {
+                    scope.launch {
+                        snackbarHostState.showSnackbar("The share link feature is not yet implemented.")
+                    }
+                },
+                navigateToDetailScreen = navigateToJobDetailScreen
+            )
 
         }
 

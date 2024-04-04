@@ -3,24 +3,18 @@ package register.di
 
 import login.data.service.LoginService
 import login.data.service.LoginServiceImpl
+import org.koin.dsl.module
 import register.data.repository.RegisterRepositoryImpl
 import register.data.service.RegisterService
 import register.data.service.RegisterServiceImpl
 import register.domain.repository.RegisterRepository
+import register.presentation.RegisterViewModel
 
 
-class RegisterModule {
-
-    private val registerService: RegisterService by lazy {
-        RegisterServiceImpl()
+val registerModule = module {
+    single<RegisterService> { RegisterServiceImpl() }
+    single<RegisterRepository> {
+        RegisterRepositoryImpl(get(), get())
     }
-
-    private val loginService: LoginService by  lazy {
-        LoginServiceImpl()
-    }
-
-    val registerRepository: RegisterRepository by lazy {
-        RegisterRepositoryImpl(registerService, loginService)
-    }
-
+    factory { RegisterViewModel(get()) }
 }

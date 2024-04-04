@@ -1,22 +1,21 @@
-package bookmark.presentation
+package presentation
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
 import bookmark.domain.repository.BookmarkRepository
 import kotlinx.coroutines.launch
 import UIState
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import bookmark.presentation.BookmarkEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import presentation.BookmarkState
-import user.UserModule
 
 
-class BookmarkScreenModel(
+class BookmarkViewModel(
     private val bookmarkRepository: BookmarkRepository
-) : ScreenModel {
+) : ViewModel() {
 
     var state by mutableStateOf(BookmarkState())
 
@@ -42,7 +41,7 @@ class BookmarkScreenModel(
     }
 
      fun getBookmarks() {
-        screenModelScope.launch {
+         viewModelScope.launch(Dispatchers.Default) {
             bookmarkRepository.find().collect { result ->
                 withContext(Dispatchers.Main) {
                     when (result) {
@@ -80,7 +79,7 @@ class BookmarkScreenModel(
         companyName: String,
         companyLogo: String
     ) {
-        screenModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             bookmarkRepository.insert(
                 jobId = jobId,
                 jobTitle = jobTitle,

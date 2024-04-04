@@ -14,12 +14,12 @@ kotlin {
 
     js(IR) {
         browser()
-        binaries.executable()
     }
 
-    wasmJs {
-        browser()
-    }
+//
+//    wasmJs {
+//        browser()
+//    }
 
     iosX64()
     iosArm64()
@@ -27,19 +27,24 @@ kotlin {
 
 
     sourceSets {
+        androidMain.dependencies {
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
+        }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
             implementation(compose.ui)
-            implementation(libs.voyagerNavigation)
-            implementation(libs.voyagerScreenModel)
-            implementation(libs.voyagerTransitions)
             implementation(libs.settings)
+            api(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.test)
+            implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(project(":commonFeatures"))
-            implementation(project(":navigation"))
             implementation(project(":feature-auth"))
+            implementation(project(":feature-bookmark"))
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)

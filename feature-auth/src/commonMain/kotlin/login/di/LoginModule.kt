@@ -4,15 +4,12 @@ import login.data.repository.LoginRepositoryImpl
 import login.data.service.LoginService
 import login.data.service.LoginServiceImpl
 import login.domain.repository.LoginRepository
+import login.presentation.LoginViewModel
+import org.koin.dsl.module
 
-class LoginModule {
 
-    private val loginService: LoginService by lazy {
-        LoginServiceImpl()
-    }
-
-    val loginRepository: LoginRepository by lazy {
-        LoginRepositoryImpl(loginService)
-    }
-
+val loginModule = module {
+    single<LoginService> { LoginServiceImpl() }
+    single<LoginRepository> { LoginRepositoryImpl(get()) }
+    factory { LoginViewModel(get()) }
 }

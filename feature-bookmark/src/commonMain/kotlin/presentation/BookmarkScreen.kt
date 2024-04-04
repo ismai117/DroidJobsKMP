@@ -1,3 +1,5 @@
+package presentation
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,10 +27,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,70 +35,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import bookmark.presentation.BookmarkEvent
-import bookmark.presentation.BookmarkScreenModel
-import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.registry.rememberScreen
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import di.AuthModule
-import login.presentation.LoginScreenModel
 import platform.getPlatform
-import components.ProgressBar
-import di.BookmarkModule
 import components.CompanyLogo
+import components.ProgressBar
 import platform.Platforms
-import presentation.BookmarkState
+import org.koin.compose.koinInject
 
 
-object BookmarkScreen : Screen {
+private typealias navigateToJobDetailScreen = (String) -> Unit
+private typealias navigateBack = () -> Unit
 
-    private var id by mutableStateOf("")
+@Composable
+fun BookmarkScreen(
+    navigateToJobDetailScreen: navigateToJobDetailScreen,
+    navigateBack: navigateBack
+) {
 
-    @Composable
-    override fun Content() {
+    val bookmarkViewModel = koinInject<BookmarkViewModel>()
 
-        val navigator = LocalNavigator.currentOrThrow
+    val bookmarkState = bookmarkViewModel.state
 
-        val jobsDetailScreen = rememberScreen(Screens.JobDetailScreen(id))
-
-        val loginScreenModel = rememberScreenModel {
-            LoginScreenModel(
-                loginRepository = AuthModule.loginModule.loginRepository
-            )
-        }
-
-        val bookmarkScreenModel = rememberScreenModel {
-            BookmarkScreenModel(
-                bookmarkRepository = BookmarkModule.bookmarkRepository
-            )
-        }
-
-        val bookmarkState = bookmarkScreenModel.state
-
-
-        LaunchedEffect(id) {
-            if (id.isNotBlank()) {
-                navigator.push(jobsDetailScreen)
-                id = ""
-            }
-        }
-
-
-        BookmarkScreenContent(
-            state = bookmarkState,
-            onEvent = {
-
-            },
-            navigateToDetailScreen = {
-                id = it
-            },
-            navigateBack = {
-                navigator.pop()
-            }
-        )
-
-    }
+    BookmarkScreenContent(
+        state = bookmarkState,
+        onEvent = bookmarkViewModel::onEvent,
+        navigateToDetailScreen = navigateToJobDetailScreen,
+        navigateBack = navigateBack
+    )
 
 }
 

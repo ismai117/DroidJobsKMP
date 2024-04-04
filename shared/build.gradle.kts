@@ -22,10 +22,11 @@ kotlin {
         browser()
     }
 
-    wasmJs {
-        browser()
-    }
-    
+//
+//    wasmJs {
+//        browser()
+//    }
+
     jvm()
 
     iosX64()
@@ -57,9 +58,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.kotlinx.coroutines.android)
-            api("androidx.activity:activity-compose:1.8.2")
-            api("androidx.appcompat:appcompat:1.6.1")
-            api("androidx.core:core-ktx:1.12.0")
+            implementation("androidx.compose.material:material-ripple:1.7.0-alpha05")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -69,12 +68,13 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.voyagerNavigation)
-            implementation(libs.voyagerScreenModel)
-            implementation(libs.voyagerTransitions)
+            implementation(libs.androidx.lifecycle.viewmodel.compose)
+            implementation(libs.androidx.navigation.compose)
             implementation(libs.kottie)
+            api(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.test)
             implementation(project(":commonFeatures"))
-            implementation(project(":navigation"))
             implementation(project(":feature-jobs"))
             implementation(project(":feature-auth"))
             implementation(project(":feature-settings"))

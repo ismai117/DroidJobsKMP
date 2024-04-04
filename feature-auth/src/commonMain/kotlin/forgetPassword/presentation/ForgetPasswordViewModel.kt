@@ -3,8 +3,8 @@ package forgetPassword.presentation
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import forgetPassword.domain.repository.ForgetPasswordRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -12,9 +12,9 @@ import kotlinx.coroutines.withContext
 import validations.email.ValidateEmail
 
 
-class ForgetPasswordScreenModel(
+class ForgetPasswordViewModel(
     private val forgetPasswordRepository: ForgetPasswordRepository
-) : ScreenModel {
+) : ViewModel() {
 
     var state by mutableStateOf(ForgetPasswordState())
 
@@ -48,7 +48,7 @@ class ForgetPasswordScreenModel(
             return
         }
 
-        screenModelScope.launch{
+        viewModelScope.launch(Dispatchers.Default) {
             forgetPasswordRepository.forgetPassword(
                 email = state.email,
             ).collect { result ->

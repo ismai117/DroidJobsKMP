@@ -19,12 +19,12 @@ kotlin {
 
     js(IR) {
         browser()
-        binaries.executable()
     }
 
-    wasmJs {
-        browser()
-    }
+//
+//    wasmJs {
+//        browser()
+//    }
 
     iosX64()
     iosArm64()
@@ -49,7 +49,6 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation("media.kamel:kamel-image:0.9.3-wasm")
             implementation(libs.settings)
-            implementation(libs.voyagerScreenModel)
             implementation(libs.bundles.ktor.common)
             implementation(libs.napier)
         }

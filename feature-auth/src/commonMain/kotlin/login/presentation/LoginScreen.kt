@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,9 +18,7 @@ import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Password
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -45,61 +42,37 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
-import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.registry.rememberScreen
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import components.LoadingButton
-import components.ProgressBar
 import components.SnackBarMessage
-import di.AuthModule
-import forgetPassword.presentation.ForgetPasswordScreen
 import kotlinx.coroutines.launch
 import platform.Platforms
 import platform.getPlatform
-import register.presentation.RegisterScreen
-import starter.presentation.StarterScreen
 
-@OptIn(InternalVoyagerApi::class)
-object LoginScreen : Screen {
 
-    @Composable
-    override fun Content() {
+private typealias onEvent = (LoginEvent) -> Unit
+private typealias navigateToJobsScreen = () -> Unit
+private typealias navigateToRegisterScreen = () -> Unit
+private typealias navigateToForgetPasswordScreen = () -> Unit
+private typealias navigateBack = () -> Unit
 
-        val navigator = LocalNavigator.currentOrThrow
-        val jobsScreen = rememberScreen(Screens.JobsScreen)
+@Composable
+fun LoginScreen(
+    loginState: LoginState,
+    onEvent: onEvent,
+    navigateToJobsScreen: navigateToJobsScreen,
+    navigateToRegisterScreen: navigateToRegisterScreen,
+    navigateToForgetPasswordScreen: navigateToForgetPasswordScreen,
+    navigateBack: navigateBack
+) {
 
-        val loginScreenModel = rememberScreenModel {
-            LoginScreenModel(
-                loginRepository = AuthModule.loginModule.loginRepository
-            )
-        }
-
-        val loginState = loginScreenModel.state
-
-        LoginScreenContent(
-            loginState = loginState,
-            onEvent = {
-                loginScreenModel.onEvent(it)
-            },
-            navigateToJobsScreen = {
-                navigator.dispose(LoginScreen)
-                navigator.push(jobsScreen)
-            },
-            navigateToRegisterScreen = {
-                navigator.push(RegisterScreen)
-            },
-            navigateToForgetPasswordScreen = {
-                navigator.push(ForgetPasswordScreen)
-            },
-            navigateBack = {
-                navigator.pop()
-            }
-        )
-
-    }
+    LoginScreenContent(
+        loginState = loginState,
+        onEvent = onEvent,
+        navigateToJobsScreen = navigateToJobsScreen,
+        navigateToRegisterScreen = navigateToRegisterScreen,
+        navigateToForgetPasswordScreen = navigateToForgetPasswordScreen,
+        navigateBack = navigateBack
+    )
 
 }
 

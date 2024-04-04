@@ -7,15 +7,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowLeft
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,61 +34,34 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
-import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.registry.rememberScreen
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import components.LoadingButton
-import components.ProgressBar
 import components.SnackBarMessage
-import di.AuthModule
 import kotlinx.coroutines.launch
-import login.presentation.LoginEvent
-import login.presentation.LoginScreen
 import platform.Platforms
 import platform.getPlatform
 
 
-@OptIn(InternalVoyagerApi::class)
-object RegisterScreen : Screen {
+private typealias onEvent = (RegisterEvent) -> Unit
+private typealias navigateToJobsScreen = () -> Unit
+private typealias navigateToLoginScreen = () -> Unit
+private typealias navigateBack = () -> Unit
 
+@Composable
+fun RegisterScreen(
+    registerState: RegisterState,
+    onEvent: onEvent,
+    navigateToJobsScreen: navigateToJobsScreen,
+    navigateToLoginScreen: navigateToLoginScreen,
+    navigateBack: navigateBack
+) {
 
-    @Composable
-    override fun Content() {
-
-        val navigator = LocalNavigator.currentOrThrow
-        val jobsScreen = rememberScreen(Screens.JobsScreen)
-
-
-        val registerScreenModel = rememberScreenModel {
-            RegisterScreenModel(
-                registerRepository = AuthModule.registerModule.registerRepository
-            )
-        }
-
-        val registerState = registerScreenModel.state
-
-        RegisterScreenContent(
-            registerState = registerState,
-            onEvent = {
-                registerScreenModel.onEvent(it)
-            },
-            navigateToJobsScreen = {
-                navigator.dispose(RegisterScreen)
-                navigator.push(jobsScreen)
-            },
-            navigateToLoginScreen = {
-                navigator.push(LoginScreen)
-            },
-            navigateBack = {
-                navigator.pop()
-            }
-        )
-
-    }
-
+    RegisterScreenContent(
+        registerState = registerState,
+        onEvent = onEvent,
+        navigateToJobsScreen = navigateToJobsScreen,
+        navigateToLoginScreen = navigateToLoginScreen,
+        navigateBack = navigateBack
+    )
 
 }
 
@@ -106,7 +76,6 @@ fun RegisterScreenContent(
     navigateToLoginScreen: () -> Unit,
     navigateBack: () -> Unit
 ){
-
 
         val scope = rememberCoroutineScope()
         val snackbarHostState = remember { SnackbarHostState() }

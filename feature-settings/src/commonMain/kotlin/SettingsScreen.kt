@@ -25,48 +25,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.registry.rememberScreen
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import di.AuthModule
-import login.presentation.LoginScreenModel
+import login.presentation.LoginViewModel
+import org.koin.compose.koinInject
 import platform.Platforms
 import platform.getPlatform
 
 
-object SettingsScreen : Screen {
+private typealias navigateToBookmarkScreen = () -> Unit
+private typealias navigateToStarterScreen = () -> Unit
+private typealias navigateBack = () -> Unit
 
-    @Composable
-    override fun Content() {
 
-        val navigator = LocalNavigator.currentOrThrow
+@Composable
+fun SettingsScreen(
+    navigateToBookmarkScreen: navigateToBookmarkScreen,
+    navigateToStarterScreen: navigateToStarterScreen,
+    navigateBack: navigateBack
+) {
 
-        val starterScreen = rememberScreen(Screens.StarterScreen)
-        val bookmarkScreen = rememberScreen(Screens.BookmarkScreen)
+    val loginScreenModel = koinInject<LoginViewModel>()
 
-        val loginScreenModel = rememberScreenModel {
-            LoginScreenModel(
-                loginRepository = AuthModule.loginModule.loginRepository
-            )
-        }
-
-        SettingsScreenContent(
-            navigateToBookmarkScreen = {
-                navigator.push(bookmarkScreen)
-            },
-            logout = {
-                loginScreenModel.logout()
-                navigator.popUntilRoot()
-                navigator.push(starterScreen)
-            },
-            navigateBack = {
-                navigator.pop()
-            }
-        )
-
-    }
+    SettingsScreenContent(
+        navigateToBookmarkScreen = navigateToBookmarkScreen,
+        logout = {
+            loginScreenModel.logout()
+            navigateToStarterScreen()
+        },
+        navigateBack = navigateBack
+    )
 
 }
 

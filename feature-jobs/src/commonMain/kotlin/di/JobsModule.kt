@@ -3,14 +3,12 @@ package di
 import data.repository.JobsRepositoryImpl
 import domain.repository.JobsRepository
 import jobs.JobsService
+import org.koin.dsl.module
+import presentation.JobsViewModel
 
 
-object JobsModule {
-    private val jobsService: JobsService by lazy {
-        JobsService()
-    }
-
-    val jobsRepository: JobsRepository by lazy {
-        JobsRepositoryImpl(jobsService = jobsService)
-    }
+val jobsModule = module {
+    single<JobsService> {  JobsService() }
+    single<JobsRepository> {  JobsRepositoryImpl(get()) }
+    factory { JobsViewModel(get()) }
 }

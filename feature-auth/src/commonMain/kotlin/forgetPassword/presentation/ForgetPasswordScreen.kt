@@ -32,55 +32,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
-import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import components.ProgressBar
 import components.SnackBarMessage
-import di.AuthModule
 import kotlinx.coroutines.launch
-import login.presentation.LoginScreen
 import platform.Platforms
 import platform.getPlatform
 
 
-@OptIn(InternalVoyagerApi::class)
-object ForgetPasswordScreen : Screen {
+private typealias onEvent = (ForgetPasswordEvent) -> Unit
+private typealias navigateToLoginScreen = () -> Unit
+private typealias navigateBack = () -> Unit
 
-    @Composable
-    override fun Content() {
+@Composable
+fun ForgetPasswordScreen(
+    forgetPasswordState: ForgetPasswordState,
+    onEvent: onEvent,
+    navigateToLoginScreen: navigateToLoginScreen,
+    navigateBack: navigateBack
+) {
 
-        val navigator = LocalNavigator.currentOrThrow
-
-        val forgetPasswordScreenModel = rememberScreenModel {
-            ForgetPasswordScreenModel(
-                forgetPasswordRepository = AuthModule.forgetPasswordModule.forgetPasswordRepository
-            )
-        }
-
-        val forgetPasswordState = forgetPasswordScreenModel.state
-
-        ForgetPasswordContent(
-            forgetPasswordState = forgetPasswordState,
-            onEvent = {
-                forgetPasswordScreenModel.onEvent(it)
-            },
-            navigateToLoginScreen = {
-                navigator.dispose(ForgetPasswordScreen)
-                navigator.push(LoginScreen)
-            },
-            navigateBack = {
-                navigator.pop()
-            }
-        )
-
-    }
-
+    ForgetPasswordContent(
+        forgetPasswordState = forgetPasswordState,
+        onEvent = onEvent,
+        navigateToLoginScreen = navigateToLoginScreen,
+        navigateBack = navigateBack
+    )
 
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,14 +68,14 @@ fun ForgetPasswordContent(
     onEvent: (ForgetPasswordEvent) -> Unit,
     navigateToLoginScreen: () -> Unit,
     navigateBack: () -> Unit
-){
+) {
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(forgetPasswordState.status) {
         if (forgetPasswordState.status) {
-           navigateToLoginScreen()
+            navigateToLoginScreen()
         }
     }
 

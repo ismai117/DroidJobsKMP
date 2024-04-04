@@ -21,12 +21,12 @@ kotlin {
 
     js(IR) {
         browser()
-        binaries.executable()
     }
 
-    wasmJs {
-        browser()
-    }
+//
+//    wasmJs {
+//        browser()
+//    }
 
     iosX64()
     iosArm64()
@@ -38,6 +38,8 @@ kotlin {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.ktor.client.android)
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -45,15 +47,16 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
             implementation(compose.ui)
+            implementation(libs.androidx.lifecycle.viewmodel.compose)
+            implementation(libs.androidx.navigation.compose)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
-            implementation(libs.voyagerNavigation)
-            implementation(libs.voyagerScreenModel)
-            implementation(libs.voyagerTransitions)
             implementation(libs.bundles.ktor.common)
+            api(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.test)
             implementation(libs.napier)
             implementation(project(":commonFeatures"))
-            implementation(project(":navigation"))
         }
         commonTest.dependencies {
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
@@ -79,7 +82,7 @@ kotlin {
 
 
 android {
-    namespace = "org.ncgroup.droidjobskmp.featureAuth"
+    namespace = "org.ncgroup.droidjobskmp.auth"
     compileSdk =  libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
@@ -94,6 +97,10 @@ android {
     }
 }
 
+compose {
+    kotlinCompilerPlugin.set(libs.versions.compose.compiler)
+    kotlinCompilerPluginArgs.add("suppressKotlinVersionCompatibilityCheck=${libs.versions.kotlin}")
+}
 
 val properties = Properties().apply {
     load(project.rootProject.file("local.properties").inputStream())

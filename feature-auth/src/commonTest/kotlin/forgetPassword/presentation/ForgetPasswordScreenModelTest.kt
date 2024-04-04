@@ -14,12 +14,12 @@ import kotlin.test.assertEquals
 @OptIn(ExperimentalCoroutinesApi::class)
 class ForgetPasswordScreenModelTest {
 
-    private lateinit var screenModel: ForgetPasswordScreenModel
+    private lateinit var screenModel: ForgetPasswordViewModel
 
     @BeforeTest
     fun setUp(){
         Dispatchers.setMain(Dispatchers.Unconfined)
-        screenModel = ForgetPasswordScreenModel(
+        screenModel = ForgetPasswordViewModel(
             forgetPasswordRepository = FakeForgetPasswordRepositoryImpl()
         )
     }

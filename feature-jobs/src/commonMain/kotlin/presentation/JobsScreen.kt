@@ -1,7 +1,6 @@
 package presentation
 
-import Screens
-import components.FlexLayout
+
 import components.SearchBarView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,70 +29,53 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.registry.rememberScreen
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
+import components.JobsFlexLayout
 import components.SnackBarMessage
 import components.isScrollingUp
-import di.JobsModule
 import jobs.Jobs
 import kotlinx.coroutines.launch
 import openUrl
+import org.koin.compose.koinInject
 import platform.Platforms
 import platform.getPlatform
 import user.UserModule
 
 
-object JobsScreen : Screen {
+private typealias navigateToJobDetailScreen = (String) -> Unit
+private typealias navigateToSettingsScreen = () -> Unit
 
-    @Composable
-    override fun Content() {
+@Composable
+fun JobsScreen(
+    navigateToJobDetailScreen: (String) -> Unit,
+    navigateToSettingsScreen: () -> Unit
+) {
 
-        val navigator = LocalNavigator.currentOrThrow
-        val settingsScreen = rememberScreen(Screens.SettingsScreen)
-        val loginScreen = rememberScreen(Screens.LoginScreen)
+    val jobsViewModel = koinInject<JobsViewModel>()
 
-        val jobScreenModel = rememberScreenModel {
-            JobsScreenModeL(
-                jobsRepository = JobsModule.jobsRepository
-            )
-        }
+    val jobsState = jobsViewModel.state
 
-        val jobsState = jobScreenModel.state
-
-        val query by jobScreenModel.query.collectAsState()
-        val jobs by jobScreenModel.jobs.collectAsState()
-        val searching by jobScreenModel.searching.collectAsState()
+    val query by jobsViewModel.query.collectAsState()
+    val jobs by jobsViewModel.jobs.collectAsState()
+    val searching by jobsViewModel.searching.collectAsState()
 
 
-        LaunchedEffect(Unit){
-            UserModule.userState.getUserState()
-        }
-
-        LaunchedEffect(Unit){
-            jobScreenModel.getAllJobs()
-        }
-
-        JobsScreenContent(
-            jobsState = jobsState,
-            jobs = jobs,
-            query = query,
-            onQueryChange = jobScreenModel::onQueryChange,
-            searching = searching,
-            navigateToLoginScreen = {
-                navigator.push(loginScreen)
-            },
-            navigateToDetailScreen = {
-                navigator.push(JobDetailScreen(it))
-            },
-            navigateToSettingsScreen = {
-                navigator.push(settingsScreen)
-            }
-        )
-
+    LaunchedEffect(Unit) {
+        UserModule.userState.getUserState()
     }
+
+    LaunchedEffect(Unit) {
+        jobsViewModel.getAllJobs()
+    }
+
+    JobsScreenContent(
+        jobsState = jobsState,
+        jobs = jobs,
+        query = query,
+        onQueryChange = jobsViewModel::onQueryChange,
+        searching = searching,
+        navigateToJobDetailScreen = navigateToJobDetailScreen,
+        navigateToSettingsScreen = navigateToSettingsScreen
+    )
 
 }
 
@@ -107,10 +88,9 @@ fun JobsScreenContent(
     query: String,
     onQueryChange: (String) -> Unit,
     searching: Boolean,
-    navigateToLoginScreen: () -> Unit,
-    navigateToDetailScreen: (String) -> Unit,
+    navigateToJobDetailScreen: (String) -> Unit,
     navigateToSettingsScreen: () -> Unit
-){
+) {
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -119,15 +99,15 @@ fun JobsScreenContent(
 
     val isScrolling = lazyGridState.isScrollingUp()
 
-    LaunchedEffect(isScrolling){
+    LaunchedEffect(isScrolling) {
         println("is scrolling")
     }
 
     Scaffold(
         modifier = modifier
             .padding(
-            top = if (getPlatform().type == Platforms.DESKTOP) 24.dp else 0.dp
-        ),
+                top = if (getPlatform().type == Platforms.DESKTOP) 24.dp else 0.dp
+            ),
         topBar = {
             TopAppBar(
                 title = {
@@ -142,7 +122,7 @@ fun JobsScreenContent(
                         onClick = {
                             navigateToSettingsScreen()
                         }
-                    ){
+                    ) {
                         Icon(
                             imageVector = Icons.Default.Settings,
                             contentDescription = "Settings"
@@ -201,16 +181,10 @@ fun JobsScreenContent(
                     }
                 }
 
-                FlexLayout(
+                JobsFlexLayout(
                     modifier = modifier,
                     lazyGridState = lazyGridState,
                     jobs = jobs,
-                    navigateToLoginScreen = {
-                        navigateToLoginScreen()
-                    },
-                    navigateToDetailScreen = {
-                        navigateToDetailScreen(it)
-                    },
                     openUrl = {
                         openUrl(it)
                     },
@@ -219,7 +193,9 @@ fun JobsScreenContent(
                             snackbarHostState.showSnackbar("The share link feature is not yet implemented.")
                         }
                     },
-                    showBanner = false
+                    navigateToDetailScreen = {
+                        navigateToJobDetailScreen(it)
+                    }
                 )
 
             }

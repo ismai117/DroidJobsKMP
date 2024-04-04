@@ -1,43 +1,52 @@
-package register.presentation
+package login.presentation
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import register.domain.repository.RegisterRepository
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import login.domain.repository.LoginRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import validations.email.ValidateEmail
-import validations.register.ValidateRegisterConfirmPassword
-import validations.register.ValidateRegisterPassword
-
-class RegisterScreenModel (
-    private val registerRepository: RegisterRepository
-) : ScreenModel {
+import validations.email.ValidateLoginPassword
 
 
-    var state by mutableStateOf(RegisterState())
+data class AppDispatchers(
+    val IO: CoroutineDispatcher = Dispatchers.Default
+)
 
-    fun onEvent(event: RegisterEvent) {
+class LoginViewModel(
+    private val loginRepository: LoginRepository
+) : ViewModel() {
+
+    var state by mutableStateOf(LoginState())
+
+    fun onEvent(event: LoginEvent) {
         when (event) {
-            is RegisterEvent.EMAIL -> {
+            is LoginEvent.EMAIL -> {
                 state = state.copy(email = event.email)
             }
 
-            is RegisterEvent.PASSWORD -> {
+            is LoginEvent.PASSWORD -> {
                 state = state.copy(password = event.password)
             }
 
-            is RegisterEvent.CONFIRM_PASSWORD -> {
-                state = state.copy(confirmPassword = event.confirmPassword)
-            }
-
-            is RegisterEvent.SUBMIT -> {
+            is LoginEvent.SUBMIT -> {
                 submit()
             }
 
-            is RegisterEvent.CLEAR -> {
+            is LoginEvent.CLEAR -> {
                 clearValues()
+            }
+
+            is LoginEvent.SHOW_PASSWORD -> {
+                state = state.copy(passwordVisible = event.visible)
+            }
+
+            is LoginEvent.RESET_MESSAGE -> {
+                state = state.copy(error = "")
             }
         }
     }
@@ -45,26 +54,23 @@ class RegisterScreenModel (
     private fun submit() {
 
         val emailResult = ValidateEmail(state.email)
-        val passwordResult = ValidateRegisterPassword(state.password)
-        val confirmPasswordResult = ValidateRegisterConfirmPassword(state.password, state.confirmPassword)
+        val passwordResult = ValidateLoginPassword(state.password)
 
         val hasError = listOf(
             emailResult,
-            passwordResult,
-            confirmPasswordResult
+            passwordResult
         ).any { !it.successful }
 
         if (hasError) {
             state = state.copy(
                 emailError = emailResult.errorMessage,
                 passwordError = passwordResult.errorMessage,
-                confirmPasswordError = confirmPasswordResult.errorMessage
             )
             return
         }
 
-        screenModelScope.launch{
-            registerRepository.register(
+        viewModelScope.launch(Dispatchers.Default) {
+            loginRepository.login(
                 email = state.email,
                 password = state.password
             ).collect { result ->
@@ -76,22 +82,28 @@ class RegisterScreenModel (
                         )
                     }
 
-                    is UIState.Success -> {
+                    is  UIState.Success -> {
                         state = state.copy(
                             isLoading = false,
-                            status = true
+                            status = true,
                         )
                     }
 
-                    is UIState.Error -> {
-                            state = state.copy(
-                                isLoading = false,
-                                status = false,
-                                error = result.message
-                            )
+                    is  UIState.Error -> {
+                        state = state.copy(
+                            isLoading = false,
+                            status = false,
+                            error = result.message
+                        )
                     }
                 }
             }
+        }
+    }
+
+    fun logout(){
+        viewModelScope.launch(Dispatchers.Default) {
+            loginRepository.logout()
         }
     }
 
@@ -104,8 +116,7 @@ class RegisterScreenModel (
             emailError = "",
             password = "",
             passwordError = "",
-            confirmPassword = "",
-            confirmPasswordError = ""
+            passwordVisible = false
         )
     }
 

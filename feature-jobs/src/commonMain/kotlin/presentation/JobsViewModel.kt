@@ -3,10 +3,11 @@ package presentation
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import jobs.Jobs
 import domain.repository.JobsRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,9 +21,9 @@ import kotlinx.coroutines.launch
 import utils.ResultState
 
 @OptIn(FlowPreview::class)
-class JobsScreenModeL(
+class JobsViewModel(
     private val jobsRepository: JobsRepository
-) : ScreenModel {
+) : ViewModel() {
 
     var state by mutableStateOf(JobsState())
 
@@ -49,14 +50,14 @@ class JobsScreenModeL(
         }
         .onEach { _searching.update { false } }
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = _jobs.value
         )
 
 
     fun getAllJobs() {
-        screenModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             jobsRepository.getAllJobs().collect { result ->
                 when (result) {
                     is ResultState.Loading -> {
@@ -82,7 +83,7 @@ class JobsScreenModeL(
     }
 
     fun getJob(id: String) {
-        screenModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             jobsRepository.getJob(
                 jobID = id
             ).collect { result ->

@@ -1,12 +1,15 @@
 package di
 
-import forgetPassword.di.ForgetPasswordModule
-import login.di.LoginModule
-import register.di.RegisterModule
+import forgetPassword.di.forgetPasswordModule
+import login.di.loginModule
+import org.koin.dsl.module
+import register.di.registerModule
 
 
-object AuthModule {
-    val loginModule: LoginModule by lazy { LoginModule() }
-    val registerModule: RegisterModule by lazy { RegisterModule() }
-    val forgetPasswordModule: ForgetPasswordModule by lazy { ForgetPasswordModule() }
+val authModule = module {
+    includes(
+        loginModule,
+        registerModule,
+        forgetPasswordModule
+    )
 }

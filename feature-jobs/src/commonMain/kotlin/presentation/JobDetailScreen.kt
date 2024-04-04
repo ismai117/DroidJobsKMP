@@ -1,6 +1,6 @@
 package presentation
 
-import Screens
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,89 +44,66 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import autoResizeText
 import bookmark.presentation.BookmarkEvent
-import bookmark.presentation.BookmarkScreenModel
-import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.registry.rememberScreen
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import components.CompanyLogo
 import components.SnackBarMessage
-import di.BookmarkModule
-import di.JobsModule
 import jobs.bulletPoint
 import kotlinx.coroutines.launch
 import openUrl
+import org.koin.compose.koinInject
 import platform.Platforms
 import platform.getPlatform
+import theme.LocalThemeIsDark
 import user.UserModule
 
+private typealias navigateToLoginScreen = () -> Unit
+private typealias navigateBack = () -> Unit
 
-class JobDetailScreen(
-    private val id: String
-) : Screen {
+@Composable
+fun JobDetailScreen(
+    id: String,
+    navigateToLoginScreen: navigateToLoginScreen,
+    navigateBack: navigateBack
+) {
 
-    @Composable
-    override fun Content() {
+    val isUserLoggedIn by UserModule.userState.isUserLoggedIn
 
-        val navigator = LocalNavigator.currentOrThrow
+    val jobsViewModeL = koinInject<JobsViewModel>()
 
-        val loginScreen = rememberScreen(Screens.LoginScreen)
+    val jobsState = jobsViewModeL.state
 
-        val isUserLoggedIn by UserModule.userState.isUserLoggedIn
+    val bookmarkViewModel= koinInject<BookmarkViewModel>()
+    val bookmarkState = bookmarkViewModel.state
 
-        val jobsScreenModel= rememberScreenModel {
-            JobsScreenModeL(
-                jobsRepository = JobsModule.jobsRepository
-            )
-        }
-
-        val jobsState = jobsScreenModel.state
-
-        val bookmarkScreenModel = rememberScreenModel {
-            BookmarkScreenModel(
-                bookmarkRepository = BookmarkModule.bookmarkRepository
-            )
-        }
-
-        val bookmarkState = bookmarkScreenModel.state
-
-        LaunchedEffect(Unit) {
-            jobsScreenModel.getJob(id)
-        }
-
-        LaunchedEffect(Unit){
-            UserModule.userState.getUserState()
-        }
-
-        JobDetailScreenContent(
-            jobsState = jobsState,
-            isUserLoggedIn = isUserLoggedIn,
-            bookmarkState = bookmarkState,
-            bookmarkOnEvent = {
-                bookmarkScreenModel.onEvent(it)
-            },
-            refreshBookmarks = {
-                bookmarkScreenModel.getBookmarks()
-            },
-            navigateToLoginScreen = {
-                navigator.push(loginScreen)
-            },
-            navigateBack = {
-                navigator.pop()
-            }
-        )
-
+    LaunchedEffect(Unit) {
+        jobsViewModeL.getJob(id)
     }
 
-}
+    LaunchedEffect(Unit){
+        UserModule.userState.getUserState()
+    }
 
+    JobDetailScreenContent(
+        jobsState = jobsState,
+        isUserLoggedIn = isUserLoggedIn,
+        bookmarkState = bookmarkState,
+        bookmarkOnEvent = {
+            bookmarkViewModel.onEvent(it)
+        },
+        refreshBookmarks = {
+            bookmarkViewModel.getBookmarks()
+        },
+        navigateToLoginScreen = navigateToLoginScreen,
+        navigateBack = navigateBack
+    )
+
+}
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -144,6 +121,8 @@ fun JobDetailScreenContent(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollState = rememberScrollState()
+
+    val isDark by LocalThemeIsDark.current
 
     LaunchedEffect(bookmarkState.statusInsertBookmark){
         if (bookmarkState.statusInsertBookmark){
@@ -609,7 +588,8 @@ fun JobDetailScreenContent(
                             contentPadding = PaddingValues(0.dp)
                         ) {
                             Text(
-                                text = "APPLY"
+                                text = "APPLY",
+                                color = if (isDark) Color.White else Color.Black
                             )
                         }
 

@@ -1,4 +1,4 @@
-package bookmark.data.repository
+package data.repository
 
 import bookmark.data.service.BookmarkService
 import bookmark.domain.repository.BookmarkRepository

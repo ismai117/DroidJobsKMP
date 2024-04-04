@@ -14,12 +14,12 @@ kotlin {
 
     js(IR) {
         browser()
-        binaries.executable()
     }
 
-    wasmJs {
-        browser()
-    }
+//
+//    wasmJs {
+//        browser()
+//    }
 
     iosX64()
     iosArm64()
@@ -31,6 +31,8 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.kotlinx.coroutines.android)
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
         }
 
         commonMain.dependencies {
@@ -40,12 +42,13 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation(compose.ui)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.voyagerNavigation)
-            implementation(libs.voyagerScreenModel)
-            implementation(libs.voyagerTransitions)
+            api(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.test)
+            implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(project(":commonFeatures"))
-            implementation(project(":navigation"))
             implementation(project(":feature-settings"))
+            implementation(project(":feature-bookmark"))
         }
 
         commonTest.dependencies {
@@ -80,3 +83,4 @@ android {
         jvmToolchain(17)
     }
 }
+
