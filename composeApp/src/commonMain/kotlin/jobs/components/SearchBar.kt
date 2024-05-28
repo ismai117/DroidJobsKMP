@@ -73,7 +73,7 @@ fun ColumnScope.SearchBarView(
         modifier = modifier
             .padding(top = 24.dp, start = 24.dp, end = 24.dp)
             .widthIn(max = 1000.dp)
-            .height(45.dp)
+            .height(50.dp)
             .align(Alignment.CenterHorizontally),
         shape = RoundedCornerShape(16.dp),
         border = CardDefaults.outlinedCardBorder()
@@ -120,7 +120,7 @@ fun ColumnScope.SearchBarView(
                             Text(
                                 text = "Search by seniority, industry or skill",
                                 color = if (isDark) Color.White else Color.Black,
-                                fontSize = 14.sp,
+                                fontSize = 12.sp,
                                 lineHeight = 1.em
                             )
                         }

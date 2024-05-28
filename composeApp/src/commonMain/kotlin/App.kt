@@ -22,7 +22,9 @@ import theme.DroidJobsKMPTheme
 @Preview
 fun App(
     modifier: Modifier = Modifier
-) {
+) = DroidJobsKMPTheme {
+
+    val navController = rememberNavController()
 
     KoinApplication(
         application = {
@@ -31,22 +33,27 @@ fun App(
             )
         }
     ) {
-        DroidJobsKMPTheme {
 
-            val navController = rememberNavController()
-
+        Scaffold {
             Box(
-                modifier = modifier
-                    .widthIn(max = 1270.dp)
-                    .fillMaxHeight(),
-                contentAlignment = Alignment.Center,
-            ) {
-                RootNavigation(
-                    navController = navController
-                )
-            }
+                modifier = modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ){
+                Box(
+                    modifier = modifier
+                        .widthIn(max = 1270.dp)
+                        .fillMaxHeight(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    RootNavigation(
+                        navController = navController
+                    )
+                }
 
+            }
         }
+
     }
 
 }
+
