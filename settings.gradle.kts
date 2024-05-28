@@ -3,32 +3,33 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
     repositories {
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        maven( "https://androidx.dev/storage/compose-compiler/repository/")
-        google()
-        gradlePluginPortal()
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+            }
+        }
         mavenCentral()
+        gradlePluginPortal()
     }
 }
 
 dependencyResolutionManagement {
     repositories {
-        google()
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+                maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+                maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
+            }
+        }
         mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
-        maven( "https://androidx.dev/storage/compose-compiler/repository/")
     }
 }
 
-include(":feature-jobs")
-include(":feature-auth")
-include(":feature-settings")
-include(":feature-bookmark")
+include(":composeApp")
+include(":server")
 include(":shared")
-include(":commonFeatures")
-include(":androidApp")
-include(":desktopApp")
-include(":webApp")
-//include(":webApp-wasm")
-
