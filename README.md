@@ -13,6 +13,14 @@ Supported Platforms
 
 Web App - Live
 [View](https://ismai117.github.io/DroidJobsKMP/)<br>
+
+## Stack
+- 🍎 Shared UI - [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform)
+- 🚏 Navigation - [Androidx](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-navigation-routing.html#sample-project)
+- 🏗 ViewModel - [Androidx](https://touchlab.co/kmp-viewmodel)
+- 💉 Dependecy Injection - [Koin](https://github.com/InsertKoinIO/koin)
+- 🛢 Image Loading - [Coil](https://github.com/coil-kt/coil)
+  
 </br>
 <pre>
 <h2 align="center">Android</h2>
